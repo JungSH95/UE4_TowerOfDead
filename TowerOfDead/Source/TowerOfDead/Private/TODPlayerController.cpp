@@ -1,0 +1,76 @@
+#include "TODPlayerController.h"
+
+ATODPlayerController::ATODPlayerController()
+{
+	isMove = true;
+}
+
+
+void ATODPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	InputComponent->BindAxis(TEXT("UpDown"), this, &ATODPlayerController::UpDown);
+	InputComponent->BindAxis(TEXT("LeftRight"), this, &ATODPlayerController::LeftRight);
+	InputComponent->BindAxis(TEXT("Turn"), this, &ATODPlayerController::Turn);
+	InputComponent->BindAxis(TEXT("LookUp"), this, &ATODPlayerController::LookUp);
+
+	InputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::Attack);
+}
+
+void ATODPlayerController::UpDown(float AxisValue)
+{	
+	if (isMove == false)
+		return;
+
+	if (CPlayer == nullptr)
+		CPlayer = Cast<ATODCharacter>(GetPawn());
+	else if(AxisValue != 0.0f)
+	{
+		const FRotator Rotation = ControlRotation;
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		CPlayer->AddMovementInput(Direction, AxisValue);
+	}
+}
+
+void ATODPlayerController::LeftRight(float AxisValue)
+{
+	if (isMove == false)
+		return;
+
+	if (CPlayer == nullptr)
+		CPlayer = Cast<ATODCharacter>(GetPawn());
+	else if (AxisValue != 0.0f)
+	{
+		const FRotator Rotation = ControlRotation;
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		CPlayer->AddMovementInput(Direction, AxisValue);
+	}
+}
+
+void ATODPlayerController::Turn(float AxisValue)
+{
+	if (isMove == false)
+		return;
+
+	AddYawInput(AxisValue);
+}
+
+void ATODPlayerController::LookUp(float AxisValue)
+{
+	if (isMove == false)
+		return;
+
+	AddPitchInput(AxisValue);
+}
+
+void ATODPlayerController::Attack()
+{
+	TODLOG_S(Warning);
+
+	CPlayer->Attack();
+}
