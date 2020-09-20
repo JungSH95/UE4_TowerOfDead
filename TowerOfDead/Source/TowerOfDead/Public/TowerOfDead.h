@@ -1,9 +1,15 @@
-// Copyright 1998-2019 Epic Games, Inc. All Rights Reserved.
-
 #pragma once
 
 #include "EngineMinimal.h"
 
+UENUM(BlueprintType)
+enum class EnemyState :uint8
+{
+	PEACE UMETA(DisplayName = "PEACE"),
+	CHASE UMETA(DisplayName = "CHASE"),
+	ATTACK UMETA(DisplayName = "ATTACK"),
+	DEAD UMETA(DisplayName = "DEAD"),
+};
 
 // 로깅을 위한 공용 매크로 지정(로그 카테고리 선언)
 DECLARE_LOG_CATEGORY_EXTERN(TowerOfDead, Log, All);

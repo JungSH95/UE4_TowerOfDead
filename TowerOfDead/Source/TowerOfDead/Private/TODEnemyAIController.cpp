@@ -4,6 +4,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 
 const FName ATODEnemyAIController::TargetKey(TEXT("Target"));
+const FName ATODEnemyAIController::AIState(TEXT("State"));
 
 ATODEnemyAIController::ATODEnemyAIController()
 {
@@ -26,6 +27,10 @@ void ATODEnemyAIController::OnPossess(APawn* InPawn)
 		if (!RunBehaviorTree(BTAsset))
 		{
 			TODLOG(Error, TEXT("AIController not Run BT"));
+		}
+		else
+		{
+
 		}
 	}
 }

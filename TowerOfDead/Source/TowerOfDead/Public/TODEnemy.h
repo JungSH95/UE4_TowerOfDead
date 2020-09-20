@@ -1,6 +1,6 @@
 #pragma once
 
-#include "CoreMinimal.h"
+#include "TowerOfDead.h"
 #include "GameFramework/Character.h"
 #include "TODEnemy.generated.h"
 
@@ -17,7 +17,12 @@ protected:
 
 public:	
 	virtual void Tick(float DeltaTime) override;
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	EnemyState GetState() { return State; }
+	void SetState(EnemyState newState) { State = newState; }
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	EnemyState State;
 };
