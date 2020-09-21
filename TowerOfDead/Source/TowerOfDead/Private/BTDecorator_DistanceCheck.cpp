@@ -23,12 +23,9 @@ bool UBTDecorator_DistanceCheck::CalculateRawConditionValue(UBehaviorTreeCompone
 	// 거리 계산 멀어지면 True, 일정 범위 내라면 false
 	float dis = Target->GetDistanceTo(ControllingPawn);
 
-	// 범위 내
+	// 범위 내 (임시 거리 400.0f)
 	if (dis <= 400.0f)
-	{
-		// 체크 목록 : 공격이 가능한가 ?
 		return false;
-	}
 	// 일정 범위 밖
 	else
 		return true;
