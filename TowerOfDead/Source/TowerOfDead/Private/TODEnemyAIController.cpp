@@ -16,6 +16,7 @@ ATODEnemyAIController::ATODEnemyAIController()
 	if (BTObject.Succeeded())
 		BTAsset = BTObject.Object;
 
+	bSetControlRotationFromPawnOrientation = false;
 }
 
 void ATODEnemyAIController::OnPossess(APawn* InPawn)
