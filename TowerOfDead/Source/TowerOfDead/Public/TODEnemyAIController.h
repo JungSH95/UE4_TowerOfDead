@@ -15,7 +15,13 @@ public:
 	virtual void OnPossess(APawn* InPawn) override;
 
 	static const FName TargetKey;
-	static const FName AIState;
+	static const FName AIStateKey;
+
+	static const FName IsChaseKey;
+	static const FName IsOutRangeAttackKey;
+	static const FName IsAttackKey;
+
+	static const FName RandomPosKey;
 
 private:
 	UPROPERTY()

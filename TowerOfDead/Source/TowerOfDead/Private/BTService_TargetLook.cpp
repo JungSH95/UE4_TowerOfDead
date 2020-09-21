@@ -23,10 +23,7 @@ void UBTService_TargetLook::TickNode(UBehaviorTreeComponent& OwnerComp,
 
 	APawn* Target = Cast<APawn>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ATODEnemyAIController::TargetKey));
 	if (Target == nullptr)
-	{
-		TODLOG_S(Warning);
 		return;
-	}
 
 	FVector LookVector = Target->GetActorLocation() - ControllingPawn->GetActorLocation();
 	LookVector.Z = 0.0f;
