@@ -27,6 +27,8 @@ ATODCharacter::ATODCharacter()
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanJump = true;
 	GetCharacterMovement()->JumpZVelocity = 500.0f;
 
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODCharacter"));
+
 	IsAttaking = false;
 	MaxCombo = 4;
 	AttackEndComboState();

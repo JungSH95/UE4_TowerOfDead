@@ -1,14 +1,15 @@
 #include "BTService_Detect.h"
 #include "TODCharacter.h"
 #include "TODEnemyAIController.h"
+#include "BehaviorTree//BlackboardComponent.h"
 
 UBTService_Detect::UBTService_Detect()
 {
 	NodeName = TEXT("Detect");
 }
 
-void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory,
-	float DeltaSeconds)
+void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp,
+	uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
@@ -21,6 +22,16 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 	float DetectRadius = 6000.0f;
 	
 	TODLOG_S(Warning);
+	
+	ATODCharacter* player = Cast<ATODCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (player == nullptr)
+		return;
+
+	OwnerComp.GetBlackboardComponent()->SetValueAsObject(ATODEnemyAIController::TargetKey,
+		player);
+	OwnerComp.GetBlackboardComponent()->SetValueAsEnum(ATODEnemyAIController::AIState,
+		(uint8)EnemyState::CHASE);
+
 	/*
 	if (nullptr == World) return;
 	TArray<FOverlapResult> OverlapResults;
