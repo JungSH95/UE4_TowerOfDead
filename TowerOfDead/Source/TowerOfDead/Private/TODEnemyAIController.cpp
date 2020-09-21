@@ -5,7 +5,6 @@
 
 const FName ATODEnemyAIController::TargetKey(TEXT("Target"));
 const FName ATODEnemyAIController::AIStateKey(TEXT("State"));
-const FName ATODEnemyAIController::IsChaseKey(TEXT("IsChase"));
 const FName ATODEnemyAIController::IsOutRangeAttackKey(TEXT("IsOutRangeAttack"));
 const FName ATODEnemyAIController::IsAttackKey(TEXT("IsAttack"));
 const FName ATODEnemyAIController::RandomPosKey(TEXT("RandomPos"));
@@ -29,7 +28,6 @@ void ATODEnemyAIController::OnPossess(APawn* InPawn)
 
 	if (UseBlackboard(BBAsset, Blackboard))
 	{
-		Blackboard->SetValueAsBool(IsChaseKey, true);
 		Blackboard->SetValueAsBool(IsOutRangeAttackKey, false);
 		Blackboard->SetValueAsBool(IsAttackKey, false);
 

@@ -17,16 +17,13 @@ void UBTService_TargetLook::TickNode(UBehaviorTreeComponent& OwnerComp,
 	if (ControllingPawn == nullptr)
 		return;
 
-	ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(ControllingPawn);
-	if (EnemyAI == nullptr)
-		return;
-
 	APawn* Target = Cast<APawn>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ATODEnemyAIController::TargetKey));
 	if (Target == nullptr)
 		return;
 
+	// Look On
 	FVector LookVector = Target->GetActorLocation() - ControllingPawn->GetActorLocation();
 	LookVector.Z = 0.0f;
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-	ControllingPawn->SetActorRotation(FMath::RInterpTo(ControllingPawn->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
+	ControllingPawn->SetActorRotation(TargetRot);
 }

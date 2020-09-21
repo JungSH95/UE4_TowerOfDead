@@ -17,7 +17,6 @@ public:
 	static const FName TargetKey;
 	static const FName AIStateKey;
 
-	static const FName IsChaseKey;
 	static const FName IsOutRangeAttackKey;
 	static const FName IsAttackKey;
 

@@ -17,13 +17,7 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp,
 	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
 	if (ControllingPawn == nullptr)
 		return;
-
-	UWorld* World = ControllingPawn->GetWorld();
-	FVector Center = ControllingPawn->GetActorLocation();
-	float DetectRadius = 6000.0f;
-	
-	TODLOG_S(Warning);
-	
+		
 	ATODCharacter* player = Cast<ATODCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (player == nullptr)
 		return;
