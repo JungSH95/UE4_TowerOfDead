@@ -6,7 +6,6 @@
 const FName ATODEnemyAIController::TargetKey(TEXT("Target"));
 const FName ATODEnemyAIController::AIStateKey(TEXT("State"));
 const FName ATODEnemyAIController::IsCanOutRangeAttackKey(TEXT("IsCanOutRangeAttack"));
-const FName ATODEnemyAIController::IsCanAttackKey(TEXT("IsCanAttack"));
 const FName ATODEnemyAIController::RandomPosKey(TEXT("RandomPos"));
 
 ATODEnemyAIController::ATODEnemyAIController()
@@ -29,15 +28,8 @@ void ATODEnemyAIController::OnPossess(APawn* InPawn)
 	if (UseBlackboard(BBAsset, Blackboard))
 	{
 		Blackboard->SetValueAsBool(IsCanOutRangeAttackKey, false);
-		Blackboard->SetValueAsBool(IsCanAttackKey, false);
 
 		if (!RunBehaviorTree(BTAsset))
-		{
 			TODLOG(Error, TEXT("AIController not Run BT"));
-		}
-		else
-		{
-
-		}
 	}
 }

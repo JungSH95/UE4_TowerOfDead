@@ -22,7 +22,23 @@ public:
 	EnemyState GetState() { return State; }
 	void SetState(EnemyState newState) { State = newState; }
 
+	float GetAttackRange() { return AttackRange; }
+	float GetEffectiveRange() { return EffectiveRange; }
+
+	bool GetIsCanAttack() { return IsCanAttack; }
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EnemyState State;
+
+	// 유효 사거리
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	float EffectiveRange;
+
+	// 공격 사거리
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	float AttackRange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsCanAttack;
 };

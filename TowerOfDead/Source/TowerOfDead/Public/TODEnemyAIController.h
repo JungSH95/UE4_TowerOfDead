@@ -18,7 +18,6 @@ public:
 	static const FName AIStateKey;
 
 	static const FName IsCanOutRangeAttackKey;
-	static const FName IsCanAttackKey;
 
 	static const FName RandomPosKey;
 

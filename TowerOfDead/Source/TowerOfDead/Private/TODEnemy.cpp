@@ -14,8 +14,11 @@ ATODEnemy::ATODEnemy()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
+	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 
 	State = EnemyState::PEACE;
+	AttackRange = 300.0f;
+	EffectiveRange = AttackRange + 100.0f;
 }
 
 void ATODEnemy::BeginPlay()
