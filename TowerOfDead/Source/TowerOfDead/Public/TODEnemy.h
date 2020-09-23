@@ -4,6 +4,8 @@
 #include "GameFramework/Character.h"
 #include "TODEnemy.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
+
 UCLASS()
 class TOWEROFDEAD_API ATODEnemy : public ACharacter
 {
@@ -27,6 +29,11 @@ public:
 
 	bool GetIsCanAttack() { return IsCanAttack; }
 
+	void Attack();
+	FOnAttackEndDelegate OnAttackEnd;
+
+	bool GetIsDead() { return IsDead; }
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EnemyState State;
@@ -41,4 +48,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsCanAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsDead;
 };

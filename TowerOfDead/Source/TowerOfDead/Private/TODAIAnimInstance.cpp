@@ -5,6 +5,7 @@ UTODAIAnimInstance::UTODAIAnimInstance()
 {
 	CurrentSpeed = 0.0f;
 	CurrentPawnDirection = 0.0f;
+	IsDead = false;
 
 	State = EnemyState::PEACE;
 }
@@ -20,6 +21,9 @@ void UTODAIAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		
 		ATODEnemy* EnemyClass = Cast<ATODEnemy>(EnemyPawn);
 		if (EnemyClass != nullptr)
+		{
 			State = EnemyClass->GetState();
+			IsDead = EnemyClass->GetIsDead();
+		}
 	}
 }

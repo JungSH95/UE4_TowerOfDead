@@ -1,5 +1,6 @@
 #include "TODEnemy.h"
 #include "TODEnemyAIController.h"
+#include "TODAIAnimInstance.h"
 
 ATODEnemy::ATODEnemy()
 {
@@ -19,6 +20,9 @@ ATODEnemy::ATODEnemy()
 	State = EnemyState::PEACE;
 	AttackRange = 300.0f;
 	EffectiveRange = AttackRange + 100.0f;
+
+	IsCanAttack = true;
+	IsDead = false;
 }
 
 void ATODEnemy::BeginPlay()
@@ -39,3 +43,14 @@ void ATODEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void ATODEnemy::Attack()
+{
+	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance == nullptr)
+	{
+		TODLOG_S(Warning);
+		return;
+	}
+
+	AnimInstance->PlayAttackMontage();
+}
