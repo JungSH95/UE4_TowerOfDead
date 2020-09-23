@@ -15,6 +15,9 @@ public:
 
 	virtual void PlayAttackMontage() PURE_VIRTUAL(UTODAIAnimInstance::PlayAttackMontage, return;);
 
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack)
+	UAnimMontage* NowMontage;
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EnemyState State;
@@ -27,4 +30,5 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsDead;
+
 };

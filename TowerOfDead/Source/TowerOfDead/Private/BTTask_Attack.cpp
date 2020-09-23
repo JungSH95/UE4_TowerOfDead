@@ -1,12 +1,12 @@
 #include "BTTask_Attack.h"
 #include "TODEnemy.h"
 #include "TODEnemyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_Attack::UBTTask_Attack()
 {
 	NodeName = TEXT("Attack");
 	bNotifyTick = true;
-	IsAttacking = false;
 }
 
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
@@ -17,13 +17,14 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	auto Enemy = Cast<ATODEnemy>(OwnerComp.GetAIOwner()->GetPawn());
 	if (Enemy == nullptr)
 		return EBTNodeResult::Failed;
+	
+	// 공격 중이면
+	if(OwnerComp.GetBlackboardComponent()->GetValueAsBool(ATODEnemyAIController::IsAttackingKey))
+		return EBTNodeResult::Failed;
 
-	IsAttacking = true;
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(ATODEnemyAIController::IsAttackingKey, true);
 	Enemy->Attack();
-	Enemy->OnAttackEnd.AddLambda([this]()->void {
-		IsAttacking = false;
-	});
-
+	
 	return EBTNodeResult::InProgress;
 }
 
@@ -32,6 +33,6 @@ void UBTTask_Attack::TickTask(UBehaviorTreeComponent& OwnerComp,
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-	if (!IsAttacking)
+	if (!OwnerComp.GetBlackboardComponent()->GetValueAsBool(ATODEnemyAIController::IsAttackingKey))
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 }

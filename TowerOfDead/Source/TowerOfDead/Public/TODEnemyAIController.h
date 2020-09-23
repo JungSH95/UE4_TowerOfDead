@@ -17,9 +17,12 @@ public:
 	static const FName TargetKey;
 	static const FName AIStateKey;
 
+	static const FName IsAttackingKey;
 	static const FName IsCanOutRangeAttackKey;
 
 	static const FName RandomPosKey;
+
+	void SetIsAttaking(bool isattack);
 
 private:
 	UPROPERTY()

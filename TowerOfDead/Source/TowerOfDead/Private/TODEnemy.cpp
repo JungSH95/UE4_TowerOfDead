@@ -37,6 +37,17 @@ void ATODEnemy::Tick(float DeltaTime)
 
 }
 
+void ATODEnemy::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance == nullptr)
+		return;
+
+	AnimInstance->OnMontageEnded.AddDynamic(this, &ATODEnemy::OnAttackMontageEnded);
+}
+
 void ATODEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -45,12 +56,28 @@ void ATODEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ATODEnemy::Attack()
 {
+	if (!IsCanAttack)
+		return;
+
 	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance == nullptr)
-	{
-		TODLOG_S(Warning);
 		return;
-	}
 
 	AnimInstance->PlayAttackMontage();
+	IsCanAttack = false;
+}
+
+void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance == nullptr)
+		return;
+
+	ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
+	if (EnemyAI == nullptr)
+		return;
+
+	EnemyAI->SetIsAttaking(false);
+	AnimInstance->NowMontage = nullptr;
+	IsCanAttack = true;
 }

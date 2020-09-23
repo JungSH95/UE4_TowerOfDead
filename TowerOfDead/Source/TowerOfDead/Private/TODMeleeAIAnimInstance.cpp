@@ -19,5 +19,18 @@ void UTODMeleeAIAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UTODMeleeAIAnimInstance::PlayAttackMontage()
 {
-	TODLOG_S(Warning);
+	if (NowMontage == nullptr)
+	{
+		int MontageRandomNumber = FMath::RandRange(0, 1);
+		NowMontage = ArrAttackMontage[MontageRandomNumber];
+		Montage_Play(NowMontage, 0.8f);
+	}
+
+	/*
+	else if (!Montage_IsPlaying(NowMontage))
+	{
+		NowMontage = ArrAttackMontage[0];
+		Montage_Play(NowMontage, 1.0f);
+	}
+	*/
 }

@@ -4,8 +4,6 @@
 #include "GameFramework/Character.h"
 #include "TODEnemy.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
-
 UCLASS()
 class TOWEROFDEAD_API ATODEnemy : public ACharacter
 {
@@ -19,6 +17,7 @@ protected:
 
 public:	
 	virtual void Tick(float DeltaTime) override;
+	virtual void PostInitializeComponents() override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	EnemyState GetState() { return State; }
@@ -30,7 +29,8 @@ public:
 	bool GetIsCanAttack() { return IsCanAttack; }
 
 	void Attack();
-	FOnAttackEndDelegate OnAttackEnd;
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	bool GetIsDead() { return IsDead; }
 
