@@ -25,7 +25,7 @@ ATODCharacter::ATODCharacter()
 		GetMesh()->SetAnimInstanceClass(KWANG_ANIM.Class);
 
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanJump = true;
-	GetCharacterMovement()->JumpZVelocity = 500.0f;
+	GetCharacterMovement()->JumpZVelocity = 400.0f;
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODCharacter"));
 
