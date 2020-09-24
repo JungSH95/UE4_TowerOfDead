@@ -31,6 +31,9 @@ public:
 	void AttackStartComboState();
 	void AttackEndComboState();
 
+	void HardAttack();
+	void HardAttackCheck();
+
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArm;
 

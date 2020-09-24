@@ -15,6 +15,10 @@ UTODAnimInstance::UTODAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/PlayerComboAttack_Montage.PlayerComboAttack_Montage"));
 	if (ATTACK_MONTAGE.Succeeded())
 		AttackMontage = ATTACK_MONTAGE.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> HARDATTACK_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/PlayerHardAttack_Montage.PlayerHardAttack_Montage"));
+	if (HARDATTACK_MONTAGE.Succeeded())
+		HardAttackMontage = HARDATTACK_MONTAGE.Object;
 }
 
 void UTODAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -50,6 +54,14 @@ void UTODAnimInstance::PlayAttackMontage()
 	}
 }
 
+void UTODAnimInstance::PlayHardAttackMontage()
+{
+	if (HardAttackMontage)
+	{
+		Montage_Play(HardAttackMontage, 1.0f);
+	}
+}
+
 void UTODAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
 	if (Montage_IsPlaying(AttackMontage))
@@ -80,4 +92,9 @@ FName UTODAnimInstance::GetAttackMontageSectionName(int32 Section)
 		return FName(*FString::Printf(TEXT("Attack%d"), Section));
 	else
 		return NAME_None;
+}
+
+void UTODAnimInstance::AnimNotify_HardAttackStart()
+{
+	Montage_SetPlayRate(HardAttackMontage, 0.1f);
 }

@@ -16,6 +16,10 @@ void ATODPlayerController::SetupInputComponent()
 	InputComponent->BindAxis(TEXT("LookUp"), this, &ATODPlayerController::LookUp);
 
 	InputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::Attack);
+
+	InputComponent->BindAction(TEXT("HardAttack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::HardAttack);
+	InputComponent->BindAction(TEXT("HardAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::HardAttackEnd);
+	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::SpecialAttack);
 }
 
 void ATODPlayerController::UpDown(float AxisValue)
@@ -70,7 +74,27 @@ void ATODPlayerController::LookUp(float AxisValue)
 
 void ATODPlayerController::Attack()
 {
-	TODLOG_S(Warning);
-
 	CPlayer->Attack();
+}
+
+void ATODPlayerController::HardAttack()
+{
+	isMove = false;
+	CPlayer->GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
+	CPlayer->HardAttack();
+}
+
+void ATODPlayerController::HardAttackEnd()
+{
+	//isMove = true;
+	//CPlayer->GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
+
+	// 버튼에서 땠을 때 판정을 확인하여 성공일 경우 강공격 실행 후 이동 및 점프 가능
+	//									실패일 경우 Montage 정지 후 이동 및 점프 가능
+	CPlayer->HardAttackCheck();
+}
+
+void ATODPlayerController::SpecialAttack()
+{
+	TODLOG_S(Warning);
 }

@@ -25,6 +25,12 @@ private:
 	void LookUp(float AxisValue);
 
 	void Attack();
+	// 게이지 채워서 공격?
+	void HardAttack();
+	void HardAttackEnd();
+	// 무기 투척하기 (특정 위치에)
+	void SpecialAttack();
+
 private:
 	ATODCharacter* CPlayer;
 

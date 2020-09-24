@@ -1,5 +1,6 @@
 #include "TODCharacter.h"
 #include "TODAnimInstance.h"
+#include "TODPlayerController.h"
 
 ATODCharacter::ATODCharacter()
 {
@@ -138,8 +139,12 @@ void ATODCharacter::Attack()
 
 void ATODCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	IsAttaking = false;
-	AttackEndComboState();
+	// 일반 공격 몽타주라면
+	if (Montage == Anim->GetAttackMontage())
+	{
+		IsAttaking = false;
+		AttackEndComboState();
+	}
 }
 
 void ATODCharacter::AttackStartComboState()
@@ -147,13 +152,6 @@ void ATODCharacter::AttackStartComboState()
 	CanNextCombo = false;
 	IsComboInputOn = false;
 	CurrentCombo += 1;
-	
-	/*
-	if (FMath::IsWithinInclusive<int32>(CurrentCombo, 0, MaxCombo - 1))
-		CurrentCombo = FMath::Clamp(CurrentCombo + 1, 1, MaxCombo);
-	else
-		TODLOG_S(Warning);
-	*/
 }
 
 void ATODCharacter::AttackEndComboState()
@@ -161,4 +159,22 @@ void ATODCharacter::AttackEndComboState()
 	IsComboInputOn = false;
 	CanNextCombo = false;
 	CurrentCombo = 0;
+}
+
+void ATODCharacter::HardAttack()
+{
+	Anim->PlayHardAttackMontage();
+}
+
+void ATODCharacter::HardAttackCheck()
+{
+	// 실패 하면 몽타주 정지 후 이동 및 점프 가능
+	{
+		ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
+		if (playerController != nullptr)
+			playerController->SetIsMove(true);
+
+		GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
+		Anim->Montage_Stop(0.2f, Anim->GetCurrentActiveMontage());
+	}
 }
