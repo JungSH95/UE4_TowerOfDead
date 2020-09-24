@@ -1,6 +1,7 @@
 #include "TODEnemy.h"
 #include "TODEnemyAIController.h"
 #include "TODAIAnimInstance.h"
+#include "TODCharacter.h"
 
 ATODEnemy::ATODEnemy()
 {
@@ -11,12 +12,16 @@ ATODEnemy::ATODEnemy()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODEnemy"));
-
+	
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
-
+	
+	AttackTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackTriggerBox"));
+	AttackTrigger->AttachTo(GetMesh());
+	AttackTrigger->SetGenerateOverlapEvents(false);
+	
 	State = EnemyState::PEACE;
 	IsDead = false;
 
@@ -48,12 +53,22 @@ void ATODEnemy::PostInitializeComponents()
 		return;
 
 	AnimInstance->OnMontageEnded.AddDynamic(this, &ATODEnemy::OnAttackMontageEnded);
+	
+	AttackTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODEnemy::OnAttackTriggerOverlap);
 }
 
 void ATODEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	return FinalDamage;
 }
 
 void ATODEnemy::Attack()
@@ -82,10 +97,44 @@ void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	EnemyAI->SetIsAttaking(false);
 	AnimInstance->NowMontage = nullptr;
 
-	GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTime, NormalAttackCoolTime, false);
+	GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTime, NormalAttackCoolDownTime, false);
+}
+
+void ATODEnemy::OnAttackCheck()
+{
+	if (AttackTrigger == nullptr)
+		return;
+
+	AttackTrigger->SetGenerateOverlapEvents(true);
+}
+
+void ATODEnemy::OnAttackCheckEnd()
+{
+	if (AttackTrigger == nullptr)
+		return;
+
+	AttackTrigger->SetGenerateOverlapEvents(false);
 }
 
 void ATODEnemy::AttackCoolDownTime()
 {
 	IsCanAttack = true;
+}
+
+void ATODEnemy::OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
+	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ATODCharacter* Player = Cast<ATODCharacter>(OtherActor);
+
+	if (Player != nullptr)
+	{
+		print(OtherActor->GetName());
+		TODLOG_S(Warning);
+
+		//FDamageEvent DamageEvent;
+		//OtherActor->TakeDamage(50.0f, DamageEvent, GetController(), this);
+
+		// 플레이어 타격 후 바로 비활성화
+		AttackTrigger->SetGenerateOverlapEvents(false);
+	}
 }

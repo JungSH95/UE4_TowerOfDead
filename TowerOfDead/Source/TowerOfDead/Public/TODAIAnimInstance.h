@@ -19,6 +19,13 @@ public:
 	UAnimMontage* NowMontage;
 
 private:
+	UFUNCTION()
+	void AnimNotify_AttackHitCheck();
+
+	UFUNCTION()
+	void AnimNotify_AttackHitCheckEnd();
+
+private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EnemyState State;
 

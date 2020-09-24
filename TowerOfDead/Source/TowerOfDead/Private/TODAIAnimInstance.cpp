@@ -27,3 +27,17 @@ void UTODAIAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		}
 	}
 }
+
+void UTODAIAnimInstance::AnimNotify_AttackHitCheck()
+{
+	ATODEnemy* Enemy = Cast<ATODEnemy>(TryGetPawnOwner());
+	if (Enemy != nullptr)
+		Enemy->OnAttackCheck();
+}
+
+void UTODAIAnimInstance::AnimNotify_AttackHitCheckEnd()
+{
+	ATODEnemy* Enemy = Cast<ATODEnemy>(TryGetPawnOwner());
+	if (Enemy != nullptr)
+		Enemy->OnAttackCheckEnd();
+}
