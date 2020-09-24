@@ -18,11 +18,13 @@ ATODEnemy::ATODEnemy()
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 
 	State = EnemyState::PEACE;
+	IsDead = false;
+
 	AttackRange = 300.0f;
 	EffectiveRange = AttackRange + 100.0f;
 
 	IsCanAttack = true;
-	IsDead = false;
+	NormalAttackCoolDownTime = 3.0f;
 }
 
 void ATODEnemy::BeginPlay()
@@ -79,5 +81,11 @@ void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 
 	EnemyAI->SetIsAttaking(false);
 	AnimInstance->NowMontage = nullptr;
+
+	GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTime, NormalAttackCoolTime, false);
+}
+
+void ATODEnemy::AttackCoolDownTime()
+{
 	IsCanAttack = true;
 }

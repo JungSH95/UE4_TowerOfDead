@@ -16,11 +16,12 @@ bool UBTDecorator_IsCanAttack::CalculateRawConditionValue(UBehaviorTreeComponent
 	if (Enemy == nullptr)
 		return false;
 
-	// 공격이 가능하다면
+	// 공격이 가능하다면 대상으로 이동 후 공격 
 	if (Enemy->GetIsCanAttack())
+	{
+		Enemy->GetCharacterMovement()->bOrientRotationToMovement = true;
 		return true;
-	else
-		Enemy->GetCharacterMovement()->bOrientRotationToMovement = false;
+	}
 
 	return false;
 }
