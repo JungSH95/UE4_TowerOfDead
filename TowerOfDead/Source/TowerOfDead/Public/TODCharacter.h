@@ -37,9 +37,11 @@ public:
 	void HardAttackCheck();
 	UFUNCTION()
 	void HardAttackEnd();
+	void HardAttackCoolDownTimer();
 
 	FOnHardAttackCastDelegate OnHardAttackCast;
 	float GetHardAttackRatio() { return CastTime / HardAttackTime; }
+	bool GetIsHardAttacking() { return IsHardAttacking; }
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArm;
@@ -68,6 +70,8 @@ private:
 
 	float CastTime = 0.0f;
 	float HardAttackTime = 2.0f;
+	float HardAttackCoolDownTime = 5.0f;
+	FTimerHandle HardAttackTimerHandle;
 
 	class UTODAnimInstance* Anim;
 };

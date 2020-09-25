@@ -51,13 +51,13 @@ void ATODCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsHardAttacking)
+	if (CastTime <= HardAttackTime && IsHardAttacking)
 	{
 		CastTime += GetWorld()->DeltaTimeSeconds;
 		print(FString::Printf(TEXT("CastTime : %f"), CastTime));
 		OnHardAttackCast.Broadcast();
 
-		if (CastTime >= HardAttackTime)
+		if (CastTime > HardAttackTime)
 			HardAttackCheck();
 	}
 }
@@ -191,9 +191,6 @@ void ATODCharacter::HardAttack()
 
 void ATODCharacter::HardAttackCheck()
 {
-	if (IsHardAttacking == false)
-		return;
-
 	float percent = (CastTime / HardAttackTime);
 	
 	// 성공 : 다음 몽타주 재생
@@ -210,8 +207,6 @@ void ATODCharacter::HardAttackCheck()
 		Anim->Montage_Stop(0.2f, Anim->GetCurrentActiveMontage());
 	}
 
-	CastTime = 0.0f;
-
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
@@ -223,6 +218,12 @@ void ATODCharacter::HardAttackEnd()
 	if (playerController != nullptr)
 		playerController->SetIsMove(true);
 
-	IsHardAttacking = false;
+	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this, &ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
+}
+
+void ATODCharacter::HardAttackCoolDownTimer()
+{
+	IsHardAttacking = false;
+	CastTime = 0.0f;
 }

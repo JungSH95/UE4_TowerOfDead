@@ -19,7 +19,7 @@ ATODEnemy::ATODEnemy()
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 	
 	AttackTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackTriggerBox"));
-	AttackTrigger->AttachTo(GetMesh());
+	AttackTrigger->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 	AttackTrigger->SetGenerateOverlapEvents(false);
 	
 	State = EnemyState::PEACE;
