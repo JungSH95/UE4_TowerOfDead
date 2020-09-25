@@ -74,6 +74,4 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 # Content file
-Content/EnvironmentPack2
-Content/ParagonKwang
-Content/ParagonMinions
+Content/*

@@ -37,9 +37,7 @@ void UTODAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			CurrentSpeed = PlayerPawn->GetVelocity().Size();
 		else
 			CurrentSpeed = 0.0f;
-
-		//print(FString::Printf(TEXT("Yaw : %f"), CurrentPawnDirection));
-
+		
 		FRotator AimRotator = UKismetMathLibrary::NormalizedDeltaRotator(PlayerPawn->GetBaseAimRotation(), PlayerPawn->GetActorRotation());
 		AimPitch = AimRotator.Pitch;
 		AimYaw = AimRotator.Yaw;
@@ -96,5 +94,10 @@ FName UTODAnimInstance::GetAttackMontageSectionName(int32 Section)
 
 void UTODAnimInstance::AnimNotify_HardAttackStart()
 {
-	Montage_SetPlayRate(HardAttackMontage, 0.1f);
+	Montage_SetPlayRate(HardAttackMontage, 0.3f);
+}
+
+void UTODAnimInstance::AnimNotify_HardAttackEnd()
+{
+	OnHardAttackEnd.Broadcast();
 }

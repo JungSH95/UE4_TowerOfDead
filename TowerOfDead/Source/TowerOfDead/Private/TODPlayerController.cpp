@@ -86,9 +86,6 @@ void ATODPlayerController::HardAttack()
 
 void ATODPlayerController::HardAttackEnd()
 {
-	//isMove = true;
-	//CPlayer->GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
-
 	// 버튼에서 땠을 때 판정을 확인하여 성공일 경우 강공격 실행 후 이동 및 점프 가능
 	//									실패일 경우 Montage 정지 후 이동 및 점프 가능
 	CPlayer->HardAttackCheck();

@@ -2,6 +2,9 @@
 #include "TODAnimInstance.h"
 #include "TODPlayerController.h"
 
+#include "TODGameMode.h"
+#include "TODUserWidget.h"
+
 ATODCharacter::ATODCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -39,12 +42,24 @@ void ATODCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
+	if (gameMode != nullptr)
+		gameMode->GetUserHUDWidget()->BindPlayerClass(this);
 }
 
 void ATODCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (IsHardAttacking)
+	{
+		CastTime += GetWorld()->DeltaTimeSeconds;
+		print(FString::Printf(TEXT("CastTime : %f"), CastTime));
+		OnHardAttackCast.Broadcast();
+
+		if (CastTime >= HardAttackTime)
+			HardAttackCheck();
+	}
 }
 
 void ATODCharacter::PostInitializeComponents()
@@ -65,6 +80,8 @@ void ATODCharacter::PostInitializeComponents()
 				Anim->JumpToAttackMontageSection(CurrentCombo);
 			}
 		});
+		
+		Anim->OnHardAttackEnd.AddUFunction(this, FName("HardAttackEnd"));
 	}
 }
 
@@ -164,17 +181,48 @@ void ATODCharacter::AttackEndComboState()
 void ATODCharacter::HardAttack()
 {
 	Anim->PlayHardAttackMontage();
+	IsHardAttacking = true;
+	CastTime = 0.0f;
+
+	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
+	if (gameMode != nullptr)
+		gameMode->GetUserHUDWidget()->SetVisibleCast(true);
 }
 
 void ATODCharacter::HardAttackCheck()
 {
-	// 실패 하면 몽타주 정지 후 이동 및 점프 가능
-	{
-		ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
-		if (playerController != nullptr)
-			playerController->SetIsMove(true);
+	if (IsHardAttacking == false)
+		return;
 
-		GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
+	float percent = (CastTime / HardAttackTime);
+	
+	// 성공 : 다음 몽타주 재생
+	if (percent >= 0.7f && percent <= 0.9f)
+	{
+		Anim->Montage_SetPlayRate(Anim->GetHardAttackMontage(), 1.0f);
+		Anim->Montage_JumpToSection(FName(*FString::Printf(TEXT("HardAttack2"))),
+			Anim->GetHardAttackMontage());
+	}
+	// 실패 : 몽타주 정지 후 이동 및 점프 가능
+	else
+	{
+		HardAttackEnd();
 		Anim->Montage_Stop(0.2f, Anim->GetCurrentActiveMontage());
 	}
+
+	CastTime = 0.0f;
+
+	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
+	if (gameMode != nullptr)
+		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
+}
+
+void ATODCharacter::HardAttackEnd()
+{
+	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
+	if (playerController != nullptr)
+		playerController->SetIsMove(true);
+
+	IsHardAttacking = false;
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
 }

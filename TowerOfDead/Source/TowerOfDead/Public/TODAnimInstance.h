@@ -5,6 +5,7 @@
 #include "TODAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnHardAttackEndDelegate);
 
 UCLASS()
 class TOWEROFDEAD_API UTODAnimInstance : public UAnimInstance
@@ -21,8 +22,10 @@ public:
 
 public:
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
+	FOnHardAttackEndDelegate OnHardAttackEnd;
 
 	UAnimMontage* GetAttackMontage() { return AttackMontage; }
+	UAnimMontage* GetHardAttackMontage() { return HardAttackMontage; }
 
 private:
 	UFUNCTION()
@@ -34,6 +37,8 @@ private:
 
 	UFUNCTION()
 	void AnimNotify_HardAttackStart();
+	UFUNCTION()
+	void AnimNotify_HardAttackEnd();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))

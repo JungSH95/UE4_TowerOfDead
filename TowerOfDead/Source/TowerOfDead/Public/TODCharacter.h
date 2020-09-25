@@ -4,6 +4,8 @@
 #include "GameFramework/Character.h"
 #include "TODCharacter.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnHardAttackCastDelegate);
+
 UCLASS()
 class TOWEROFDEAD_API ATODCharacter : public ACharacter
 {
@@ -33,6 +35,11 @@ public:
 
 	void HardAttack();
 	void HardAttackCheck();
+	UFUNCTION()
+	void HardAttackEnd();
+
+	FOnHardAttackCastDelegate OnHardAttackCast;
+	float GetHardAttackRatio() { return CastTime / HardAttackTime; }
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArm;
@@ -55,6 +62,12 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	int32 MaxCombo;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsHardAttacking;
+
+	float CastTime = 0.0f;
+	float HardAttackTime = 2.0f;
 
 	class UTODAnimInstance* Anim;
 };
