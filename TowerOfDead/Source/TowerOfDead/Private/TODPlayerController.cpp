@@ -1,4 +1,5 @@
 #include "TODPlayerController.h"
+#include "DrawDebugHelpers.h"
 
 ATODPlayerController::ATODPlayerController()
 {
@@ -97,4 +98,21 @@ void ATODPlayerController::HardAttackEnd()
 void ATODPlayerController::SpecialAttack()
 {
 	TODLOG_S(Warning);
+
+	FVector StartPos = CPlayer->Camera->GetComponentLocation();
+	FVector EndPos = (CPlayer->Camera->GetForwardVector() * 10000.0f) + StartPos;
+
+	FHitResult Hit;
+	FCollisionQueryParams TraceParams;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos,
+		ECollisionChannel::ECC_GameTraceChannel3, TraceParams);
+
+	DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Orange, false, 2.0f);
+	
+	if (bHit)
+	{
+		DrawDebugBox(GetWorld(), Hit.ImpactPoint, FVector(5, 5, 5), FColor::Emerald, false, 2.0f);
+
+		// 공격 범위 표시 (데칼)
+	}
 }
