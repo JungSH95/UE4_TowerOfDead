@@ -20,6 +20,8 @@ public:
 	void PlayHardAttackMontage();
 	void JumpToAttackMontageSection(int32 NewSection);
 
+	void MoveMontage();
+
 public:
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnHardAttackEndDelegate OnHardAttackEnd;
@@ -56,9 +58,15 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsAir;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool IsEquip;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* HardAttackMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* SpecialAttackMoveMontage;
 };

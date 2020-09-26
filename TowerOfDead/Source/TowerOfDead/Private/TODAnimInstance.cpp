@@ -11,6 +11,7 @@ UTODAnimInstance::UTODAnimInstance()
 	AimYaw = 0.0f;
 
 	IsAir = false;
+	IsEquip = true;
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/PlayerComboAttack_Montage.PlayerComboAttack_Montage"));
 	if (ATTACK_MONTAGE.Succeeded())
@@ -19,6 +20,11 @@ UTODAnimInstance::UTODAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> HARDATTACK_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/PlayerHardAttack_Montage.PlayerHardAttack_Montage"));
 	if (HARDATTACK_MONTAGE.Succeeded())
 		HardAttackMontage = HARDATTACK_MONTAGE.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SPECIALATTACKMOVE_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/Player_Sprint.Player_Sprint"));
+	if (SPECIALATTACKMOVE_MONTAGE.Succeeded())
+		SpecialAttackMoveMontage = SPECIALATTACKMOVE_MONTAGE.Object;
+	
 }
 
 void UTODAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -64,6 +70,15 @@ void UTODAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
 	if (Montage_IsPlaying(AttackMontage))
 		Montage_JumpToSection(GetAttackMontageSectionName(NewSection), AttackMontage);
+}
+
+void UTODAnimInstance::MoveMontage()
+{
+	if (SpecialAttackMoveMontage != nullptr)
+	{
+		if (Montage_GetPosition(SpecialAttackMoveMontage) >= 0.99f)
+			Montage_Play(SpecialAttackMoveMontage, 1.0f);
+	}
 }
 
 void UTODAnimInstance::AnimNotify_LevelStartAnimEnd()

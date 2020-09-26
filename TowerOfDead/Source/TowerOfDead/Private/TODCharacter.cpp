@@ -290,4 +290,5 @@ void ATODCharacter::SpecialAttackEnd()
 	// 일정 시간 뒤 IsSpecialttacking를 false로 (쿨타임)
 	IsSpecialttacking = false;
 
+	Anim->MoveMontage();
 }

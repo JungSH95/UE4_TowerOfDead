@@ -25,7 +25,7 @@ public:
 		class AController* EventInstigator, AActor* DamageCauser) override;
 
 	void SetControl();
-
+	
 	void Attack();
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
