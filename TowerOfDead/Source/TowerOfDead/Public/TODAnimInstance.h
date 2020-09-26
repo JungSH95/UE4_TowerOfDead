@@ -20,8 +20,6 @@ public:
 	void PlayHardAttackMontage();
 	void JumpToAttackMontageSection(int32 NewSection);
 
-	void MoveMontage();
-
 public:
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnHardAttackEndDelegate OnHardAttackEnd;
@@ -66,7 +64,4 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* HardAttackMontage;
-
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* SpecialAttackMoveMontage;
 };
