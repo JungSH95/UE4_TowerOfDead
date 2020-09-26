@@ -1,9 +1,9 @@
 #include "TODPlayerController.h"
-#include "DrawDebugHelpers.h"
 
 ATODPlayerController::ATODPlayerController()
 {
 	isMove = true;
+	MouseSpeed = 0.5f;
 }
 
 
@@ -21,6 +21,7 @@ void ATODPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("HardAttack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::HardAttack);
 	InputComponent->BindAction(TEXT("HardAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::HardAttackEnd);
 	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::SpecialAttack);
+	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::SpecialAttackEnd);
 }
 
 void ATODPlayerController::UpDown(float AxisValue)
@@ -61,8 +62,8 @@ void ATODPlayerController::Turn(float AxisValue)
 {
 	if (isMove == false)
 		return;
-
-	AddYawInput(AxisValue);
+	
+	AddYawInput(AxisValue * MouseSpeed);
 }
 
 void ATODPlayerController::LookUp(float AxisValue)
@@ -70,7 +71,7 @@ void ATODPlayerController::LookUp(float AxisValue)
 	if (isMove == false)
 		return;
 
-	AddPitchInput(AxisValue);
+	AddPitchInput(AxisValue * MouseSpeed);
 }
 
 void ATODPlayerController::Attack()
@@ -97,22 +98,10 @@ void ATODPlayerController::HardAttackEnd()
 
 void ATODPlayerController::SpecialAttack()
 {
-	TODLOG_S(Warning);
+	CPlayer->SpecialAttack();
+}
 
-	FVector StartPos = CPlayer->Camera->GetComponentLocation();
-	FVector EndPos = (CPlayer->Camera->GetForwardVector() * 10000.0f) + StartPos;
-
-	FHitResult Hit;
-	FCollisionQueryParams TraceParams;
-	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos,
-		ECollisionChannel::ECC_GameTraceChannel3, TraceParams);
-
-	DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Orange, false, 2.0f);
-	
-	if (bHit)
-	{
-		DrawDebugBox(GetWorld(), Hit.ImpactPoint, FVector(5, 5, 5), FColor::Emerald, false, 2.0f);
-
-		// 공격 범위 표시 (데칼)
-	}
+void ATODPlayerController::SpecialAttackEnd()
+{
+	CPlayer->SpecialAttackEnd();
 }

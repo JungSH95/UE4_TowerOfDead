@@ -18,6 +18,8 @@ public:
 	bool GetIsMove() { return isMove; }
 	void SetIsMove(bool move) { isMove = move; }
 
+	void SetMouseSpeed(float speed) { MouseSpeed = speed; }
+
 private:
 	void UpDown(float AxisValue);
 	void LeftRight(float AxisValue);
@@ -28,12 +30,17 @@ private:
 	// 게이지 채워서 공격?
 	void HardAttack();
 	void HardAttackEnd();
+
 	// 무기 투척하기 (특정 위치에)
 	void SpecialAttack();
+	void SpecialAttackEnd();
 
 private:
 	ATODCharacter* CPlayer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
 	bool isMove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
+	float MouseSpeed;
 };

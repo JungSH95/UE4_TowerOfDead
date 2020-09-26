@@ -43,11 +43,17 @@ public:
 	float GetHardAttackRatio() { return CastTime / HardAttackTime; }
 	bool GetIsHardAttacking() { return IsHardAttacking; }
 
+	void SpecialAttack();
+	void SpecialAttackEnd();
+
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArm;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 	UCameraComponent* Camera;
+
+	UPROPERTY(VisibleAnywhere, Category = Attack)
+	class UDecalComponent* Decal;
 
 private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
@@ -72,6 +78,9 @@ private:
 	float HardAttackTime = 2.0f;
 	float HardAttackCoolDownTime = 5.0f;
 	FTimerHandle HardAttackTimerHandle;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsSpecialttacking;
 
 	class UTODAnimInstance* Anim;
 };

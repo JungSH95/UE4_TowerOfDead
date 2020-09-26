@@ -5,15 +5,24 @@
 #include "TODGameMode.h"
 #include "TODUserWidget.h"
 
+#include "DrawDebugHelpers.h"
+#include "Components/DecalComponent.h"
+
 ATODCharacter::ATODCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	SpringArm = CreateDefaultSubobject <USpringArmComponent>(TEXT("SPRINGARM"));
 	Camera = CreateDefaultSubobject <UCameraComponent>(TEXT("CAMERA"));
+	Decal = CreateDefaultSubobject <UDecalComponent>(TEXT("DECAL"));
 
 	SpringArm->SetupAttachment(GetCapsuleComponent());
+	SpringArm->bEnableCameraRotationLag = true;
 	Camera->SetupAttachment(SpringArm);
+
+	Decal->SetupAttachment(RootComponent);
+	Decal->SetVisibility(false);
+	Decal->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
 	SetControl();
@@ -36,6 +45,9 @@ ATODCharacter::ATODCharacter()
 	IsAttaking = false;
 	MaxCombo = 4;
 	AttackEndComboState();
+
+	IsHardAttacking = false;
+	IsSpecialttacking = false;
 }
 
 void ATODCharacter::BeginPlay()
@@ -59,6 +71,27 @@ void ATODCharacter::Tick(float DeltaTime)
 
 		if (CastTime > HardAttackTime)
 			HardAttackCheck();
+	}
+
+	if (IsSpecialttacking)
+	{
+		FVector StartPos = Camera->GetComponentLocation();
+		FVector EndPos = Camera->GetForwardVector() * 2000.0f + StartPos;
+
+		FHitResult Hit;
+		FCollisionQueryParams TraceParams;
+		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos,
+			ECollisionChannel::ECC_GameTraceChannel3, TraceParams);
+
+		//DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Orange, false, 2.0f);
+
+		if (bHit)
+		{
+			DrawDebugBox(GetWorld(), Hit.ImpactPoint, FVector(5, 5, 5), FColor::Emerald, false, 2.0f);
+			
+			Decal->SetWorldLocation(Hit.Location);
+			// 공격 범위 표시 (데칼)
+		}
 	}
 }
 
@@ -226,4 +259,35 @@ void ATODCharacter::HardAttackCoolDownTimer()
 {
 	IsHardAttacking = false;
 	CastTime = 0.0f;
+}
+
+void ATODCharacter::SpecialAttack()
+{
+	if (IsSpecialttacking)
+		return;
+
+	Decal->SetVisibility(true);
+	IsSpecialttacking = true;
+
+	// 세계 시간 느리게
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4);
+	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
+	if (playerController != nullptr)
+		playerController->SetMouseSpeed(0.3f);
+
+	//this->CustomTimeDilation = 1.0f;
+}
+
+void ATODCharacter::SpecialAttackEnd()
+{
+	// 시간 원래대로
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0);
+	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
+	if (playerController != nullptr)
+		playerController->SetMouseSpeed(0.5f);
+	Decal->SetVisibility(false);
+
+	// 일정 시간 뒤 IsSpecialttacking를 false로 (쿨타임)
+	IsSpecialttacking = false;
+
 }
