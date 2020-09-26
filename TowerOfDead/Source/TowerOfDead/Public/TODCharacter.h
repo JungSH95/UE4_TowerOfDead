@@ -41,7 +41,6 @@ public:
 
 	FOnHardAttackCastDelegate OnHardAttackCast;
 	float GetHardAttackRatio() { return CastTime / HardAttackTime; }
-	bool GetIsHardAttacking() { return IsHardAttacking; }
 
 	void SpecialAttack();
 	void SpecialAttackEnd();

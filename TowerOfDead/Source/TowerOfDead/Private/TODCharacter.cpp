@@ -213,7 +213,15 @@ void ATODCharacter::AttackEndComboState()
 
 void ATODCharacter::HardAttack()
 {
+	if (IsHardAttacking)
+		return;
+
 	Anim->PlayHardAttackMontage();
+
+	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
+	if (playerController != nullptr)
+		playerController->SetIsMove(false);
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
 	IsHardAttacking = true;
 	CastTime = 0.0f;
 
@@ -275,6 +283,8 @@ void ATODCharacter::SpecialAttack()
 	if (playerController != nullptr)
 		playerController->SetMouseSpeed(0.3f);
 
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
+	Anim->SetSpecialAttacking(true);
 	//this->CustomTimeDilation = 1.0f;
 }
 
@@ -287,6 +297,7 @@ void ATODCharacter::SpecialAttackEnd()
 		playerController->SetMouseSpeed(0.5f);
 	Decal->SetVisibility(false);
 
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
 	// 일정 시간 뒤 IsSpecialttacking를 false로 (쿨타임)
 	IsSpecialttacking = false;
 }

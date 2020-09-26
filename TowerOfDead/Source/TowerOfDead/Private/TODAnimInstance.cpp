@@ -12,6 +12,7 @@ UTODAnimInstance::UTODAnimInstance()
 
 	IsAir = false;
 	IsEquip = true;
+	IsSpecialAttacking = false;
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/PlayerComboAttack_Montage.PlayerComboAttack_Montage"));
 	if (ATTACK_MONTAGE.Succeeded())

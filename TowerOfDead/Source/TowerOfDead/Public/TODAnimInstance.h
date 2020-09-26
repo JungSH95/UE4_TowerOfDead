@@ -27,6 +27,8 @@ public:
 	UAnimMontage* GetAttackMontage() { return AttackMontage; }
 	UAnimMontage* GetHardAttackMontage() { return HardAttackMontage; }
 
+	void SetSpecialAttacking(bool isSpecialAttacking) { IsSpecialAttacking = isSpecialAttacking; }
+
 private:
 	UFUNCTION()
 	void AnimNotify_LevelStartAnimEnd();
@@ -58,6 +60,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsEquip;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool IsSpecialAttacking;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;

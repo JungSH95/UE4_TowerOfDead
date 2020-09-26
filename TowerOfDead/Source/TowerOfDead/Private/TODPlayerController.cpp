@@ -81,12 +81,7 @@ void ATODPlayerController::Attack()
 
 void ATODPlayerController::HardAttack()
 {
-	if (!CPlayer->GetIsHardAttacking())
-	{
-		isMove = false;
-		CPlayer->GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
-		CPlayer->HardAttack();
-	}
+	CPlayer->HardAttack();
 }
 
 void ATODPlayerController::HardAttackEnd()
