@@ -21,6 +21,14 @@ UTODAnimInstance::UTODAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> HARDATTACK_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/PlayerHardAttack_Montage.PlayerHardAttack_Montage"));
 	if (HARDATTACK_MONTAGE.Succeeded())
 		HardAttackMontage = HARDATTACK_MONTAGE.Object;	
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SPECIALATTACKTHROW_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/Ability_Throw_Montage.Ability_Throw_Montage"));
+	if (SPECIALATTACKTHROW_MONTAGE.Succeeded())
+		SpecialAttackThrowMontage = SPECIALATTACKTHROW_MONTAGE.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SPECIALATTACKCATCH_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/Ability_Catch_Montage.Ability_Catch_Montage"));
+	if (SPECIALATTACKCATCH_MONTAGE.Succeeded())
+		SpecialAttackCatchMontage = SPECIALATTACKCATCH_MONTAGE.Object;
 }
 
 void UTODAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -49,16 +57,35 @@ void UTODAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 void UTODAnimInstance::PlayAttackMontage()
 {
 	if (AttackMontage != nullptr)
-	{
 		Montage_Play(AttackMontage, 1.0f);
-	}
 }
 
 void UTODAnimInstance::PlayHardAttackMontage()
 {
-	if (HardAttackMontage)
-	{
+	if (HardAttackMontage != nullptr)
 		Montage_Play(HardAttackMontage, 1.0f);
+}
+
+void UTODAnimInstance::PlayThrowMontage()
+{
+	if (SpecialAttackThrowMontage != nullptr)
+	{
+		Montage_Play(SpecialAttackThrowMontage, 1.0f);
+
+		// 나중에 노티파이에서 무기를 안보이게 처리하면서 해당 플래그 false
+		IsEquip = false;
+		IsSpecialAttacking = false;
+	}
+}
+
+void UTODAnimInstance::PlayCatchMontage()
+{
+	if (SpecialAttackCatchMontage != nullptr)
+	{
+		Montage_Play(SpecialAttackCatchMontage, 1.0f);
+
+		// 나중에 노티파이에서 무기를 보이게 처리하면서 해당 플래그 true
+		IsEquip = true;
 	}
 }
 

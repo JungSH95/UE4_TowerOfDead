@@ -37,6 +37,14 @@ ATODCharacter::ATODCharacter()
 	if (KWANG_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(KWANG_ANIM.Class);
 
+	static ConstructorHelpers::FObjectFinder<UMaterial> INVISIBLEWEAPON_MATERIAL(TEXT("/Game/InvisibleMaterial.InvisibleMaterial"));
+	if (INVISIBLEWEAPON_MATERIAL.Succeeded())
+		InVisibleWeaponMaterial = INVISIBLEWEAPON_MATERIAL.Object;
+
+	static ConstructorHelpers::FObjectFinder<UMaterial> VISIBLEWEAPON_MATERIAL(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Materials/M_Kwang_Weapon.M_Kwang_Weapon"));
+	if (VISIBLEWEAPON_MATERIAL.Succeeded())
+		VisibleWeaponMaterial = VISIBLEWEAPON_MATERIAL.Object;
+	
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanJump = true;
 	GetCharacterMovement()->JumpZVelocity = 400.0f;
 
@@ -59,6 +67,9 @@ void ATODCharacter::BeginPlay()
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->BindPlayerClass(this);
+
+	//print(FString::Printf(TEXT("Materials : %d"), GetMesh()->GetNumMaterials()));
+	//GetMesh()->SetMaterial(17, InVisibleWeaponMaterial);	
 }
 
 void ATODCharacter::Tick(float DeltaTime)
@@ -95,6 +106,8 @@ void ATODCharacter::Tick(float DeltaTime)
 			// 공격 범위 표시 (데칼)
 		}
 	}
+
+	WeaponSocket = GetMesh()->GetSocketLocation("weapon_r");
 }
 
 void ATODCharacter::PostInitializeComponents()
@@ -273,6 +286,7 @@ void ATODCharacter::SetCharacterMove(bool isMoveing)
 
 void ATODCharacter::HardAttackCoolDownTimer()
 {
+	print(FString::Printf(TEXT("Can Hard Attack!!")));
 	IsCanHardAttack = true;
 	CastTime = 0.0f;
 }
@@ -303,9 +317,13 @@ void ATODCharacter::SpecialAttackEnd()
 	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
 	if (playerController != nullptr)
 		playerController->SetMouseSpeed(0.5f);
-	Decal->SetVisibility(false);
 
+	Decal->SetVisibility(false);
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
+
+	// 목표 지점에 칼 투척
+	Anim->PlayThrowMontage();
+
 	// 일정 시간 뒤 IsSpecialttacking를 false로 (쿨타임)
 	IsSpecialttacking = false;
 }

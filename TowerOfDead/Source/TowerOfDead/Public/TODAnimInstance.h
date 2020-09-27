@@ -18,6 +18,9 @@ public:
 
 	void PlayAttackMontage();
 	void PlayHardAttackMontage();
+	void PlayThrowMontage();
+	void PlayCatchMontage();
+
 	void JumpToAttackMontageSection(int32 NewSection);
 
 public:
@@ -69,4 +72,10 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* HardAttackMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* SpecialAttackThrowMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* SpecialAttackCatchMontage;
 };

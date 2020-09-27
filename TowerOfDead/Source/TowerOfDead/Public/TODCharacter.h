@@ -56,6 +56,11 @@ public:
 	class UDecalComponent* Decal;
 
 private:
+	class UTODAnimInstance* Anim;
+
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
+	FVector WeaponSocket;
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsAttaking;
 	
@@ -85,5 +90,9 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsSpecialttacking;
 
-	class UTODAnimInstance* Anim;
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
+	UMaterial* InVisibleWeaponMaterial;
+
+	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
+	UMaterial* VisibleWeaponMaterial;
 };
