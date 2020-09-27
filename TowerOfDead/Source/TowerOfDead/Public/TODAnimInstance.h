@@ -5,7 +5,7 @@
 #include "TODAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnHardAttackEndDelegate);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnHardAttackEndDelegate, bool);
 
 UCLASS()
 class TOWEROFDEAD_API UTODAnimInstance : public UAnimInstance

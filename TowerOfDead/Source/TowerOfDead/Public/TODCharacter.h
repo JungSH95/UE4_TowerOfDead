@@ -25,7 +25,10 @@ public:
 		class AController* EventInstigator, AActor* DamageCauser) override;
 
 	void SetControl();
-	
+
+	UFUNCTION()
+	void SetCharacterMove(bool isMoveing);
+
 	void Attack();
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
@@ -35,8 +38,6 @@ public:
 
 	void HardAttack();
 	void HardAttackCheck();
-	UFUNCTION()
-	void HardAttackEnd();
 	void HardAttackCoolDownTimer();
 
 	FOnHardAttackCastDelegate OnHardAttackCast;
@@ -72,6 +73,9 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsHardAttacking;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsCanHardAttack;
 
 	float CastTime = 0.0f;
 	float HardAttackTime = 2.0f;

@@ -101,5 +101,5 @@ void UTODAnimInstance::AnimNotify_HardAttackStart()
 
 void UTODAnimInstance::AnimNotify_HardAttackEnd()
 {
-	OnHardAttackEnd.Broadcast();
+	OnHardAttackEnd.Broadcast(true);
 }

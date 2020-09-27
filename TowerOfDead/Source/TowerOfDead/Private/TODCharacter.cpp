@@ -47,6 +47,8 @@ ATODCharacter::ATODCharacter()
 	AttackEndComboState();
 
 	IsHardAttacking = false;
+	IsCanHardAttack = true;
+
 	IsSpecialttacking = false;
 }
 
@@ -63,16 +65,17 @@ void ATODCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 강공격 진행중
 	if (CastTime <= HardAttackTime && IsHardAttacking)
 	{
 		CastTime += GetWorld()->DeltaTimeSeconds;
-		print(FString::Printf(TEXT("CastTime : %f"), CastTime));
 		OnHardAttackCast.Broadcast();
 
 		if (CastTime > HardAttackTime)
 			HardAttackCheck();
 	}
 
+	// 특수 공격 진행중 목표 위치 설정
 	if (IsSpecialttacking)
 	{
 		FVector StartPos = Camera->GetComponentLocation();
@@ -88,7 +91,6 @@ void ATODCharacter::Tick(float DeltaTime)
 		if (bHit)
 		{
 			DrawDebugBox(GetWorld(), Hit.ImpactPoint, FVector(5, 5, 5), FColor::Emerald, false, 2.0f);
-			
 			Decal->SetWorldLocation(Hit.Location);
 			// 공격 범위 표시 (데칼)
 		}
@@ -114,7 +116,7 @@ void ATODCharacter::PostInitializeComponents()
 			}
 		});
 		
-		Anim->OnHardAttackEnd.AddUFunction(this, FName("HardAttackEnd"));
+		Anim->OnHardAttackEnd.AddUFunction(this, FName("SetCharacterMove"));
 	}
 }
 
@@ -213,16 +215,16 @@ void ATODCharacter::AttackEndComboState()
 
 void ATODCharacter::HardAttack()
 {
-	if (IsHardAttacking)
+	// 강공격 가능 여부 확인
+	if (IsCanHardAttack == false)
 		return;
 
 	Anim->PlayHardAttackMontage();
+	SetCharacterMove(false);
 
-	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
-	if (playerController != nullptr)
-		playerController->SetIsMove(false);
-	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
 	IsHardAttacking = true;
+	IsCanHardAttack = false;
+
 	CastTime = 0.0f;
 
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
@@ -232,6 +234,12 @@ void ATODCharacter::HardAttack()
 
 void ATODCharacter::HardAttackCheck()
 {
+	// 강공격 진행중이 아니라면 판정 체크할 필요가 없음
+	if (IsHardAttacking == false)
+		return;
+
+	IsHardAttacking = false;
+
 	float percent = (CastTime / HardAttackTime);
 	
 	// 성공 : 다음 몽타주 재생
@@ -244,28 +252,28 @@ void ATODCharacter::HardAttackCheck()
 	// 실패 : 몽타주 정지 후 이동 및 점프 가능
 	else
 	{
-		HardAttackEnd();
+		SetCharacterMove(true);
 		Anim->Montage_Stop(0.2f, Anim->GetCurrentActiveMontage());
 	}
 
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
+
+	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this, &ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
 }
 
-void ATODCharacter::HardAttackEnd()
+void ATODCharacter::SetCharacterMove(bool isMoveing)
 {
 	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
 	if (playerController != nullptr)
-		playerController->SetIsMove(true);
-
-	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this, &ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
-	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
+		playerController->SetIsMove(isMoveing);
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = isMoveing;
 }
 
 void ATODCharacter::HardAttackCoolDownTimer()
 {
-	IsHardAttacking = false;
+	IsCanHardAttack = true;
 	CastTime = 0.0f;
 }
 
