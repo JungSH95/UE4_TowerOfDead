@@ -58,9 +58,6 @@ public:
 private:
 	class UTODAnimInstance* Anim;
 
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
-	FVector WeaponSocket;
-
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsAttaking;
 	

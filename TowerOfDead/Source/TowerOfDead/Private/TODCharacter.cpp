@@ -8,6 +8,8 @@
 #include "DrawDebugHelpers.h"
 #include "Components/DecalComponent.h"
 
+#include "Engine/SkeletalMeshSocket.h"
+
 ATODCharacter::ATODCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -106,8 +108,6 @@ void ATODCharacter::Tick(float DeltaTime)
 			// 공격 범위 표시 (데칼)
 		}
 	}
-
-	WeaponSocket = GetMesh()->GetSocketLocation("weapon_r");
 }
 
 void ATODCharacter::PostInitializeComponents()
