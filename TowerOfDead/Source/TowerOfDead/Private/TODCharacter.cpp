@@ -239,6 +239,10 @@ void ATODCharacter::HardAttack()
 	if (IsCanHardAttack == false)
 		return;
 
+	// 무기가 던져져 있다면 불가능
+	if (Anim->GetIsSpecialTarget())
+		return;
+
 	Anim->PlayHardAttackMontage();
 	SetCharacterMove(false);
 
