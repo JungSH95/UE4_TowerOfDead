@@ -39,6 +39,7 @@ ATODCharacter::ATODCharacter()
 	if (KWANG_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(KWANG_ANIM.Class);
 
+	/*
 	static ConstructorHelpers::FObjectFinder<UMaterial> INVISIBLEWEAPON_MATERIAL(TEXT("/Game/InvisibleMaterial.InvisibleMaterial"));
 	if (INVISIBLEWEAPON_MATERIAL.Succeeded())
 		InVisibleWeaponMaterial = INVISIBLEWEAPON_MATERIAL.Object;
@@ -46,7 +47,8 @@ ATODCharacter::ATODCharacter()
 	static ConstructorHelpers::FObjectFinder<UMaterial> VISIBLEWEAPON_MATERIAL(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Materials/M_Kwang_Weapon.M_Kwang_Weapon"));
 	if (VISIBLEWEAPON_MATERIAL.Succeeded())
 		VisibleWeaponMaterial = VISIBLEWEAPON_MATERIAL.Object;
-	
+	*/
+
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanJump = true;
 	GetCharacterMovement()->JumpZVelocity = 400.0f;
 
@@ -56,10 +58,13 @@ ATODCharacter::ATODCharacter()
 	MaxCombo = 4;
 	AttackEndComboState();
 
+	// 마우스 우클릭 (강공격)
 	IsHardAttacking = false;
 	IsCanHardAttack = true;
 
+	// R 버튼 (특수 공격)
 	IsSpecialttacking = false;
+	IsCanSpecialttack = true;
 }
 
 void ATODCharacter::BeginPlay()
@@ -103,9 +108,11 @@ void ATODCharacter::Tick(float DeltaTime)
 
 		if (bHit)
 		{
+			// 공격 범위 표시 (데칼)
 			DrawDebugBox(GetWorld(), Hit.ImpactPoint, FVector(5, 5, 5), FColor::Emerald, false, 2.0f);
 			Decal->SetWorldLocation(Hit.Location);
-			// 공격 범위 표시 (데칼)
+			
+			Anim->SetTargetPoint(Hit.Location);
 		}
 	}
 }
@@ -273,7 +280,8 @@ void ATODCharacter::HardAttackCheck()
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
 
-	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this, &ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
+	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this,
+		&ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
 }
 
 void ATODCharacter::SetCharacterMove(bool isMoveing)
@@ -293,25 +301,42 @@ void ATODCharacter::HardAttackCoolDownTimer()
 
 void ATODCharacter::SpecialAttack()
 {
-	if (IsSpecialttacking)
+	// 공격 중
+	if (IsAttaking)
 		return;
 
-	Decal->SetVisibility(true);
-	IsSpecialttacking = true;
+	// 특수 공격 가능
+	if (IsCanSpecialttack)
+	{
+		Decal->SetVisibility(true);
+		IsSpecialttacking = true;
+		IsCanSpecialttack = false;
 
-	// 세계 시간 느리게
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4);
-	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
-	if (playerController != nullptr)
-		playerController->SetMouseSpeed(0.3f);
+		// 세계 시간 느리게
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4);
+		ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
+		if (playerController != nullptr)
+			playerController->SetMouseSpeed(0.3f);
 
-	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
-	Anim->SetSpecialAttacking(true);
-	//this->CustomTimeDilation = 1.0f;
+		GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
+		Anim->SetSpecialAttacking(true);
+		//this->CustomTimeDilation = 1.0f;
+	}
+	// 특수 공격 불가능 (칼을 던지고 있는 상태, 쿨타임 진행 중)
+	else
+	{
+		// 칼을 던지고 있는 상태일 경우
+		if (Anim->GetIsSpecialTarget())
+			SpecialAttackCatch();
+	}
 }
 
 void ATODCharacter::SpecialAttackEnd()
 {
+	// 특수 공격중이 아닌 경우
+	if (IsSpecialttacking == false)
+		return;
+
 	// 시간 원래대로
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0);
 	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
@@ -321,9 +346,23 @@ void ATODCharacter::SpecialAttackEnd()
 	Decal->SetVisibility(false);
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
 
+	IsSpecialttacking = false;
+
 	// 목표 지점에 칼 투척
 	Anim->PlayThrowMontage();
+}
 
-	// 일정 시간 뒤 IsSpecialttacking를 false로 (쿨타임)
-	IsSpecialttacking = false;
+void ATODCharacter::SpecialAttackCatch()
+{
+	// 무기 받기
+	Anim->PlayCatchMontage();
+
+	// 쿨타임 진행
+	GetWorldTimerManager().SetTimer(SpecialAttackTimerHandle, this,
+		&ATODCharacter::SpecialAttackCoolDownTimer, SpecialAttackCoolDownTime, false);
+}
+
+void ATODCharacter::SpecialAttackCoolDownTimer()
+{
+	IsCanSpecialttack = true;
 }

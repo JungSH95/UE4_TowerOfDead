@@ -45,6 +45,8 @@ public:
 
 	void SpecialAttack();
 	void SpecialAttackEnd();
+	void SpecialAttackCatch();
+	void SpecialAttackCoolDownTimer();
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArm;
@@ -87,9 +89,17 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsSpecialttacking;
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsCanSpecialttack;
+
+	float SpecialAttackCoolDownTime = 5.0f;
+	FTimerHandle SpecialAttackTimerHandle;
+
+	/*
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
 	UMaterial* InVisibleWeaponMaterial;
 
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
 	UMaterial* VisibleWeaponMaterial;
+	*/
 };

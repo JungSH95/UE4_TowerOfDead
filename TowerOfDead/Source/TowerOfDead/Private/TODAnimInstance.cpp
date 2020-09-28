@@ -13,6 +13,7 @@ UTODAnimInstance::UTODAnimInstance()
 	IsAir = false;
 	IsEquip = true;
 	IsSpecialAttacking = false;
+	IsSpecialTarget = false;
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Animations/PlayerComboAttack_Montage.PlayerComboAttack_Montage"));
 	if (ATTACK_MONTAGE.Succeeded())
@@ -72,7 +73,6 @@ void UTODAnimInstance::PlayThrowMontage()
 	{
 		Montage_Play(SpecialAttackThrowMontage, 1.0f);
 
-		// 나중에 노티파이에서 무기를 안보이게 처리하면서 해당 플래그 false
 		IsEquip = false;
 		IsSpecialAttacking = false;
 	}
@@ -84,8 +84,8 @@ void UTODAnimInstance::PlayCatchMontage()
 	{
 		Montage_Play(SpecialAttackCatchMontage, 1.0f);
 
-		// 나중에 노티파이에서 무기를 보이게 처리하면서 해당 플래그 true
 		IsEquip = true;
+		IsSpecialTarget = false;
 	}
 }
 
@@ -129,4 +129,9 @@ void UTODAnimInstance::AnimNotify_HardAttackStart()
 void UTODAnimInstance::AnimNotify_HardAttackEnd()
 {
 	OnHardAttackEnd.Broadcast(true);
+}
+
+void UTODAnimInstance::AnimNotify_SpecialTargeting()
+{
+	IsSpecialTarget = true;
 }

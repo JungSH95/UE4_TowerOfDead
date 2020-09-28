@@ -31,6 +31,8 @@ public:
 	UAnimMontage* GetHardAttackMontage() { return HardAttackMontage; }
 
 	void SetSpecialAttacking(bool isSpecialAttacking) { IsSpecialAttacking = isSpecialAttacking; }
+	bool GetIsSpecialTarget() {	return IsSpecialTarget; }
+	void SetTargetPoint(FVector pos) { TargetPoint = pos; TargetPoint.Z = 0.0f; }
 
 private:
 	UFUNCTION()
@@ -44,6 +46,9 @@ private:
 	void AnimNotify_HardAttackStart();
 	UFUNCTION()
 	void AnimNotify_HardAttackEnd();
+
+	UFUNCTION()
+	void AnimNotify_SpecialTargeting();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -75,6 +80,12 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* SpecialAttackThrowMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsSpecialTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	FVector TargetPoint;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* SpecialAttackCatchMontage;
