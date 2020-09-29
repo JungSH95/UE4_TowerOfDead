@@ -47,6 +47,7 @@ public:
 	void SpecialAttack();
 	void SpecialAttackEnd();
 	void SpecialAttackCatch();
+	void SpecialAttackCatchTimer();
 	void SpecialAttackCoolDownTimer();
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -100,7 +101,9 @@ private:
 	bool IsCanSpecialCatch;
 
 	float SpecialAttackCoolDownTime = 5.0f;
+
 	FTimerHandle SpecialAttackTimerHandle;
+	FTimerHandle SpecialCatchTimerHandle;
 
 	bool IsWeaponFall = false;
 	float deltaTime = 0.0f;

@@ -139,7 +139,9 @@ void ATODCharacter::Tick(float DeltaTime)
 
 			deltaTime = 0.0f;
 			IsWeaponFall = false;
-			IsCanSpecialCatch = true;
+
+			GetWorldTimerManager().SetTimer(SpecialCatchTimerHandle, this,
+				&ATODCharacter::SpecialAttackCatchTimer, 1.0f, false);
 		}
 
 		Anim->SetTargetPoint(StartPos);
@@ -349,8 +351,16 @@ void ATODCharacter::HardAttackHitCheck()
 			ATODEnemy* Enemy = Cast<ATODEnemy>(OverlapActor.GetActor());
 			if (Enemy != nullptr)
 			{
-				DrawDebugLine(GetWorld(), GetActorLocation(), Enemy->GetActorLocation(),
-					FColor::Blue, false, 5.0f);
+				float Angle = FVector::DotProduct(GetActorForwardVector(), Enemy->GetActorLocation() - GetActorLocation());
+				// 정면에 있는 Enemy에게만 공격 처리
+				if (Angle >= 0.0f)
+				{
+					FDamageEvent DamageEvent;
+					Enemy->TakeDamage(50.0f, DamageEvent, GetController(), this);
+
+					DrawDebugLine(GetWorld(), GetActorLocation(), Enemy->GetActorLocation(),
+						FColor::Blue, false, 5.0f);
+				}
 			}
 		}
 	}
@@ -375,6 +385,7 @@ void ATODCharacter::SpecialAttack()
 		Decal->SetVisibility(true);
 		IsSpecialAttacking = true;
 		IsCanSpecialAttack = false;
+		IsCanSpecialCatch = false;
 
 		// 세계 시간 느리게
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4);
@@ -389,8 +400,8 @@ void ATODCharacter::SpecialAttack()
 	// 특수 공격 불가능 (칼을 던지고 있는 상태, 쿨타임 진행 중)
 	else
 	{
-		// 칼을 던지고 있는 상태일 경우
-		if (Anim->GetIsSpecialTarget())
+		// 칼을 던지고 있는 상태일 경우 & Catch가 가능할 경우
+		if (Anim->GetIsSpecialTarget() && IsCanSpecialCatch)
 			SpecialAttackCatch();
 	}
 }
@@ -424,6 +435,11 @@ void ATODCharacter::SpecialAttackCatch()
 	// 쿨타임 진행
 	GetWorldTimerManager().SetTimer(SpecialAttackTimerHandle, this,
 		&ATODCharacter::SpecialAttackCoolDownTimer, SpecialAttackCoolDownTime, false);
+}
+
+void ATODCharacter::SpecialAttackCatchTimer()
+{
+	IsCanSpecialCatch = true;
 }
 
 void ATODCharacter::SpecialAttackCoolDownTimer()

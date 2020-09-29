@@ -69,7 +69,7 @@ float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 	class AController* EventInstigator, AActor* DamageCauser)
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
+	TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 	return FinalDamage;
 }
 
