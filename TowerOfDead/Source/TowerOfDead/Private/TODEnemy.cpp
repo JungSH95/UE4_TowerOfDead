@@ -13,6 +13,8 @@ ATODEnemy::ATODEnemy()
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODEnemy"));
 	
+	GetMesh()->bReceivesDecals = false;
+
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);

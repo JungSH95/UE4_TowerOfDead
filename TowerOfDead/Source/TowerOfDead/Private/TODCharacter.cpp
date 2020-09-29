@@ -50,6 +50,8 @@ ATODCharacter::ATODCharacter()
 		VisibleWeaponMaterial = VISIBLEWEAPON_MATERIAL.Object;
 	*/
 
+	GetMesh()->bReceivesDecals = false;
+
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanJump = true;
 	GetCharacterMovement()->JumpZVelocity = 400.0f;
 
@@ -116,7 +118,9 @@ void ATODCharacter::Tick(float DeltaTime)
 			Anim->SetTargetPoint(Point);
 			IsWeaponFall = true;
 
-			SwordEffect->SetWorldLocation(Hit.Location);
+			FVector EffectPoint = Hit.Location;
+			EffectPoint.Z = 20.0f;
+			SwordEffect->SetWorldLocation(EffectPoint);
 		}
 	}
 
@@ -209,12 +213,6 @@ void ATODCharacter::Attack()
 	// 무기가 던져져 있다면 불가능
 	if (Anim->GetIsSpecialTarget())
 		return;
-
-	if (GetMovementComponent()->IsFalling())
-	{
-		// 공중 공격 따로 처리
-		return;
-	}
 
 	if (IsAttaking)
 	{
