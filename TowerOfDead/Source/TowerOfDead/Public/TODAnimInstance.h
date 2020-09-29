@@ -32,7 +32,9 @@ public:
 
 	void SetSpecialAttacking(bool isSpecialAttacking) { IsSpecialAttacking = isSpecialAttacking; }
 	bool GetIsSpecialTarget() {	return IsSpecialTarget; }
-	void SetTargetPoint(FVector pos) { TargetPoint = pos; TargetPoint.Z = 0.0f; }
+
+	void SetTargetPoint(FVector pos) { TargetPoint = pos; }
+	FVector GetTargetPoint() { return TargetPoint; }
 
 private:
 	UFUNCTION()

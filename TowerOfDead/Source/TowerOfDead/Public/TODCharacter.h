@@ -57,6 +57,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Attack)
 	class UDecalComponent* Decal;
 
+	UPROPERTY(VisibleAnywhere, Category = Effect)
+	UParticleSystemComponent* SwordEffect;
+
 private:
 	class UTODAnimInstance* Anim;
 
@@ -94,6 +97,9 @@ private:
 
 	float SpecialAttackCoolDownTime = 5.0f;
 	FTimerHandle SpecialAttackTimerHandle;
+
+	bool IsWeaponFall = false;
+	float deltaTime = 0.0f;
 
 	/*
 	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))

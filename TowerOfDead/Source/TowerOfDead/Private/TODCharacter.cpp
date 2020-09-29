@@ -17,6 +17,7 @@ ATODCharacter::ATODCharacter()
 	SpringArm = CreateDefaultSubobject <USpringArmComponent>(TEXT("SPRINGARM"));
 	Camera = CreateDefaultSubobject <UCameraComponent>(TEXT("CAMERA"));
 	Decal = CreateDefaultSubobject <UDecalComponent>(TEXT("DECAL"));
+	SwordEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
 
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->bEnableCameraRotationLag = true;
@@ -104,16 +105,39 @@ void ATODCharacter::Tick(float DeltaTime)
 		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos,
 			ECollisionChannel::ECC_GameTraceChannel3, TraceParams);
 
-		//DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Orange, false, 2.0f);
-
 		if (bHit)
 		{
 			// 공격 범위 표시 (데칼)
 			DrawDebugBox(GetWorld(), Hit.ImpactPoint, FVector(5, 5, 5), FColor::Emerald, false, 2.0f);
 			Decal->SetWorldLocation(Hit.Location);
 			
-			Anim->SetTargetPoint(Hit.Location);
+			FVector Point = Hit.Location;
+			Point.Z = 2000.0f;
+			Anim->SetTargetPoint(Point);
+			IsWeaponFall = true;
+
+			SwordEffect->SetWorldLocation(Hit.Location);
 		}
+	}
+
+	if (IsWeaponFall)
+	{
+		deltaTime += GetWorld()->GetDeltaSeconds();
+
+		FVector StartPos = Anim->GetTargetPoint();
+		StartPos.Z = StartPos.Z - (deltaTime * 15.0f);
+		FVector TargetPos = Anim->GetTargetPoint();
+		TargetPos.Z = 100.0f;
+
+		if (StartPos.Z <= 100.0f)
+		{
+			SwordEffect->Activate(true);
+
+			deltaTime = 0.0f;
+			IsWeaponFall = false;
+		}
+
+		Anim->SetTargetPoint(StartPos);
 	}
 }
 
@@ -180,6 +204,10 @@ void ATODCharacter::SetControl()
 void ATODCharacter::Attack()
 {
 	if (Anim == nullptr)
+		return;
+
+	// 무기가 던져져 있다면 불가능
+	if (Anim->GetIsSpecialTarget())
 		return;
 
 	if (GetMovementComponent()->IsFalling())
