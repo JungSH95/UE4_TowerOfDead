@@ -38,6 +38,7 @@ public:
 
 	void HardAttack();
 	void HardAttackCheck();
+	void HardAttackHitCheck();
 	void HardAttackCoolDownTimer();
 
 	FOnHardAttackCastDelegate OnHardAttackCast;
@@ -90,10 +91,13 @@ private:
 	FTimerHandle HardAttackTimerHandle;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsSpecialttacking;
+	bool IsSpecialAttacking;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsCanSpecialttack;
+	bool IsCanSpecialAttack;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsCanSpecialCatch;
 
 	float SpecialAttackCoolDownTime = 5.0f;
 	FTimerHandle SpecialAttackTimerHandle;

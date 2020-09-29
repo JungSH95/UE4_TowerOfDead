@@ -5,6 +5,7 @@
 #include "TODAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnHardAttackHitCheckElegate);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHardAttackEndDelegate, bool);
 
 UCLASS()
@@ -25,6 +26,7 @@ public:
 
 public:
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
+	FOnHardAttackHitCheckElegate OnHardAttackHitCheck;
 	FOnHardAttackEndDelegate OnHardAttackEnd;
 
 	UAnimMontage* GetAttackMontage() { return AttackMontage; }
@@ -48,6 +50,8 @@ private:
 	void AnimNotify_HardAttackStart();
 	UFUNCTION()
 	void AnimNotify_HardAttackEnd();
+	UFUNCTION()
+	void AnimNotify_HardAttackHitCheck();
 
 	UFUNCTION()
 	void AnimNotify_SpecialTargeting();

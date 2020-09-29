@@ -131,6 +131,11 @@ void UTODAnimInstance::AnimNotify_HardAttackEnd()
 	OnHardAttackEnd.Broadcast(true);
 }
 
+void UTODAnimInstance::AnimNotify_HardAttackHitCheck()
+{
+	OnHardAttackHitCheck.Broadcast();
+}
+
 void UTODAnimInstance::AnimNotify_SpecialTargeting()
 {
 	IsSpecialTarget = true;

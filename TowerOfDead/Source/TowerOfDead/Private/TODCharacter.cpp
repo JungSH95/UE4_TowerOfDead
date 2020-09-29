@@ -1,13 +1,12 @@
 #include "TODCharacter.h"
 #include "TODAnimInstance.h"
 #include "TODPlayerController.h"
-
 #include "TODGameMode.h"
 #include "TODUserWidget.h"
-
+#include "TODEnemy.h"
 #include "DrawDebugHelpers.h"
 #include "Components/DecalComponent.h"
-
+#include "Kismet/KismetSystemLibrary.h"
 #include "Engine/SkeletalMeshSocket.h"
 
 ATODCharacter::ATODCharacter()
@@ -66,8 +65,9 @@ ATODCharacter::ATODCharacter()
 	IsCanHardAttack = true;
 
 	// R 버튼 (특수 공격)
-	IsSpecialttacking = false;
-	IsCanSpecialttack = true;
+	IsSpecialAttacking = false;
+	IsCanSpecialAttack = true;
+	IsCanSpecialCatch = false;
 }
 
 void ATODCharacter::BeginPlay()
@@ -97,7 +97,7 @@ void ATODCharacter::Tick(float DeltaTime)
 	}
 
 	// 특수 공격 진행중 목표 위치 설정
-	if (IsSpecialttacking)
+	if (IsSpecialAttacking)
 	{
 		FVector StartPos = Camera->GetComponentLocation();
 		FVector EndPos = Camera->GetForwardVector() * 2000.0f + StartPos;
@@ -139,6 +139,7 @@ void ATODCharacter::Tick(float DeltaTime)
 
 			deltaTime = 0.0f;
 			IsWeaponFall = false;
+			IsCanSpecialCatch = true;
 		}
 
 		Anim->SetTargetPoint(StartPos);
@@ -165,6 +166,7 @@ void ATODCharacter::PostInitializeComponents()
 		});
 		
 		Anim->OnHardAttackEnd.AddUFunction(this, FName("SetCharacterMove"));
+		Anim->OnHardAttackHitCheck.AddUObject(this, &ATODCharacter::HardAttackHitCheck);
 	}
 }
 
@@ -203,6 +205,14 @@ void ATODCharacter::SetControl()
 
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+}
+
+void ATODCharacter::SetCharacterMove(bool isMoveing)
+{
+	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
+	if (playerController != nullptr)
+		playerController->SetIsMove(isMoveing);
+	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = isMoveing;
 }
 
 void ATODCharacter::Attack()
@@ -314,12 +324,36 @@ void ATODCharacter::HardAttackCheck()
 		&ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
 }
 
-void ATODCharacter::SetCharacterMove(bool isMoveing)
+void ATODCharacter::HardAttackHitCheck()
 {
-	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
-	if (playerController != nullptr)
-		playerController->SetIsMove(isMoveing);
-	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = isMoveing;
+	TODLOG_S(Warning);
+
+	TArray<FOverlapResult> OverlapActors;
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapActors,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(400.0f),
+		CollisionQueryParam
+	);
+
+	DrawDebugSphere(GetWorld(), GetActorLocation(), 400.0f, 16, FColor::Red, false, 10.0f);
+
+	// HardAttack Channels (ECC_GameTraceChannel4)에 걸리는 오브젝트
+	if (bResult)
+	{
+		for (auto OverlapActor : OverlapActors)
+		{
+			ATODEnemy* Enemy = Cast<ATODEnemy>(OverlapActor.GetActor());
+			if (Enemy != nullptr)
+			{
+				DrawDebugLine(GetWorld(), GetActorLocation(), Enemy->GetActorLocation(),
+					FColor::Blue, false, 5.0f);
+			}
+		}
+	}
 }
 
 void ATODCharacter::HardAttackCoolDownTimer()
@@ -336,11 +370,11 @@ void ATODCharacter::SpecialAttack()
 		return;
 
 	// 특수 공격 가능
-	if (IsCanSpecialttack)
+	if (IsCanSpecialAttack)
 	{
 		Decal->SetVisibility(true);
-		IsSpecialttacking = true;
-		IsCanSpecialttack = false;
+		IsSpecialAttacking = true;
+		IsCanSpecialAttack = false;
 
 		// 세계 시간 느리게
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4);
@@ -364,7 +398,7 @@ void ATODCharacter::SpecialAttack()
 void ATODCharacter::SpecialAttackEnd()
 {
 	// 특수 공격중이 아닌 경우
-	if (IsSpecialttacking == false)
+	if (IsSpecialAttacking == false)
 		return;
 
 	// 시간 원래대로
@@ -376,7 +410,7 @@ void ATODCharacter::SpecialAttackEnd()
 	Decal->SetVisibility(false);
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
 
-	IsSpecialttacking = false;
+	IsSpecialAttacking = false;
 
 	// 목표 지점에 칼 투척
 	Anim->PlayThrowMontage();
@@ -394,5 +428,5 @@ void ATODCharacter::SpecialAttackCatch()
 
 void ATODCharacter::SpecialAttackCoolDownTimer()
 {
-	IsCanSpecialttack = true;
+	IsCanSpecialAttack = true;
 }
