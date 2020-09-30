@@ -36,6 +36,8 @@ public:
 	void AttackStartComboState();
 	void AttackEndComboState();
 
+	void SetCanAttackDamage(bool bCan){ WeaponTrigger->SetGenerateOverlapEvents(bCan); }
+
 	void HardAttack();
 	void HardAttackCheck();
 	void HardAttackCoolDownTimer();
@@ -51,6 +53,11 @@ public:
 
 	void HardAndSpecialAttackHitCheck(int32 AttackType, float Range);
 
+	UFUNCTION()
+	void OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
+		class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArm;
 
@@ -59,6 +66,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Attack)
 	class UDecalComponent* Decal;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Weapon)
+	class UCapsuleComponent* WeaponTrigger;
 
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystemComponent* SwordEffect;

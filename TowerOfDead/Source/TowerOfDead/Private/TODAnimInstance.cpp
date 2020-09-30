@@ -113,6 +113,28 @@ void UTODAnimInstance::AnimNotify_NextAttackCheck()
 	OnNextAttackCheck.Broadcast();
 }
 
+void UTODAnimInstance::AnimNotify_AttackHitCheckStart()
+{
+	auto PlayerPawn = TryGetPawnOwner();
+	if (::IsValid(PlayerPawn))
+	{
+		ATODCharacter* Player = Cast<ATODCharacter>(PlayerPawn);
+		if (Player != nullptr)
+			Player->SetCanAttackDamage(true);
+	}
+}
+
+void UTODAnimInstance::AnimNotify_AttackHitCheckEnd()
+{
+	auto PlayerPawn = TryGetPawnOwner();
+	if (::IsValid(PlayerPawn))
+	{
+		ATODCharacter* Player = Cast<ATODCharacter>(PlayerPawn);
+		if (Player != nullptr)
+			Player->SetCanAttackDamage(false);
+	}
+}
+
 FName UTODAnimInstance::GetAttackMontageSectionName(int32 Section)
 {
 	if (FMath::IsWithinInclusive<int32>(Section, 1, 4))

@@ -44,6 +44,11 @@ private:
 	UFUNCTION()
 	void AnimNotify_NextAttackCheck();
 
+	UFUNCTION()
+	void AnimNotify_AttackHitCheckStart();
+	UFUNCTION()
+	void AnimNotify_AttackHitCheckEnd();
+
 	FName GetAttackMontageSectionName(int32 Section);
 
 	UFUNCTION()

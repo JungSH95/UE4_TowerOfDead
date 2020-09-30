@@ -16,6 +16,7 @@ ATODCharacter::ATODCharacter()
 	SpringArm = CreateDefaultSubobject <USpringArmComponent>(TEXT("SPRINGARM"));
 	Camera = CreateDefaultSubobject <UCameraComponent>(TEXT("CAMERA"));
 	Decal = CreateDefaultSubobject <UDecalComponent>(TEXT("DECAL"));
+	WeaponTrigger = CreateDefaultSubobject<UCapsuleComponent>(TEXT("WeaponTrigger"));
 	SwordEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
 
 	SpringArm->SetupAttachment(GetCapsuleComponent());
@@ -25,6 +26,9 @@ ATODCharacter::ATODCharacter()
 	Decal->SetupAttachment(RootComponent);
 	Decal->SetVisibility(false);
 	Decal->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+
+	WeaponTrigger->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FName(TEXT("Weapon")));
+	WeaponTrigger->SetGenerateOverlapEvents(false);
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
 	SetControl();
@@ -172,6 +176,8 @@ void ATODCharacter::PostInitializeComponents()
 		Anim->OnHardAttackEnd.AddUFunction(this, FName("SetCharacterMove"));
 		Anim->OnHardAttackHitCheck.AddUObject(this, &ATODCharacter::HardAndSpecialAttackHitCheck);
 	}
+
+	WeaponTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODCharacter::OnWewaponTriggerOverlap);
 }
 
 void ATODCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -476,6 +482,22 @@ void ATODCharacter::HardAndSpecialAttackHitCheck(int32 AttackType, float Range)
 						FColor::Blue, false, 5.0f);
 				}
 			}
+		}
+	}
+}
+
+void ATODCharacter::OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
+	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,	bool bFromSweep, const FHitResult& SweepResult)
+{
+	ATODEnemy* Enemy = Cast<ATODEnemy>(OtherActor);
+	if (Enemy != nullptr)
+	{
+		// 한 공격에 한 번만 적용
+		if (CurrentCombo != Enemy->OldPlayerAttackNumber)
+		{
+			FDamageEvent DamageEvent;
+			Enemy->TakeDamage(50.0f, DamageEvent, GetController(), this);
+			Enemy->OldPlayerAttackNumber = CurrentCombo;
 		}
 	}
 }
