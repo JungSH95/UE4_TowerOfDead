@@ -5,7 +5,7 @@
 #include "TODAnimInstance.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnHardAttackHitCheckElegate);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHardAttackHitCheckElegate, int32, float);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnHardAttackEndDelegate, bool);
 
 UCLASS()

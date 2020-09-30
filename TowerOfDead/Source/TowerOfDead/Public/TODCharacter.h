@@ -38,17 +38,18 @@ public:
 
 	void HardAttack();
 	void HardAttackCheck();
-	void HardAttackHitCheck();
 	void HardAttackCoolDownTimer();
 
 	FOnHardAttackCastDelegate OnHardAttackCast;
 	float GetHardAttackRatio() { return CastTime / HardAttackTime; }
 
 	void SpecialAttack();
-	void SpecialAttackEnd();
 	void SpecialAttackCatch();
+	void SpecialAttackEnd();
 	void SpecialAttackCatchTimer();
 	void SpecialAttackCoolDownTimer();
+
+	void HardAndSpecialAttackHitCheck(int32 AttackType, float Range);
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArm;

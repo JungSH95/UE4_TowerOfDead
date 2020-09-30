@@ -140,6 +140,8 @@ void ATODCharacter::Tick(float DeltaTime)
 			deltaTime = 0.0f;
 			IsWeaponFall = false;
 
+			HardAndSpecialAttackHitCheck(1, 200.0f);
+
 			GetWorldTimerManager().SetTimer(SpecialCatchTimerHandle, this,
 				&ATODCharacter::SpecialAttackCatchTimer, 1.0f, false);
 		}
@@ -168,7 +170,7 @@ void ATODCharacter::PostInitializeComponents()
 		});
 		
 		Anim->OnHardAttackEnd.AddUFunction(this, FName("SetCharacterMove"));
-		Anim->OnHardAttackHitCheck.AddUObject(this, &ATODCharacter::HardAttackHitCheck);
+		Anim->OnHardAttackHitCheck.AddUObject(this, &ATODCharacter::HardAndSpecialAttackHitCheck);
 	}
 }
 
@@ -326,46 +328,6 @@ void ATODCharacter::HardAttackCheck()
 		&ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
 }
 
-void ATODCharacter::HardAttackHitCheck()
-{
-	TODLOG_S(Warning);
-
-	TArray<FOverlapResult> OverlapActors;
-	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
-	bool bResult = GetWorld()->OverlapMultiByChannel(
-		OverlapActors,
-		GetActorLocation(),
-		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel4,
-		FCollisionShape::MakeSphere(400.0f),
-		CollisionQueryParam
-	);
-
-	DrawDebugSphere(GetWorld(), GetActorLocation(), 400.0f, 16, FColor::Red, false, 10.0f);
-
-	// HardAttack Channels (ECC_GameTraceChannel4)에 걸리는 오브젝트
-	if (bResult)
-	{
-		for (auto OverlapActor : OverlapActors)
-		{
-			ATODEnemy* Enemy = Cast<ATODEnemy>(OverlapActor.GetActor());
-			if (Enemy != nullptr)
-			{
-				float Angle = FVector::DotProduct(GetActorForwardVector(), Enemy->GetActorLocation() - GetActorLocation());
-				// 정면에 있는 Enemy에게만 공격 처리
-				if (Angle >= 0.0f)
-				{
-					FDamageEvent DamageEvent;
-					Enemy->TakeDamage(50.0f, DamageEvent, GetController(), this);
-
-					DrawDebugLine(GetWorld(), GetActorLocation(), Enemy->GetActorLocation(),
-						FColor::Blue, false, 5.0f);
-				}
-			}
-		}
-	}
-}
-
 void ATODCharacter::HardAttackCoolDownTimer()
 {
 	print(FString::Printf(TEXT("Can Hard Attack!!")));
@@ -445,4 +407,75 @@ void ATODCharacter::SpecialAttackCatchTimer()
 void ATODCharacter::SpecialAttackCoolDownTimer()
 {
 	IsCanSpecialAttack = true;
+}
+
+void ATODCharacter::HardAndSpecialAttackHitCheck(int32 AttackType, float Range)
+{
+	// Attack Type Check
+	FVector VTarget;
+	switch (AttackType)
+	{
+	// Hard Attack
+	case 0:
+		VTarget = GetActorLocation();
+		break;
+	// Special Attack
+	case 1:
+		VTarget = Anim->GetTargetPoint();
+		break;
+	default:
+		VTarget = GetActorLocation();
+		break;
+	}
+
+	// 해당 범위 몬스터 얻어오기
+	TArray<FOverlapResult> OverlapActors;
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapActors,
+		VTarget,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(Range),
+		CollisionQueryParam
+	);
+
+	DrawDebugSphere(GetWorld(), VTarget, Range, 16, FColor::Red, false, 10.0f);
+
+	// Hard/Special Attack Channels (ECC_GameTraceChannel4)에 걸리는 오브젝트
+	if (bResult)
+	{
+		for (auto OverlapActor : OverlapActors)
+		{
+			ATODEnemy* Enemy = Cast<ATODEnemy>(OverlapActor.GetActor());
+			if (Enemy != nullptr)
+			{
+				bool isCanDamage = false;
+
+				// Hard Attack : 전방 180도의 범위에 있는 적 공격
+				if (AttackType == 0)
+				{
+					float Angle = FVector::DotProduct(GetActorForwardVector(), Enemy->GetActorLocation() - GetActorLocation());
+					
+					// 정면(180도)에 있는 Enemy에게만 공격 처리
+					if (Angle >= 0.0f)
+						isCanDamage = true;
+				}
+				else if (AttackType == 1)
+				{
+					isCanDamage = true;
+				}
+
+				// 공격이 가능한 Enemy
+				if (isCanDamage)
+				{
+					FDamageEvent DamageEvent;
+					Enemy->TakeDamage(50.0f, DamageEvent, GetController(), this);
+
+					DrawDebugLine(GetWorld(), VTarget, Enemy->GetActorLocation(),
+						FColor::Blue, false, 5.0f);
+				}
+			}
+		}
+	}
 }
