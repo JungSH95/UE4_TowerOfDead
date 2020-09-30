@@ -14,6 +14,7 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	virtual void PlayAttackMontage() PURE_VIRTUAL(UTODAIAnimInstance::PlayAttackMontage, return;);
+	virtual bool PlayHitReactMontage(int dir) PURE_VIRTUAL(UTODAIAnimInstance::PlayHitReactMontage, return false;);
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack)
 	UAnimMontage* NowMontage;

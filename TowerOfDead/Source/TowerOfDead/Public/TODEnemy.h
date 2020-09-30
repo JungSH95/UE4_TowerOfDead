@@ -41,8 +41,6 @@ public:
 
 	bool GetIsDead() { return IsDead; }
 
-	int32 OldPlayerAttackNumber = 0;
-
 private:
 	UFUNCTION()
 	void OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,

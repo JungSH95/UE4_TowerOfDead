@@ -492,12 +492,7 @@ void ATODCharacter::OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, 
 	ATODEnemy* Enemy = Cast<ATODEnemy>(OtherActor);
 	if (Enemy != nullptr)
 	{
-		// 한 공격에 한 번만 적용
-		if (CurrentCombo != Enemy->OldPlayerAttackNumber)
-		{
-			FDamageEvent DamageEvent;
-			Enemy->TakeDamage(50.0f, DamageEvent, GetController(), this);
-			Enemy->OldPlayerAttackNumber = CurrentCombo;
-		}
+		FDamageEvent DamageEvent;
+		Enemy->TakeDamage(50.0f, DamageEvent, GetController(), this);
 	}
 }

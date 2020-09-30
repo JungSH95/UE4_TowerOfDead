@@ -69,7 +69,16 @@ float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 	class AController* EventInstigator, AActor* DamageCauser)
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+
+	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance != nullptr)
+	{
+		if (AnimInstance->PlayHitReactMontage(0))
+		{
+			TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+		}
+	}
+
 	return FinalDamage;
 }
 
@@ -92,14 +101,18 @@ void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 	if (AnimInstance == nullptr)
 		return;
 
-	ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
-	if (EnemyAI == nullptr)
-		return;
+	// NowMontage에는 공격 몽타주가 저장되어 있다.
+	if (AnimInstance->NowMontage == Montage)
+	{
+		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
+		if (EnemyAI == nullptr)
+			return;
 
-	EnemyAI->SetIsAttaking(false);
-	AnimInstance->NowMontage = nullptr;
+		EnemyAI->SetIsAttaking(false);
+		AnimInstance->NowMontage = nullptr;
 
-	GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTime, NormalAttackCoolDownTime, false);
+		GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTime, NormalAttackCoolDownTime, false);
+	}
 }
 
 void ATODEnemy::OnAttackCheck()

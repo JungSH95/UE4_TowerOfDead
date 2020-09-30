@@ -14,8 +14,12 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	void PlayAttackMontage();
+	bool PlayHitReactMontage(int dir);
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	TArray<UAnimMontage*> ArrAttackMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	TArray<UAnimMontage*> ArrHitReactMontage;
 };

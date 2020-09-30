@@ -9,6 +9,10 @@ UTODMeleeAIAnimInstance::UTODMeleeAIAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE_2(TEXT("/Game/ParagonMinions/Characters/Minions/Down_Minions/Animations/Melee/Montage/Minion_Lane_Core_Attack2_Montage.Minion_Lane_Core_Attack2_Montage"));
 	if (ATTACK_MONTAGE_2.Succeeded())
 		ArrAttackMontage.Add(ATTACK_MONTAGE_2.Object);
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> HITREACT_LEFT_MONTAGE(TEXT("/Game/ParagonMinions/Characters/Minions/Down_Minions/Animations/Melee/Montage/Minion_Lane_Core_HitReact_Left_Montage.Minion_Lane_Core_HitReact_Left_Montage"));
+	if (HITREACT_LEFT_MONTAGE.Succeeded())
+		ArrHitReactMontage.Add(HITREACT_LEFT_MONTAGE.Object);
 }
 
 void UTODMeleeAIAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -25,12 +29,15 @@ void UTODMeleeAIAnimInstance::PlayAttackMontage()
 		NowMontage = ArrAttackMontage[MontageRandomNumber];
 		Montage_Play(NowMontage, 0.8f);
 	}
+}
 
-	/*
-	else if (!Montage_IsPlaying(NowMontage))
+bool UTODMeleeAIAnimInstance::PlayHitReactMontage(int dir)
+{
+	if (!Montage_IsPlaying(ArrHitReactMontage[dir]))
 	{
-		NowMontage = ArrAttackMontage[0];
-		Montage_Play(NowMontage, 1.0f);
+		Montage_Play(ArrHitReactMontage[dir], 1.0f);
+		return true;
 	}
-	*/
+
+	return false;
 }
