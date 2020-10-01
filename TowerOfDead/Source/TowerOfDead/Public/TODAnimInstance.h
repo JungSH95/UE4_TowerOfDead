@@ -31,6 +31,7 @@ public:
 
 	UAnimMontage* GetAttackMontage() { return AttackMontage; }
 	UAnimMontage* GetHardAttackMontage() { return HardAttackMontage; }
+	UAnimMontage* GetSpecialAttackThrowMontage() { return SpecialAttackThrowMontage; }
 
 	void SetSpecialAttacking(bool isSpecialAttacking) { IsSpecialAttacking = isSpecialAttacking; }
 	bool GetIsSpecialTarget() {	return IsSpecialTarget; }

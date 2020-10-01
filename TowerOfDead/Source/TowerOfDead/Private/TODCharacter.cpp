@@ -231,7 +231,7 @@ void ATODCharacter::Attack()
 		return;
 
 	// 무기가 던져져 있다면 불가능
-	if (Anim->GetIsSpecialTarget())
+	if (Anim->GetIsSpecialTarget() || IsHardAttacking || IsSpecialAttacking)
 		return;
 
 	if (IsAttaking)
@@ -263,6 +263,8 @@ void ATODCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupte
 		IsAttaking = false;
 		AttackEndComboState();
 	}
+
+	TODLOG_S(Warning);
 }
 
 void ATODCharacter::AttackStartComboState()
@@ -286,7 +288,7 @@ void ATODCharacter::HardAttack()
 		return;
 
 	// 무기가 던져져 있다면 불가능
-	if (Anim->GetIsSpecialTarget())
+	if (Anim->GetIsSpecialTarget() || Anim->Montage_IsPlaying(Anim->GetSpecialAttackThrowMontage()))
 		return;
 
 	Anim->PlayHardAttackMontage();
@@ -344,7 +346,7 @@ void ATODCharacter::HardAttackCoolDownTimer()
 void ATODCharacter::SpecialAttack()
 {
 	// 공격 중
-	if (IsAttaking)
+	if (IsAttaking || Anim->Montage_IsPlaying(Anim->GetHardAttackMontage()))
 		return;
 
 	// 특수 공격 가능
