@@ -1,4 +1,5 @@
 #include "TODCharacter.h"
+#include "TODCharacterStatComponent.h"
 #include "TODAnimInstance.h"
 #include "TODPlayerController.h"
 #include "TODGameMode.h"
@@ -13,10 +14,11 @@ ATODCharacter::ATODCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	CharacterStat = CreateDefaultSubobject<UTODCharacterStatComponent>(TEXT("CHARACTERSTAT"));
 	SpringArm = CreateDefaultSubobject <USpringArmComponent>(TEXT("SPRINGARM"));
 	Camera = CreateDefaultSubobject <UCameraComponent>(TEXT("CAMERA"));
 	Decal = CreateDefaultSubobject <UDecalComponent>(TEXT("DECAL"));
-	WeaponTrigger = CreateDefaultSubobject<UCapsuleComponent>(TEXT("WeaponTrigger"));
+	WeaponTrigger = CreateDefaultSubobject<UCapsuleComponent>(TEXT("WEAPONTRIGGER"));
 	SwordEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
 
 	SpringArm->SetupAttachment(GetCapsuleComponent());
@@ -288,7 +290,7 @@ void ATODCharacter::HardAttack()
 		return;
 
 	// 무기가 던져져 있다면 불가능
-	if (Anim->GetIsSpecialTarget() || Anim->Montage_IsPlaying(Anim->GetSpecialAttackThrowMontage()))
+	if (Anim->GetIsSpecialTarget() || IsSpecialAttacking)
 		return;
 
 	Anim->PlayHardAttackMontage();

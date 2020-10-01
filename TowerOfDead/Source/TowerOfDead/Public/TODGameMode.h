@@ -13,6 +13,7 @@ public:
 	ATODGameMode();
 
 	virtual void BeginPlay() override;
+	virtual void PostLogin(APlayerController* NewPlayer) override;
 
 	class UTODUserWidget* GetUserHUDWidget() { return HUDWidget; }
 
