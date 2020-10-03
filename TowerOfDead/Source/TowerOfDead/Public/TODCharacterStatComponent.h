@@ -17,8 +17,20 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void InitializeComponent() override;
-		
+	
+public:
+	void SetNewCharacterStat(int32 HpLevel, int32 AtkLevel, int32 DefLevel, UWorld* World);
+
 private:
-	UPROPERTY(VisibleInstanceOnly, Category = Stat)
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
+	float MaxHP;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 	float CurrentHP;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
+	float Attack;
+
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
+	int32 Defense;
 };

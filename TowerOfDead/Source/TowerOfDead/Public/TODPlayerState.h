@@ -20,7 +20,7 @@ public:
 	int32 GetHPLevel() const { return HPLevel; }
 	int32 GetATKLevel() const { return ATKLevel; }
 	int32 GetDEFLevel() const { return DEFLevel; }
-	int32 GetSoul() const { return CurrentSoul; }
+	int32 GetCurrentSoul() const { return CurrentSoul; }
 
 	FString SaveSlotName;
 

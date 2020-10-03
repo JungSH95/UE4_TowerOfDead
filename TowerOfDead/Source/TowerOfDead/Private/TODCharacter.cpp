@@ -2,6 +2,7 @@
 #include "TODCharacterStatComponent.h"
 #include "TODAnimInstance.h"
 #include "TODPlayerController.h"
+#include "TODPlayerState.h"
 #include "TODGameMode.h"
 #include "TODUserWidget.h"
 #include "TODEnemy.h"
@@ -85,7 +86,18 @@ void ATODCharacter::BeginPlay()
 		gameMode->GetUserHUDWidget()->BindPlayerClass(this);
 
 	//print(FString::Printf(TEXT("Materials : %d"), GetMesh()->GetNumMaterials()));
-	//GetMesh()->SetMaterial(17, InVisibleWeaponMaterial);	
+	//GetMesh()->SetMaterial(17, InVisibleWeaponMaterial);
+
+	auto TODPlayerState = Cast<ATODPlayerState>(GetPlayerState());
+	if (TODPlayerState != nullptr)
+	{
+		CharacterStat->SetNewCharacterStat(
+			TODPlayerState->GetHPLevel(),
+			TODPlayerState->GetATKLevel(),
+			TODPlayerState->GetDEFLevel(),
+			GetWorld()
+		);
+	}
 }
 
 void ATODCharacter::Tick(float DeltaTime)
