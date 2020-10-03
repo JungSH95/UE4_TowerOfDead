@@ -14,9 +14,11 @@ ATODPlayerState::ATODPlayerState()
 
 void ATODPlayerState::InitPlayerData()
 {
+	/*
 	auto LoadData = Cast<UTODSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
 	if (LoadData == nullptr)
 	{
 
 	}
+	*/
 }
