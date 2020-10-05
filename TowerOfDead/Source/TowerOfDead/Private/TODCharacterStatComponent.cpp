@@ -44,3 +44,10 @@ void UTODCharacterStatComponent::SetNewCharacterStat(int32 HpLevel, int32 AtkLev
 	}
 	
 }
+
+void UTODCharacterStatComponent::SetDamage(float NewDamage)
+{
+	CurrentHP = FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, MaxHP);
+	if (CurrentHP <= 0.0f)
+		OnHPIsZero.Broadcast();
+}

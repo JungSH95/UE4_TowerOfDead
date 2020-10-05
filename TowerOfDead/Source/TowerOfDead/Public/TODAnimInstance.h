@@ -39,6 +39,8 @@ public:
 	void SetTargetPoint(FVector pos) { TargetPoint = pos; }
 	FVector GetTargetPoint() { return TargetPoint; }
 
+	void SetIsDead() { IsDead = true; }
+
 private:
 	UFUNCTION()
 	void AnimNotify_LevelStartAnimEnd();
@@ -63,6 +65,9 @@ private:
 	void AnimNotify_SpecialTargeting();
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool IsDead;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentSpeed;
 

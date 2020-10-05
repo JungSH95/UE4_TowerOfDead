@@ -144,10 +144,8 @@ void ATODEnemy::OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class
 	if (Player != nullptr)
 	{
 		print(OtherActor->GetName());
-		TODLOG_S(Warning);
-
-		//FDamageEvent DamageEvent;
-		//OtherActor->TakeDamage(50.0f, DamageEvent, GetController(), this);
+		FDamageEvent DamageEvent;
+		OtherActor->TakeDamage(25.0f, DamageEvent, GetController(), this);
 
 		// 플레이어 타격 후 바로 비활성화
 		AttackTrigger->SetGenerateOverlapEvents(false);

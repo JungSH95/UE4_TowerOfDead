@@ -172,6 +172,13 @@ void ATODCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	CharacterStat->OnHPIsZero.AddLambda([this]() -> void {
+		Anim->SetIsDead();
+		SetActorEnableCollision(false);
+
+		SetCharacterMove(false);
+	});
+
 	Anim = Cast<UTODAnimInstance>(GetMesh()->GetAnimInstance());
 	if (Anim != nullptr)
 	{
@@ -205,7 +212,7 @@ float ATODCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 	class AController* EventInstigator, AActor* DamageCauser)
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	
+	CharacterStat->SetDamage(FinalDamage);
 	return FinalDamage;
 }
 
@@ -509,6 +516,6 @@ void ATODCharacter::OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, 
 	if (Enemy != nullptr)
 	{
 		FDamageEvent DamageEvent;
-		Enemy->TakeDamage(50.0f, DamageEvent, GetController(), this);
+		Enemy->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
 	}
 }
