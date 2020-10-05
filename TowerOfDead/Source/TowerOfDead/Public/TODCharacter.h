@@ -25,6 +25,8 @@ public:
 		class AController* EventInstigator, AActor* DamageCauser) override;
 
 	void SetControl();
+	
+	void SetPlayerDead();
 
 	UFUNCTION()
 	void SetCharacterMove(bool isMoveing);
@@ -78,6 +80,9 @@ public:
 
 private:
 	class UTODAnimInstance* Anim;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsDead;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsAttaking;

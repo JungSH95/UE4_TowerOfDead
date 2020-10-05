@@ -63,6 +63,7 @@ ATODCharacter::ATODCharacter()
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODCharacter"));
 
+	IsDead = false;
 	IsAttaking = false;
 	MaxCombo = 4;
 	AttackEndComboState();
@@ -103,6 +104,14 @@ void ATODCharacter::BeginPlay()
 void ATODCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsDead)
+	{
+		if (SpringArm->TargetArmLength <= 1000.0f)
+			SpringArm->TargetArmLength += (250.0f * GetWorld()->DeltaTimeSeconds);
+
+		return;
+	}
 
 	// 강공격 진행중
 	if (CastTime <= HardAttackTime && IsHardAttacking)
@@ -176,7 +185,7 @@ void ATODCharacter::PostInitializeComponents()
 		Anim->SetIsDead();
 		SetActorEnableCollision(false);
 
-		SetCharacterMove(false);
+		SetPlayerDead();
 	});
 
 	Anim = Cast<UTODAnimInstance>(GetMesh()->GetAnimInstance());
@@ -236,6 +245,15 @@ void ATODCharacter::SetControl()
 
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+}
+
+void ATODCharacter::SetPlayerDead()
+{
+	TODLOG_S(Warning);
+
+	// 이동 불가
+	SetCharacterMove(false);
+	IsDead = true;
 }
 
 void ATODCharacter::SetCharacterMove(bool isMoveing)
