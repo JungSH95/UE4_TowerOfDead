@@ -15,6 +15,7 @@ public:
 	ATODPlayerState();
 
 	void InitPlayerData();
+	void SavePlayerData();
 
 	int32 GetTotalLevel() const { return TotalLevel; }
 	int32 GetHPLevel() const { return HPLevel; }
@@ -25,18 +26,18 @@ public:
 	FString SaveSlotName;
 
 protected:
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = State, Meta = (AllowPrivateAccess = true))
 	int32 TotalLevel;
 
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = State, Meta = (AllowPrivateAccess = true))
 	int32 HPLevel;
 
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = State, Meta = (AllowPrivateAccess = true))
 	int32 ATKLevel;
 
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = State, Meta = (AllowPrivateAccess = true))
 	int32 DEFLevel;
 
-	UPROPERTY(Transient)
+	UPROPERTY(Transient, VisibleInstanceOnly, Category = State, Meta = (AllowPrivateAccess = true))
 	int32 CurrentSoul;
 };

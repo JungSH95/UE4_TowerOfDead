@@ -16,7 +16,30 @@ void ATODPlayerState::InitPlayerData()
 {
 	auto LoadData = Cast<UTODSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
 	if (LoadData == nullptr)
-	{
+		LoadData = GetMutableDefault<UTODSaveGame>();
+	
+	SetPlayerName(LoadData->PlayerName);
+	TotalLevel = LoadData->PlayerState.TotalLevel;
+	HPLevel = LoadData->PlayerState.HPLevel;
+	ATKLevel = LoadData->PlayerState.ATKLevel;
+	DEFLevel = LoadData->PlayerState.DEFLevel;
+	CurrentSoul = LoadData->PlayerState.CurrentSoul;
 
-	}
+	SavePlayerData();
+}
+
+void ATODPlayerState::SavePlayerData()
+{
+	UTODSaveGame* NewPlayerData = NewObject<UTODSaveGame>();
+	NewPlayerData->PlayerName = GetPlayerName();
+	NewPlayerData->SetPlayerState(
+		TotalLevel,
+		HPLevel,
+		ATKLevel,
+		DEFLevel,
+		CurrentSoul
+	);
+
+	if (!UGameplayStatics::SaveGameToSlot(NewPlayerData, SaveSlotName, 0))
+		TODLOG(Error, TEXT("Save Game Error!!!!!!!"));
 }

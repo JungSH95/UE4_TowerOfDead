@@ -32,6 +32,13 @@ class TOWEROFDEAD_API UTODSaveGame : public USaveGame
 	GENERATED_BODY()
 	
 public:
+	UTODSaveGame();
+
+	void SetPlayerState(int32 totallevel, int32 hplevel, int32 atklevel, int32 deflevel, int32 soul);
+public:
 	UPROPERTY()
 	FPlayerStatStruct PlayerState;
+
+	UPROPERTY()
+	FString PlayerName;
 };
