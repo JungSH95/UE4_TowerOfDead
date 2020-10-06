@@ -41,6 +41,9 @@ public:
 
 	bool GetIsDead() { return IsDead; }
 
+	UPROPERTY(VisibleAnywhere, Category = Stat)
+	class UTODEnemyStatComponent* EnemyStat;
+
 private:
 	UFUNCTION()
 	void OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,

@@ -31,7 +31,7 @@ ATODCharacter::ATODCharacter()
 	Decal->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
 	GetMesh()->bReceivesDecals = false;
 
-	WeaponTrigger->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FName(TEXT("Weapon")));
+	WeaponTrigger->SetupAttachment(GetMesh(), FName(TEXT("Weapon")));
 	WeaponTrigger->SetGenerateOverlapEvents(false);
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
@@ -257,6 +257,9 @@ void ATODCharacter::SetPlayerDead()
 
 void ATODCharacter::SetCharacterMove(bool isMoveing)
 {
+	if (IsDead)
+		isMoveing = false;
+
 	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
 	if (playerController != nullptr)
 		playerController->SetIsMove(isMoveing);

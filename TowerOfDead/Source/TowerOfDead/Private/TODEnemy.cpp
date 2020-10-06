@@ -1,4 +1,5 @@
 #include "TODEnemy.h"
+#include "TODEnemyStatComponent.h"
 #include "TODEnemyAIController.h"
 #include "TODAIAnimInstance.h"
 #include "TODCharacter.h"
@@ -21,9 +22,11 @@ ATODEnemy::ATODEnemy()
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 	
 	AttackTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackTriggerBox"));
-	AttackTrigger->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	AttackTrigger->SetupAttachment(GetMesh());
 	AttackTrigger->SetGenerateOverlapEvents(false);
 	
+	EnemyStat = CreateDefaultSubobject<UTODEnemyStatComponent>(TEXT("ENEMYSTAT"));
+
 	State = EnemyState::PEACE;
 	IsDead = false;
 
