@@ -26,9 +26,6 @@ public:
 	int32 Defense;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	int32 DropSoul;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	int32 NextSoul;
 };
 

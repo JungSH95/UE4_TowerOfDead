@@ -12,7 +12,7 @@ void UTODGameInstance::Init()
 {
 	Super::Init();
 	
-	TODLOG(Warning, TEXT("DropExp of Level 10 : %d"), GetTODCharacterData(10)->DropSoul);
+	TODLOG(Warning, TEXT("DropExp of Level 10 : %d"), GetTODCharacterData(10)->NextSoul);
 }
 
 FTODCharacterData* UTODGameInstance::GetTODCharacterData(int32 Level)
