@@ -29,12 +29,14 @@ ATODCharacter::ATODCharacter()
 	Decal->SetupAttachment(RootComponent);
 	Decal->SetVisibility(false);
 	Decal->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f));
+	GetMesh()->bReceivesDecals = false;
 
 	WeaponTrigger->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FName(TEXT("Weapon")));
 	WeaponTrigger->SetGenerateOverlapEvents(false);
 
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -88.0f), FRotator(0.0f, -90.0f, 0.0f));
-	SetControl();
+	
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODCharacter"));
 
 	// 기본 캐릭터 메시
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_KWANG(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Meshes/Kwang_GDC.Kwang_GDC"));
@@ -46,24 +48,11 @@ ATODCharacter::ATODCharacter()
 	if (KWANG_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(KWANG_ANIM.Class);
 
-	/*
-	static ConstructorHelpers::FObjectFinder<UMaterial> INVISIBLEWEAPON_MATERIAL(TEXT("/Game/InvisibleMaterial.InvisibleMaterial"));
-	if (INVISIBLEWEAPON_MATERIAL.Succeeded())
-		InVisibleWeaponMaterial = INVISIBLEWEAPON_MATERIAL.Object;
-
-	static ConstructorHelpers::FObjectFinder<UMaterial> VISIBLEWEAPON_MATERIAL(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Materials/M_Kwang_Weapon.M_Kwang_Weapon"));
-	if (VISIBLEWEAPON_MATERIAL.Succeeded())
-		VisibleWeaponMaterial = VISIBLEWEAPON_MATERIAL.Object;
-	*/
-
-	GetMesh()->bReceivesDecals = false;
-
-	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanJump = true;
-	GetCharacterMovement()->JumpZVelocity = 400.0f;
-
-	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODCharacter"));
-
+	SetControl();
+	
 	IsDead = false;
+	
+	// 일반 공격 설정
 	IsAttaking = false;
 	MaxCombo = 4;
 	AttackEndComboState();
@@ -85,9 +74,6 @@ void ATODCharacter::BeginPlay()
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->BindPlayerClass(this);
-
-	//print(FString::Printf(TEXT("Materials : %d"), GetMesh()->GetNumMaterials()));
-	//GetMesh()->SetMaterial(17, InVisibleWeaponMaterial);
 
 	auto TODPlayerState = Cast<ATODPlayerState>(GetPlayerState());
 	if (TODPlayerState != nullptr)
@@ -144,19 +130,19 @@ void ATODCharacter::Tick(float DeltaTime)
 			Point.Z = 2000.0f;
 			Anim->SetTargetPoint(Point);
 			IsWeaponFall = true;
-
-			FVector EffectPoint = Hit.Location;
-			EffectPoint.Z = 20.0f;
-			SwordEffect->SetWorldLocation(EffectPoint);
 		}
 	}
 
+	FVector EffectPoint = Anim->GetTargetPoint();
+	EffectPoint.Z = 20.0f;
+	SwordEffect->SetWorldLocation(EffectPoint);
+
 	if (IsWeaponFall)
 	{
-		deltaTime += GetWorld()->GetDeltaSeconds();
+		FalldeltaTime += GetWorld()->GetDeltaSeconds();
 
 		FVector StartPos = Anim->GetTargetPoint();
-		StartPos.Z = StartPos.Z - (deltaTime * 15.0f);
+		StartPos.Z = StartPos.Z - (FalldeltaTime * 15.0f);
 		FVector TargetPos = Anim->GetTargetPoint();
 		TargetPos.Z = 100.0f;
 
@@ -164,7 +150,7 @@ void ATODCharacter::Tick(float DeltaTime)
 		{
 			SwordEffect->Activate(true);
 
-			deltaTime = 0.0f;
+			FalldeltaTime = 0.0f;
 			IsWeaponFall = false;
 
 			HardAndSpecialAttackHitCheck(1, 200.0f);
@@ -245,11 +231,24 @@ void ATODCharacter::SetControl()
 
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 500.0f;
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanJump = true;
+	GetCharacterMovement()->JumpZVelocity = 400.0f;
 }
 
 void ATODCharacter::SetPlayerDead()
 {
 	TODLOG_S(Warning);
+
+	// 특수 공격 관련 종료(Decal)
+	Decal->SetVisibility(false);
+	IsSpecialAttacking = false;
+
+	// 강공격 관련 종료
+	IsHardAttacking = false;
+	
+	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
+	if (gameMode != nullptr)
+		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
 
 	// 이동 불가
 	SetCharacterMove(false);
@@ -302,8 +301,6 @@ void ATODCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupte
 		IsAttaking = false;
 		AttackEndComboState();
 	}
-
-	TODLOG_S(Warning);
 }
 
 void ATODCharacter::AttackStartComboState()

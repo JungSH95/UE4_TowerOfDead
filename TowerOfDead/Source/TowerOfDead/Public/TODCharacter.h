@@ -25,7 +25,6 @@ public:
 		class AController* EventInstigator, AActor* DamageCauser) override;
 
 	void SetControl();
-	
 	void SetPlayerDead();
 
 	UFUNCTION()
@@ -84,6 +83,7 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsDead;
 
+	// 콤보 공격 ------------------------------------------
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsAttaking;
 	
@@ -98,7 +98,9 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	int32 MaxCombo;
+	//-------------------------------------------------------
 
+	// 강공격 --------------------------------------------
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsHardAttacking;
 
@@ -109,7 +111,9 @@ private:
 	float HardAttackTime = 2.0f;
 	float HardAttackCoolDownTime = 5.0f;
 	FTimerHandle HardAttackTimerHandle;
+	// -----------------------------------------------------
 
+	// 특수 공격 --------------------------------------------
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsSpecialAttacking;
 
@@ -125,13 +129,7 @@ private:
 	FTimerHandle SpecialCatchTimerHandle;
 
 	bool IsWeaponFall = false;
-	float deltaTime = 0.0f;
+	float FalldeltaTime = 0.0f;
+	// -------------------------------------------------------
 
-	/*
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
-	UMaterial* InVisibleWeaponMaterial;
-
-	UPROPERTY(EditAnywhere, Meta = (AllowPrivateAccess = true))
-	UMaterial* VisibleWeaponMaterial;
-	*/
 };
