@@ -36,3 +36,24 @@ void UTODEnemyStatComponent::SetNewLevel(int32 NewLevel)
 			TODLOG(Error, TEXT("Level Data Not Find"));
 	}
 }
+
+void UTODEnemyStatComponent::SetDamage(float NewDamage)
+{
+	if (CurrentStatData == nullptr)
+		return;
+
+	CurrentHP = FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHp);
+
+	if (CurrentHP <= 0.0f)
+		OnHPIsZero.Broadcast();
+}
+
+float UTODEnemyStatComponent::GetAttack()
+{
+	float Damage = 0.0f;
+
+	if (CurrentStatData != nullptr)
+		Damage = CurrentStatData->Attack;
+
+	return Damage;
+}

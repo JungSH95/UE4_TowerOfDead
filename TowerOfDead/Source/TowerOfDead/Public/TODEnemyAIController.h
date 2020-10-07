@@ -23,6 +23,7 @@ public:
 	static const FName RandomPosKey;
 
 	void SetIsAttaking(bool isattack);
+	void SetIsDead();
 
 private:
 	UPROPERTY()

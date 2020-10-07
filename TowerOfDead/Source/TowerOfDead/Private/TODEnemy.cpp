@@ -60,6 +60,18 @@ void ATODEnemy::PostInitializeComponents()
 	AnimInstance->OnMontageEnded.AddDynamic(this, &ATODEnemy::OnAttackMontageEnded);
 	
 	AttackTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODEnemy::OnAttackTriggerOverlap);
+
+	EnemyStat->OnHPIsZero.AddLambda([this]() -> void {
+		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
+		if (EnemyAI == nullptr)
+			return;
+
+		EnemyAI->SetIsDead();
+		State = EnemyState::DEAD;
+		IsDead = true;
+
+		SetActorEnableCollision(false);
+	});
 }
 
 void ATODEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -79,6 +91,7 @@ float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 		if (AnimInstance->PlayHitReactMontage(0))
 		{
 			TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+			EnemyStat->SetDamage(FinalDamage);
 		}
 	}
 
@@ -147,8 +160,9 @@ void ATODEnemy::OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class
 	if (Player != nullptr)
 	{
 		print(OtherActor->GetName());
+
 		FDamageEvent DamageEvent;
-		OtherActor->TakeDamage(25.0f, DamageEvent, GetController(), this);
+		OtherActor->TakeDamage(EnemyStat->GetAttack(), DamageEvent, GetController(), this);
 
 		// 플레이어 타격 후 바로 비활성화
 		AttackTrigger->SetGenerateOverlapEvents(false);

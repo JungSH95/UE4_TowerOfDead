@@ -6,6 +6,7 @@ ATODEnemySpawnPoint::ATODEnemySpawnPoint()
 
 	Tags.Add("EnemySpawnPoint");
 	EnemyNumber = -1;
+	EnemyLevel = 1;
 }
 
 void ATODEnemySpawnPoint::BeginPlay()
@@ -13,10 +14,3 @@ void ATODEnemySpawnPoint::BeginPlay()
 	Super::BeginPlay();
 	
 }
-
-void ATODEnemySpawnPoint::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

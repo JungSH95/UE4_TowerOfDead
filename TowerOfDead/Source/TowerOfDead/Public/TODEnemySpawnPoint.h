@@ -16,8 +16,13 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	virtual void Tick(float DeltaTime) override;
+	int32 GetEnemyNumber() { return EnemyNumber; }
+	int32 GetEnemyLevel() { return EnemyLevel; }
 
-	UPROPERTY(EditAnywhere)
-	int EnemyNumber;
+private:
+	UPROPERTY(EditInstanceOnly, Category = EnemyInfo, Meta = (AllowPrivateAccess = true))
+	int32 EnemyNumber;
+
+	UPROPERTY(EditInstanceOnly, Category = EnemyInfo, Meta = (AllowPrivateAccess = true))
+	int32 EnemyLevel;
 };

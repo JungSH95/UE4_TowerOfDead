@@ -1,5 +1,7 @@
 #include "TODStageManager.h"
 #include "TODEnemy.h"
+#include "TODEnemyStatComponent.h"
+#include "TODEnemySpawnPoint.h"
 
 ATODStageManager::ATODStageManager()
 {
@@ -73,8 +75,12 @@ void ATODStageManager::InitEnemy()
 
 	for (int i = 0; i < EnemySpawnPoint.Num(); i++)
 	{
-		if (EnemySpawnPoint[i]->EnemyNumber > 0 && EnemySpawnPoint[i]->EnemyNumber <= ArrEnemy.Num())
-			GetWorld()->SpawnActor<ATODEnemy>(ArrEnemy[EnemySpawnPoint[i]->EnemyNumber - 1],
-				EnemySpawnPoint[i]->GetActorLocation(),	FRotator::ZeroRotator);
+		if (EnemySpawnPoint[i]->GetEnemyNumber() > 0 && EnemySpawnPoint[i]->GetEnemyNumber() <= ArrEnemy.Num())
+		{
+			ATODEnemy* Enemy = GetWorld()->SpawnActor<ATODEnemy>(ArrEnemy[EnemySpawnPoint[i]->GetEnemyNumber() - 1],
+				EnemySpawnPoint[i]->GetActorLocation(), FRotator::ZeroRotator);
+
+			Enemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
+		}
 	}
 }

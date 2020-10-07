@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "TODEnemyStatComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnHPIsZeroDelegate);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOWEROFDEAD_API UTODEnemyStatComponent : public UActorComponent
@@ -19,6 +20,11 @@ protected:
 
 public:
 	void SetNewLevel(int32 NewLevel);
+
+	void SetDamage(float NewDamage);
+	float GetAttack();
+
+	FOnHPIsZeroDelegate OnHPIsZero;
 
 private:
 	struct FTODEnemyData* CurrentStatData = nullptr;

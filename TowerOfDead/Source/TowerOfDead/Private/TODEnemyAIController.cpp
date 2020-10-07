@@ -40,3 +40,8 @@ void ATODEnemyAIController::SetIsAttaking(bool isattack)
 {
 	Blackboard->SetValueAsBool(IsAttackingKey, isattack);
 }
+
+void ATODEnemyAIController::SetIsDead()
+{
+	Blackboard->SetValueAsEnum(ATODEnemyAIController::AIStateKey, (uint8)EnemyState::DEAD);
+}
