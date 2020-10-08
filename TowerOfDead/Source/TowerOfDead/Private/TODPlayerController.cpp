@@ -1,4 +1,7 @@
 #include "TODPlayerController.h"
+#include "TODPlayerState.h"
+#include "TODEnemy.h"
+#include "TODEnemyStatComponent.h"
 
 ATODPlayerController::ATODPlayerController()
 {
@@ -22,6 +25,22 @@ void ATODPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("HardAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::HardAttackEnd);
 	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::SpecialAttack);
 	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::SpecialAttackEnd);
+}
+
+void ATODPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CPlayer = Cast<ATODCharacter>(GetPawn());
+	TODPlayerState = Cast<ATODPlayerState>(PlayerState);
+}
+
+void ATODPlayerController::EnemyKill(class ATODEnemy* KilledEnemy)
+{
+	if (KilledEnemy == nullptr)
+		return;
+
+	TODPlayerState->AddSoul(KilledEnemy->EnemyStat->GetDropSoul());
 }
 
 void ATODPlayerController::UpDown(float AxisValue)

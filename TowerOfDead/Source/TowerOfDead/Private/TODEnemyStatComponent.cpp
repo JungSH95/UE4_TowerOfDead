@@ -57,3 +57,8 @@ float UTODEnemyStatComponent::GetAttack()
 
 	return Damage;
 }
+
+int32 UTODEnemyStatComponent::GetDropSoul()
+{
+	return CurrentStatData->DropSoul;
+}

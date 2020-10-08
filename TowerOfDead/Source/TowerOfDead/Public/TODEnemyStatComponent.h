@@ -24,6 +24,8 @@ public:
 	void SetDamage(float NewDamage);
 	float GetAttack();
 
+	int32 GetDropSoul();
+
 	FOnHPIsZeroDelegate OnHPIsZero;
 
 private:

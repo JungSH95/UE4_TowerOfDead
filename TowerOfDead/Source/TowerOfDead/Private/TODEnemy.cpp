@@ -3,6 +3,7 @@
 #include "TODEnemyAIController.h"
 #include "TODAIAnimInstance.h"
 #include "TODCharacter.h"
+#include "TODPlayerController.h"
 
 ATODEnemy::ATODEnemy()
 {
@@ -92,6 +93,16 @@ float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 		{
 			TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
 			EnemyStat->SetDamage(FinalDamage);
+		}
+	}
+
+	if (IsDead)
+	{
+		if (EventInstigator->IsPlayerController())
+		{
+			auto PlayerController = Cast<ATODPlayerController>(EventInstigator);
+			if (PlayerController != nullptr)
+				PlayerController->EnemyKill(this);
 		}
 	}
 

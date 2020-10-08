@@ -43,3 +43,11 @@ void ATODPlayerState::SavePlayerData()
 	if (!UGameplayStatics::SaveGameToSlot(NewPlayerData, SaveSlotName, 0))
 		TODLOG(Error, TEXT("Save Game Error!!!!!!!"));
 }
+
+void ATODPlayerState::AddSoul(int32 Soul)
+{
+	CurrentSoul += Soul;
+
+	if (CurrentSoul <= 0)
+		CurrentSoul = 0;
+}

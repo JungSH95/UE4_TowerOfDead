@@ -9,16 +9,22 @@ UCLASS()
 class TOWEROFDEAD_API ATODPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
 public:
 	ATODPlayerController();
 
 	virtual void SetupInputComponent() override;
 
+protected:
+	virtual void BeginPlay() override;
+
+public:
 	bool GetIsMove() { return isMove; }
 	void SetIsMove(bool move) { isMove = move; }
 
 	void SetMouseSpeed(float speed) { MouseSpeed = speed; }
+
+	void EnemyKill(class ATODEnemy* KilledEnemy);
 
 private:
 	void UpDown(float AxisValue);
@@ -36,11 +42,15 @@ private:
 	void SpecialAttackEnd();
 
 private:
-	ATODCharacter* CPlayer;
+	UPROPERTY()
+	class ATODCharacter* CPlayer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
 	bool isMove;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
 	float MouseSpeed;
+
+	UPROPERTY()
+	class ATODPlayerState* TODPlayerState;
 };

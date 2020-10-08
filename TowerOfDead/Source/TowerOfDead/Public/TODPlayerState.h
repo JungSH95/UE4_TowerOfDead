@@ -23,6 +23,8 @@ public:
 	int32 GetDEFLevel() const { return DEFLevel; }
 	int32 GetCurrentSoul() const { return CurrentSoul; }
 
+	void AddSoul(int32 Soul);
+
 	FString SaveSlotName;
 
 protected:
