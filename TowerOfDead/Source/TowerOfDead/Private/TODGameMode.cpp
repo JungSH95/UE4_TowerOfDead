@@ -14,7 +14,7 @@ ATODGameMode::ATODGameMode()
 	if (BP_PAWN_C.Succeeded())
 		DefaultPawnClass = BP_PAWN_C.Class;
 
-	static ConstructorHelpers::FClassFinder<UTODUserWidget> BP_UI(TEXT("/Game/BluePrint/InGameUI.InGameUI_C"));
+	static ConstructorHelpers::FClassFinder<UTODUserWidget> BP_UI(TEXT("/Game/UI/InGame_UI.InGame_UI_C"));
 	if (BP_UI.Succeeded())
 		HUDWidgetClass = BP_UI.Class;
 
@@ -40,4 +40,6 @@ void ATODGameMode::PostLogin(APlayerController* NewPlayer)
 	auto TODPlayerState = Cast<ATODPlayerState>(NewPlayer->PlayerState);
 	if (TODPlayerState != nullptr)
 		TODPlayerState->InitPlayerData();
+
+	TODLOG_S(Warning);
 }

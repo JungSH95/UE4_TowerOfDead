@@ -33,6 +33,11 @@ void ATODPlayerController::BeginPlay()
 
 	CPlayer = Cast<ATODCharacter>(GetPawn());
 	TODPlayerState = Cast<ATODPlayerState>(PlayerState);
+
+	SetInputMode(FInputModeGameOnly());
+	bShowMouseCursor = false;
+
+	TODLOG_S(Warning);
 }
 
 void ATODPlayerController::EnemyKill(class ATODEnemy* KilledEnemy)
