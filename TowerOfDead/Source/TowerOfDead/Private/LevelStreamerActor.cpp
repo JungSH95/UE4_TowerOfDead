@@ -49,9 +49,3 @@ void ALevelStreamerActor::OverlapBegins(UPrimitiveComponent* OverlappedComponent
 	}
 }
 
-void ALevelStreamerActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

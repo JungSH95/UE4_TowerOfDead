@@ -24,13 +24,10 @@ protected:
 	FName LevelToLoad;
 
 public:
-	void Tick(float DeltaTime) override;
-
 	void SetNextLevel(FName stagelevel);
 	void SetNextLevelEvent(bool isEvent) { OverlapVolume->SetGenerateOverlapEvents(isEvent); }
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* OverlapVolume;
-
 };

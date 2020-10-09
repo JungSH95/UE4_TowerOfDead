@@ -3,6 +3,7 @@
 #include "TODPlayerController.h"
 #include "TODPlayerState.h"
 #include "TODUserWidget.h"
+#include "Runtime/LevelSequence/Public/LevelSequenceActor.h"
 
 ATODGameMode::ATODGameMode()
 {

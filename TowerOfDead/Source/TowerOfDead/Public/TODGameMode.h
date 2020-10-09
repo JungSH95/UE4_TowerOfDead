@@ -24,4 +24,10 @@ protected:
 private:
 	UPROPERTY()
 	class UTODUserWidget* HUDWidget;
+
+	UPROPERTY(EditAnywhere)
+	class ALevelSequenceActor* FadeInSequence;
+
+	UPROPERTY(EditAnywhere)
+	class ALevelSequenceActor* FadeOutSequence;
 };
