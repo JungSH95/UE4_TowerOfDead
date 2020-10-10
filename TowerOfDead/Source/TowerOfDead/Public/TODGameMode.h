@@ -17,6 +17,14 @@ public:
 
 	class UTODUserWidget* GetUserHUDWidget() { return HUDWidget; }
 
+	UFUNCTION(BlueprintCallable)
+	void SetIsSequencePlaying(bool isPlaying) { IsSequencePlaying = isPlaying; }
+	UFUNCTION(BlueprintCallable)
+	bool GetIsSequencePlaying() { return IsSequencePlaying; }
+
+	void PlayFadeIn();
+	void PlayFadeOut();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
 	TSubclassOf<class UTODUserWidget> HUDWidgetClass;
@@ -30,4 +38,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	class ALevelSequenceActor* FadeOutSequence;
+
+	UPROPERTY(EditAnywhere)
+	bool IsSequencePlaying;
 };

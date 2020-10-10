@@ -19,6 +19,7 @@ ATODGameMode::ATODGameMode()
 	if (BP_UI.Succeeded())
 		HUDWidgetClass = BP_UI.Class;
 
+	IsSequencePlaying = false;
 }
 
 void ATODGameMode::BeginPlay()
@@ -31,6 +32,19 @@ void ATODGameMode::BeginPlay()
 		if (HUDWidget != nullptr)
 			HUDWidget->AddToViewport();
 	}
+
+	TArray<AActor*>  OutActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OutActors);
+	for (int i = 0; i < OutActors.Num(); i++)
+	{
+		if (FadeInSequence != nullptr && FadeOutSequence != nullptr)
+			break;
+
+		if (OutActors[i]->ActorHasTag("FadeIn"))
+			FadeInSequence = Cast<ALevelSequenceActor>(OutActors[i]);
+		else if (OutActors[i]->ActorHasTag("FadeOut"))
+			FadeOutSequence = Cast<ALevelSequenceActor>(OutActors[i]);
+	}
 }
 
 // 플레이어 컨트롤러의 구성을 완료하는 시점
@@ -41,6 +55,19 @@ void ATODGameMode::PostLogin(APlayerController* NewPlayer)
 	auto TODPlayerState = Cast<ATODPlayerState>(NewPlayer->PlayerState);
 	if (TODPlayerState != nullptr)
 		TODPlayerState->InitPlayerData();
+}
 
-	TODLOG_S(Warning);
+void ATODGameMode::PlayFadeIn()
+{
+	if (FadeInSequence == nullptr)
+		return;
+
+	FadeInSequence->SequencePlayer->Play();
+}
+
+void ATODGameMode::PlayFadeOut()
+{
+	if (FadeOutSequence == nullptr)
+		return;
+	FadeOutSequence->SequencePlayer->Play();
 }

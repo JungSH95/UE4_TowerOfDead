@@ -27,7 +27,7 @@ public:
 	void SetControl();
 	void SetPlayerDead();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SetCharacterMove(bool isMoveing);
 
 	void Attack();

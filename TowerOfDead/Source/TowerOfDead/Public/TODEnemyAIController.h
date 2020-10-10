@@ -25,6 +25,7 @@ public:
 	void SetIsAttaking(bool isattack);
 	void SetIsDead();
 
+	void StartAI();
 private:
 	UPROPERTY()
 	class UBehaviorTree* BTAsset;

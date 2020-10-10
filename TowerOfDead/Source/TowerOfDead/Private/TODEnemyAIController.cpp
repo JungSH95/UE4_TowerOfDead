@@ -30,9 +30,6 @@ void ATODEnemyAIController::OnPossess(APawn* InPawn)
 	{
 		Blackboard->SetValueAsBool(IsAttackingKey, false);
 		Blackboard->SetValueAsBool(IsCanOutRangeAttackKey, false);
-
-		if (!RunBehaviorTree(BTAsset))
-			TODLOG(Error, TEXT("AIController not Run BT"));
 	}
 }
 
@@ -44,4 +41,13 @@ void ATODEnemyAIController::SetIsAttaking(bool isattack)
 void ATODEnemyAIController::SetIsDead()
 {
 	Blackboard->SetValueAsEnum(ATODEnemyAIController::AIStateKey, (uint8)EnemyState::DEAD);
+}
+
+void ATODEnemyAIController::StartAI()
+{
+	if (BTAsset != nullptr)
+	{
+		if (!RunBehaviorTree(BTAsset))
+			TODLOG(Error, TEXT("AIController not Run BT"));
+	}
 }

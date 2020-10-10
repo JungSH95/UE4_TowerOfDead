@@ -22,9 +22,16 @@ public:
 
 	// 스테이지 클리어 시? 스테이지 생성 시? 다음 스테이지 설정
 	void SetNextStage();
+	void SetPlayerPosition();
 	void InitEnemy();
 
+	FTimerHandle StartTimerHandle;
+	void StageStart();
+
 private:
+	UPROPERTY(EditAnywhere)
+	class ATODGameMode* TODGameMode;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stage, Meta = (AllowPrivateAccess = true))
 	AActor* StartPoint;
 
@@ -32,11 +39,17 @@ private:
 	bool IsClear;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stage, Meta = (AllowPrivateAccess = true))
+	bool IsBattleStart;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Stage, Meta = (AllowPrivateAccess = true))
 	ALevelStreamerActor* NextPortal;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<TSubclassOf<class ATODEnemy>> ArrEnemy;
+	TArray<TSubclassOf<class ATODEnemy>> ArrEnemyType;
 
 	UPROPERTY()
 	TArray<ATODEnemySpawnPoint*> EnemySpawnPoint;
+
+	UPROPERTY()
+	TArray<ATODEnemy*> ArrEnemy;
 };
