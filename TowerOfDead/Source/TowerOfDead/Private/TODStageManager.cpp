@@ -88,7 +88,10 @@ void ATODStageManager::SetPlayerPosition()
 	// 플레이어 캐릭터 찾아서 해당 위치로 이동
 	ACharacter* playerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 	if (playerCharacter != nullptr && StartPoint != nullptr)
+	{
 		playerCharacter->SetActorLocation(StartPoint->GetActorLocation());
+		playerCharacter->GetController()->SetControlRotation(StartPoint->GetActorRotation());
+	}
 }
 
 void ATODStageManager::InitEnemy()
