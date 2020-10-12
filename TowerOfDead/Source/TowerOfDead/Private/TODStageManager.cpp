@@ -42,7 +42,7 @@ void ATODStageManager::BeginPlay()
 				NextPortal = Cast<ALevelStreamerActor>(OutActors[i]);
 			else if (OutActors[i]->ActorHasTag("StartPoint"))
 				StartPoint = OutActors[i];
-			else if (OutActors[i]->ActorHasTag("EnemySpawnPoint"))
+			else if (OutActors[i]->ActorHasTag("EnemySpawnPoint") && OutActors[i]->ActorHasTag(LevelName))
 				EnemySpawnPoint.Add(Cast<ATODEnemySpawnPoint>(OutActors[i]));
 		}
 	}
@@ -106,12 +106,9 @@ void ATODStageManager::InitEnemy()
 
 			Enemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
 			Enemy->OnEnemyDeadCheck.AddUObject(this, &ATODStageManager::StageClearCheck);
-
-			//EnemySpawnPoint[i]->Destroy();
 		}
 	}
 
-	print(GetWorld()->GetMapName());
 	print(FString::Printf(TEXT("Enemy count : %d"), ArrEnemy.Num()));
 }
 

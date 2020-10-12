@@ -29,6 +29,9 @@ public:
 	void StageStart();
 	void StageClearCheck();
 
+	UPROPERTY(EditAnywhere)
+	FName LevelName;
+
 private:
 	UPROPERTY(EditAnywhere)
 	class ATODGameMode* TODGameMode;
