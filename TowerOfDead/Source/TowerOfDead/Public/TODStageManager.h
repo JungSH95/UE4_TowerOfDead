@@ -27,6 +27,7 @@ public:
 
 	FTimerHandle StartTimerHandle;
 	void StageStart();
+	void StageClearCheck();
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -52,4 +53,7 @@ private:
 
 	UPROPERTY()
 	TArray<ATODEnemy*> ArrEnemy;
+
+	UPROPERTY()
+	int32 EnemyDeadCount;
 };

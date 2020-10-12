@@ -10,20 +10,13 @@ ALevelStreamerActor::ALevelStreamerActor()
 	OverlapVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("OverlapVolume"));
 	RootComponent = OverlapVolume;
 
+	PortalEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
+	PortalEffect->SetupAttachment(OverlapVolume);
+
 	Tags.Add("Portal");
 
 	OverlapVolume->SetGenerateOverlapEvents(false);
 	OverlapVolume->OnComponentBeginOverlap.AddUniqueDynamic(this, &ALevelStreamerActor::OverlapBegins);
-}
-
-void ALevelStreamerActor::SetNextLevel(FName stagelevel)
-{
-	if (stagelevel == NAME_None)
-	{
-		return;
-	}
-
-	LevelToLoad = stagelevel;
 }
 
 void ALevelStreamerActor::BeginPlay()
@@ -52,3 +45,20 @@ void ALevelStreamerActor::OverlapBegins(UPrimitiveComponent* OverlappedComponent
 	}
 }
 
+void ALevelStreamerActor::SetNextLevel(FName stagelevel)
+{
+	if (stagelevel == NAME_None)
+	{
+		return;
+	}
+
+	LevelToLoad = stagelevel;
+}
+
+void ALevelStreamerActor::SetPortalEffectActive()
+{
+	if (PortalEffect == nullptr)
+		return;
+
+	PortalEffect->Activate(true);
+}

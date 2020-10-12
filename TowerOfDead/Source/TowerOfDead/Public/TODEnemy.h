@@ -4,6 +4,8 @@
 #include "GameFramework/Character.h"
 #include "TODEnemy.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnEnemyDeadDelegate);
+
 UCLASS()
 class TOWEROFDEAD_API ATODEnemy : public ACharacter
 {
@@ -40,6 +42,8 @@ public:
 	void AttackCoolDownTime();
 
 	bool GetIsDead() { return IsDead; }
+
+	FOnEnemyDeadDelegate OnEnemyDeadCheck;
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 	class UTODEnemyStatComponent* EnemyStat;

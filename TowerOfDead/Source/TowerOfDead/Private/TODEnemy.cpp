@@ -72,6 +72,8 @@ void ATODEnemy::PostInitializeComponents()
 		IsDead = true;
 
 		SetActorEnableCollision(false);
+
+		OnEnemyDeadCheck.Broadcast();
 	});
 }
 

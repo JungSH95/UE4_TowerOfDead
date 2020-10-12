@@ -27,7 +27,12 @@ public:
 	void SetNextLevel(FName stagelevel);
 	void SetNextLevelEvent(bool isEvent) { OverlapVolume->SetGenerateOverlapEvents(isEvent); }
 
+	void SetPortalEffectActive();
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UBoxComponent* OverlapVolume;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	UParticleSystemComponent* PortalEffect;
 };

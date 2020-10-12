@@ -20,6 +20,7 @@ ATODStageManager::ATODStageManager()
 
 	IsClear = false;
 	IsBattleStart = false;
+	EnemyDeadCount = 0;
 }
 
 void ATODStageManager::BeginPlay()
@@ -46,7 +47,6 @@ void ATODStageManager::BeginPlay()
 		}
 	}
 
-	//SetPlayerPosition();
 	// 몬스터 생성
 	InitEnemy();
 }
@@ -105,9 +105,13 @@ void ATODStageManager::InitEnemy()
 			ArrEnemy.Add(Enemy);
 
 			Enemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
+			Enemy->OnEnemyDeadCheck.AddUObject(this, &ATODStageManager::StageClearCheck);
+
+			//EnemySpawnPoint[i]->Destroy();
 		}
 	}
 
+	print(GetWorld()->GetMapName());
 	print(FString::Printf(TEXT("Enemy count : %d"), ArrEnemy.Num()));
 }
 
@@ -120,5 +124,17 @@ void ATODStageManager::StageStart()
 		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(ArrEnemy[i]->GetController());
 		if (EnemyAI != nullptr)
 			EnemyAI->StartAI();
+	}
+}
+
+void ATODStageManager::StageClearCheck()
+{
+	EnemyDeadCount++;
+
+	if (EnemyDeadCount >= ArrEnemy.Num())
+	{
+		IsClear = true;
+		NextPortal->SetPortalEffectActive();
+		print(FString::Printf(TEXT("Stage Clear")));
 	}
 }
