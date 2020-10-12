@@ -28,6 +28,7 @@ public:
 	FTimerHandle StartTimerHandle;
 	void StageStart();
 	void StageClearCheck();
+	void ReSetStage();
 
 	UPROPERTY(EditAnywhere)
 	FName LevelName;

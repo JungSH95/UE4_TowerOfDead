@@ -39,16 +39,16 @@ void ATODStageManager::BeginPlay()
 		for (int i = 0; i < OutActors.Num(); i++)
 		{
 			if (OutActors[i]->ActorHasTag("Portal"))
+			{
 				NextPortal = Cast<ALevelStreamerActor>(OutActors[i]);
+				NextPortal->SetNowLevel(this, LevelName);
+			}
 			else if (OutActors[i]->ActorHasTag("StartPoint"))
 				StartPoint = OutActors[i];
 			else if (OutActors[i]->ActorHasTag("EnemySpawnPoint") && OutActors[i]->ActorHasTag(LevelName))
 				EnemySpawnPoint.Add(Cast<ATODEnemySpawnPoint>(OutActors[i]));
 		}
 	}
-
-	// 몬스터 생성
-	InitEnemy();
 }
 
 void ATODStageManager::Tick(float DeltaTime)
@@ -62,6 +62,9 @@ void ATODStageManager::Tick(float DeltaTime)
 		{
 			IsBattleStart = true;
 			SetPlayerPosition();
+			
+			NextPortal->SetPortalEffectActive(false);
+			InitEnemy();
 
 			GetWorldTimerManager().SetTimer(StartTimerHandle, this,
 				&ATODStageManager::StageStart, 1.0f, false);
@@ -77,10 +80,15 @@ void ATODStageManager::SetNextStage()
 	if (NextPortal == nullptr)
 		return;
 
-	// 스테이지를 랜덤으로?
-	NextPortal->SetNextLevel("");
+	// 다음 스테이지를 랜덤? 순차?
+	int RandomNumber = FMath::RandRange(1, 2);
+	FString SNextStageName = FString::Printf(TEXT("StageMap%d"), RandomNumber);
+	NextPortal->SetNextLevel(FName(*SNextStageName));
+
 	// 다음 지역 이동할 수 있게 충돌 이벤트 활성화
 	NextPortal->SetNextLevelEvent(true);
+
+	IsClear = false;
 }
 
 void ATODStageManager::SetPlayerPosition()
@@ -96,6 +104,8 @@ void ATODStageManager::SetPlayerPosition()
 
 void ATODStageManager::InitEnemy()
 {
+	ArrEnemy.Empty();
+
 	for (int i = 0; i < EnemySpawnPoint.Num(); i++)
 	{
 		if (EnemySpawnPoint[i]->GetEnemyNumber() > 0 && EnemySpawnPoint[i]->GetEnemyNumber() <= ArrEnemyType.Num())
@@ -131,7 +141,14 @@ void ATODStageManager::StageClearCheck()
 	if (EnemyDeadCount >= ArrEnemy.Num())
 	{
 		IsClear = true;
-		NextPortal->SetPortalEffectActive();
+		NextPortal->SetPortalEffectActive(true);
 		print(FString::Printf(TEXT("Stage Clear")));
 	}
+}
+
+void ATODStageManager::ReSetStage()
+{
+	// 초기상태
+	IsBattleStart = false;
+	EnemyDeadCount = 0;
 }

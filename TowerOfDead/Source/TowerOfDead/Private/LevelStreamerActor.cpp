@@ -1,6 +1,7 @@
 #include "LevelStreamerActor.h"
 #include "TODCharacter.h"
 #include "TODGameMode.h"
+#include "TODStageManager.h"
 #include "Kismet/GameplayStatics.h"
 
 ALevelStreamerActor::ALevelStreamerActor()
@@ -17,6 +18,8 @@ ALevelStreamerActor::ALevelStreamerActor()
 
 	OverlapVolume->SetGenerateOverlapEvents(false);
 	OverlapVolume->OnComponentBeginOverlap.AddUniqueDynamic(this, &ALevelStreamerActor::OverlapBegins);
+
+	NowLevel = "";
 }
 
 void ALevelStreamerActor::BeginPlay()
@@ -30,12 +33,20 @@ void ALevelStreamerActor::OverlapBegins(UPrimitiveComponent* OverlappedComponent
 	ATODCharacter* MyCharacter = Cast<ATODCharacter>(OtherActor);
 	if (MyCharacter != nullptr && LevelToLoad != "")
 	{
+		OverlapVolume->SetGenerateOverlapEvents(false);
+
 		ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 		if (gameMode != nullptr)
 			gameMode->PlayFadeOut();
 
-		FLatentActionInfo LatentInfo;
-		UGameplayStatics::LoadStreamLevel(this, LevelToLoad, true, true, LatentInfo);
+		if (LevelToLoad != NowLevel)
+		{
+			FLatentActionInfo LatentInfo;
+			UGameplayStatics::LoadStreamLevel(this, LevelToLoad, true, true, LatentInfo);
+		}
+		else
+			// 해당 스테이지 재 시작.
+			StageManager->ReSetStage();
 
 		/*
 		// 언로드 방법
@@ -48,17 +59,25 @@ void ALevelStreamerActor::OverlapBegins(UPrimitiveComponent* OverlappedComponent
 void ALevelStreamerActor::SetNextLevel(FName stagelevel)
 {
 	if (stagelevel == NAME_None)
-	{
 		return;
-	}
 
 	LevelToLoad = stagelevel;
 }
 
-void ALevelStreamerActor::SetPortalEffectActive()
+void ALevelStreamerActor::SetPortalEffectActive(bool isActive)
 {
 	if (PortalEffect == nullptr)
 		return;
 
-	PortalEffect->Activate(true);
+	PortalEffect->SetVisibility(isActive);
+	PortalEffect->Activate(isActive);
+}
+
+void ALevelStreamerActor::SetNowLevel(ATODStageManager* manager, FName level)
+{
+	if (level == NAME_None || manager == nullptr)
+		return;
+
+	NowLevel = level;
+	StageManager = manager;
 }

@@ -23,11 +23,16 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FName LevelToLoad;
 
+	UPROPERTY(EditAnywhere)
+	FName NowLevel;
+
 public:
 	void SetNextLevel(FName stagelevel);
 	void SetNextLevelEvent(bool isEvent) { OverlapVolume->SetGenerateOverlapEvents(isEvent); }
+	UFUNCTION()
+	void SetNowLevel(ATODStageManager* manager, FName level);
 
-	void SetPortalEffectActive();
+	void SetPortalEffectActive(bool isActive);
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -35,4 +40,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	UParticleSystemComponent* PortalEffect;
+
+	UPROPERTY()
+	ATODStageManager* StageManager;
 };
