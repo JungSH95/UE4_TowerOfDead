@@ -39,10 +39,22 @@ void ALevelStreamerActor::OverlapBegins(UPrimitiveComponent* OverlappedComponent
 		if (gameMode != nullptr)
 			gameMode->PlayFadeOut();
 
+		// 이미 로드 되어 있는 레벨
+		if (gameMode->IsLoadLevel(LevelToLoad))
+		{
+			ATODStageManager* stageMgr = gameMode->GetStageManager(LevelToLoad);
+			if(stageMgr != nullptr)
+				stageMgr->ReSetStage();
+
+			return;
+		}
+
 		if (LevelToLoad != NowLevel)
 		{
 			FLatentActionInfo LatentInfo;
 			UGameplayStatics::LoadStreamLevel(this, LevelToLoad, true, true, LatentInfo);
+
+			gameMode->AddLoadLevel(LevelToLoad);
 		}
 		else
 			// 해당 스테이지 재 시작.

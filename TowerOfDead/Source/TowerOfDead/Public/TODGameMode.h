@@ -22,6 +22,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetIsSequencePlaying() { return IsSequencePlaying; }
 
+	void AddLoadLevel(FName name) { ArrLoadLevel.Add(name); }
+	bool IsLoadLevel(FName name);
+
+	void AddArrStageManager(class ATODStageManager* manager) { ArrStageManager.Add(manager); }
+	ATODStageManager* GetStageManager(FName name);
+
 	void PlayFadeIn();
 	void PlayFadeOut();
 
@@ -41,4 +47,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	bool IsSequencePlaying;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FName> ArrLoadLevel;
+
+	UPROPERTY(EditAnywhere)
+	TArray<class ATODStageManager*> ArrStageManager;
 };

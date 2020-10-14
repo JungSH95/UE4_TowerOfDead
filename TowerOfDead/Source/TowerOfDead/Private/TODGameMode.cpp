@@ -3,6 +3,7 @@
 #include "TODPlayerController.h"
 #include "TODPlayerState.h"
 #include "TODUserWidget.h"
+#include "TODStageManager.h"
 #include "Runtime/LevelSequence/Public/LevelSequenceActor.h"
 
 ATODGameMode::ATODGameMode()
@@ -55,6 +56,26 @@ void ATODGameMode::PostLogin(APlayerController* NewPlayer)
 	auto TODPlayerState = Cast<ATODPlayerState>(NewPlayer->PlayerState);
 	if (TODPlayerState != nullptr)
 		TODPlayerState->InitPlayerData();
+}
+
+bool ATODGameMode::IsLoadLevel(FName name)
+{
+	if (ArrLoadLevel.Num() == 0)
+		return false;
+
+	if (ArrLoadLevel.Contains(name) == true)
+		return true;
+	else
+		return false;
+}
+
+ATODStageManager* ATODGameMode::GetStageManager(FName name)
+{
+	int32 num;
+	if (ArrLoadLevel.Find(name, num))
+		return ArrStageManager[num];
+	else
+		return nullptr;
 }
 
 void ATODGameMode::PlayFadeIn()

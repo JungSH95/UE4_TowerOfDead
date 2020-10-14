@@ -30,6 +30,7 @@ void ATODStageManager::BeginPlay()
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 	if (gameMode != nullptr)
 		TODGameMode = gameMode;
+	TODGameMode->AddArrStageManager(this);
 
 	// StartPoint & Portal & EnemySawnPoint 찾기
 	if (StartPoint == nullptr || NextPortal == nullptr)
@@ -38,15 +39,19 @@ void ATODStageManager::BeginPlay()
 		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OutActors);
 		for (int i = 0; i < OutActors.Num(); i++)
 		{
-			if (OutActors[i]->ActorHasTag("Portal"))
+			// 해당 Stage에 있는 것
+			if (OutActors[i]->ActorHasTag(LevelName))
 			{
-				NextPortal = Cast<ALevelStreamerActor>(OutActors[i]);
-				NextPortal->SetNowLevel(this, LevelName);
+				if (OutActors[i]->ActorHasTag("Portal"))
+				{
+					NextPortal = Cast<ALevelStreamerActor>(OutActors[i]);
+					NextPortal->SetNowLevel(this, LevelName);
+				}
+				else if (OutActors[i]->ActorHasTag("StartPoint"))
+					StartPoint = OutActors[i];
+				else if (OutActors[i]->ActorHasTag("EnemySpawnPoint"))
+					EnemySpawnPoint.Add(Cast<ATODEnemySpawnPoint>(OutActors[i]));
 			}
-			else if (OutActors[i]->ActorHasTag("StartPoint"))
-				StartPoint = OutActors[i];
-			else if (OutActors[i]->ActorHasTag("EnemySpawnPoint") && OutActors[i]->ActorHasTag(LevelName))
-				EnemySpawnPoint.Add(Cast<ATODEnemySpawnPoint>(OutActors[i]));
 		}
 	}
 }
@@ -87,6 +92,7 @@ void ATODStageManager::SetNextStage()
 
 	// 다음 지역 이동할 수 있게 충돌 이벤트 활성화
 	NextPortal->SetNextLevelEvent(true);
+	NextPortal->SetPortalEffectActive(true);
 
 	IsClear = false;
 }
@@ -132,6 +138,9 @@ void ATODStageManager::StageStart()
 		if (EnemyAI != nullptr)
 			EnemyAI->StartAI();
 	}
+
+	if (ArrEnemy.Num() == 0)
+		IsClear = true;
 }
 
 void ATODStageManager::StageClearCheck()
@@ -141,7 +150,6 @@ void ATODStageManager::StageClearCheck()
 	if (EnemyDeadCount >= ArrEnemy.Num())
 	{
 		IsClear = true;
-		NextPortal->SetPortalEffectActive(true);
 		print(FString::Printf(TEXT("Stage Clear")));
 	}
 }
@@ -151,4 +159,6 @@ void ATODStageManager::ReSetStage()
 	// 초기상태
 	IsBattleStart = false;
 	EnemyDeadCount = 0;
+
+	TODLOG_S(Warning);
 }
