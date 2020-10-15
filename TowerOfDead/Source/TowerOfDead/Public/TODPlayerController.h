@@ -18,6 +18,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void PostInitializeComponents() override;
+	virtual void OnPossess(APawn* aPawn) override;
+
 public:
 	bool GetIsMove() { return isMove; }
 	void SetIsMove(bool move) { isMove = move; }

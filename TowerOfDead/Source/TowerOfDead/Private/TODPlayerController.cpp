@@ -37,16 +37,35 @@ void ATODPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	HUDWidget = CreateWidget<UTODUserWidget>(this, HUDWidgetClass);
-	HUDWidget->AddToViewport();
+	TODLOG_S(Warning);
 
 	CPlayer = Cast<ATODCharacter>(GetPawn());
 	TODPlayerState = Cast<ATODPlayerState>(PlayerState);
 
+	HUDWidget->BindPlayerClass(CPlayer);
+	HUDWidget->BindPlayerStateClass(TODPlayerState);
+
 	SetInputMode(FInputModeGameOnly());
 	bShowMouseCursor = false;
+}
 
+void ATODPlayerController::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 	TODLOG_S(Warning);
+}
+
+void ATODPlayerController::OnPossess(APawn* aPawn)
+{
+	Super::OnPossess(aPawn);
+
+	if (HUDWidget == nullptr)
+	{
+		TODLOG_S(Warning);
+
+		HUDWidget = CreateWidget<UTODUserWidget>(this, HUDWidgetClass);
+		HUDWidget->AddToViewport(1);
+	}
 }
 
 void ATODPlayerController::EnemyKill(class ATODEnemy* KilledEnemy)

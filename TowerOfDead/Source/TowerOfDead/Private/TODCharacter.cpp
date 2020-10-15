@@ -72,6 +72,12 @@ void ATODCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
+	if (playerController != nullptr)
+		PlayerController = playerController;
+
+	PlayerController->GetUserHUDWidget()->BindCharacterStatClass(CharacterStat);
+
 	auto TODPlayerState = Cast<ATODPlayerState>(GetPlayerState());
 	if (TODPlayerState != nullptr)
 	{
@@ -234,9 +240,10 @@ void ATODCharacter::SetControl()
 
 void ATODCharacter::SetPlayerStart(bool start)
 {
-	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
-	if (playerController != nullptr)
-		playerController->SetCanInputAction(start);
+	if (PlayerController == nullptr)
+		return;
+
+	PlayerController->SetCanInputAction(start);
 }
 
 void ATODCharacter::SetPlayerDead()
@@ -266,9 +273,10 @@ void ATODCharacter::SetCharacterMove(bool isMoveing)
 	if (IsDead)
 		isMoveing = false;
 
-	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
-	if (playerController != nullptr)
-		playerController->SetIsMove(isMoveing);
+	PlayerController = Cast<ATODPlayerController>(GetController());
+	if (PlayerController != nullptr)
+		PlayerController->SetIsMove(isMoveing);
+
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = isMoveing;
 }
 
@@ -422,9 +430,8 @@ void ATODCharacter::SpecialAttack()
 
 		// 세계 시간 느리게
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4);
-		ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
-		if (playerController != nullptr)
-			playerController->SetMouseSpeed(0.3f);
+		if (PlayerController != nullptr)
+			PlayerController->SetMouseSpeed(0.3f);
 
 		GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
 		Anim->SetSpecialAttacking(true);
@@ -447,9 +454,8 @@ void ATODCharacter::SpecialAttackEnd()
 
 	// 시간 원래대로
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 1.0);
-	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
-	if (playerController != nullptr)
-		playerController->SetMouseSpeed(0.5f);
+	if (PlayerController != nullptr)
+		PlayerController->SetMouseSpeed(0.5f);
 
 	Decal->SetVisibility(false);
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;

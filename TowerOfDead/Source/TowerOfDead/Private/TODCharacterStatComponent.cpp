@@ -12,13 +12,13 @@ void UTODCharacterStatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 }
 
 
 void UTODCharacterStatComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
+	//SetNewCharacterStat(1, 1, 1, GetWorld());
 }
 
 void UTODCharacterStatComponent::SetNewCharacterStat(int32 HpLevel, int32 AtkLevel, int32 DefLevel,
@@ -32,6 +32,8 @@ void UTODCharacterStatComponent::SetNewCharacterStat(int32 HpLevel, int32 AtkLev
 		{
 			MaxHP = HpData->MaxHp;
 			CurrentHP = MaxHP;
+
+			OnHPChanged.Broadcast();
 		}
 
 		FTODCharacterData* AttackData = TODGameInstance->GetTODCharacterData(HpLevel);
@@ -42,7 +44,7 @@ void UTODCharacterStatComponent::SetNewCharacterStat(int32 HpLevel, int32 AtkLev
 		if (DefenseData != nullptr)
 			Defense = DefenseData->Attack;
 	}
-	
+	TODLOG_S(Warning);
 }
 
 void UTODCharacterStatComponent::SetDamage(float NewDamage)

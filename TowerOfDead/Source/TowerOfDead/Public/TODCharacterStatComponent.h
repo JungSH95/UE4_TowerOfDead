@@ -5,6 +5,7 @@
 #include "TODCharacterStatComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHPIsZeroDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnHPChangedDelegate);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class TOWEROFDEAD_API UTODCharacterStatComponent : public UActorComponent
@@ -27,6 +28,7 @@ public:
 	float GetHPRatio() { return CurrentHP / MaxHP; }
 
 	FOnHPIsZeroDelegate OnHPIsZero;
+	FOnHPChangedDelegate OnHPChanged;
 
 private:
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = true))

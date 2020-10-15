@@ -4,7 +4,7 @@
 #include "GameFramework/PlayerState.h"
 #include "TODPlayerState.generated.h"
 
-
+DECLARE_MULTICAST_DELEGATE(FOnPlayerStateChangedDelegate);
 
 UCLASS()
 class TOWEROFDEAD_API ATODPlayerState : public APlayerState
@@ -26,6 +26,8 @@ public:
 	void AddSoul(int32 Soul);
 
 	FString SaveSlotName;
+
+	FOnPlayerStateChangedDelegate OnPlayerStateChange;
 
 protected:
 	UPROPERTY(Transient, VisibleInstanceOnly, Category = State, Meta = (AllowPrivateAccess = true))

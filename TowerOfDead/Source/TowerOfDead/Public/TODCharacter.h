@@ -84,6 +84,9 @@ public:
 private:
 	class UTODAnimInstance* Anim;
 
+	UPROPERTY()
+	class ATODPlayerController* PlayerController;
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsDead;
 

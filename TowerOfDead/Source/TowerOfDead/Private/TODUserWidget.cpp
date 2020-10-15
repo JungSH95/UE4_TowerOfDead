@@ -33,6 +33,7 @@ void UTODUserWidget::BindCharacterStatClass(class UTODCharacterStatComponent* ch
 	if (characterStat != nullptr)
 	{
 		CurrentCharacterStat = characterStat;
+		characterStat->OnHPChanged.AddUObject(this, &UTODUserWidget::UpdateCharacterStat);
 	}
 }
 
@@ -51,6 +52,8 @@ void UTODUserWidget::UpdateCharacterStat()
 
 	if (HPBar != nullptr)
 		HPBar->SetPercent(CurrentCharacterStat->GetHPRatio());
+
+	TODLOG_S(Warning);
 }
 
 void UTODUserWidget::UpdatePlayerState()
