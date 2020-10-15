@@ -15,8 +15,6 @@ public:
 	virtual void BeginPlay() override;
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
-	class UTODUserWidget* GetUserHUDWidget() { return HUDWidget; }
-
 	UFUNCTION(BlueprintCallable)
 	void SetIsSequencePlaying(bool isPlaying) { IsSequencePlaying = isPlaying; }
 	UFUNCTION(BlueprintCallable)
@@ -31,14 +29,7 @@ public:
 	void PlayFadeIn();
 	void PlayFadeOut();
 
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
-	TSubclassOf<class UTODUserWidget> HUDWidgetClass;
-
 private:
-	UPROPERTY()
-	class UTODUserWidget* HUDWidget;
-
 	UPROPERTY(EditAnywhere)
 	class ALevelSequenceActor* FadeInSequence;
 

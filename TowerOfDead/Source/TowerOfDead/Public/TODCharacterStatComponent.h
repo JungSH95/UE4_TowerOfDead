@@ -22,7 +22,9 @@ public:
 	void SetNewCharacterStat(int32 HpLevel, int32 AtkLevel, int32 DefLevel, UWorld* World);
 
 	void SetDamage(float NewDamage);
+
 	float GetAttack() { return Attack; }
+	float GetHPRatio() { return CurrentHP / MaxHP; }
 
 	FOnHPIsZeroDelegate OnHPIsZero;
 

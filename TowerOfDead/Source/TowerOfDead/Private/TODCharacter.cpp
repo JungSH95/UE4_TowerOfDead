@@ -71,10 +71,6 @@ ATODCharacter::ATODCharacter()
 void ATODCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
-	if (gameMode != nullptr)
-		gameMode->GetUserHUDWidget()->BindPlayerClass(this);
 
 	auto TODPlayerState = Cast<ATODPlayerState>(GetPlayerState());
 	if (TODPlayerState != nullptr)
@@ -254,9 +250,11 @@ void ATODCharacter::SetPlayerDead()
 	// 강공격 관련 종료
 	IsHardAttacking = false;
 	
+	/*
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
+	*/
 
 	// 이동 불가
 	SetCharacterMove(false);
@@ -353,9 +351,11 @@ void ATODCharacter::HardAttack()
 
 	CastTime = 0.0f;
 
+	/*
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->SetVisibleCast(true);
+	*/
 }
 
 void ATODCharacter::HardAttackCheck()
@@ -382,9 +382,11 @@ void ATODCharacter::HardAttackCheck()
 		Anim->Montage_Stop(0.2f, Anim->GetCurrentActiveMontage());
 	}
 
+	/*
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
+	*/
 
 	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this,
 		&ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);

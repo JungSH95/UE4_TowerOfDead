@@ -16,9 +16,6 @@ ATODGameMode::ATODGameMode()
 	if (BP_PAWN_C.Succeeded())
 		DefaultPawnClass = BP_PAWN_C.Class;
 
-	static ConstructorHelpers::FClassFinder<UTODUserWidget> BP_UI(TEXT("/Game/UI/InGame_UI.InGame_UI_C"));
-	if (BP_UI.Succeeded())
-		HUDWidgetClass = BP_UI.Class;
 
 	IsSequencePlaying = false;
 }
@@ -26,13 +23,6 @@ ATODGameMode::ATODGameMode()
 void ATODGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (HUDWidgetClass != nullptr)
-	{
-		HUDWidget = CreateWidget<UTODUserWidget>(GetWorld(), HUDWidgetClass);
-		if (HUDWidget != nullptr)
-			HUDWidget->AddToViewport();
-	}
 
 	TArray<AActor*>  OutActors;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OutActors);

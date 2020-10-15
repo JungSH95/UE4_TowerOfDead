@@ -28,6 +28,8 @@ public:
 
 	void EnemyKill(class ATODEnemy* KilledEnemy);
 
+	class UTODUserWidget* GetUserHUDWidget() { return HUDWidget; }
+
 private:
 	void UpDown(float AxisValue);
 	void LeftRight(float AxisValue);
@@ -43,7 +45,14 @@ private:
 	void SpecialAttack();
 	void SpecialAttackEnd();
 
+protected:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
+	TSubclassOf<class UTODUserWidget> HUDWidgetClass;
+
 private:
+	UPROPERTY()
+	class UTODUserWidget* HUDWidget;
+
 	UPROPERTY()
 	class ATODCharacter* CPlayer;
 

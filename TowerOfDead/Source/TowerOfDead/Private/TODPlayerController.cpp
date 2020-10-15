@@ -2,9 +2,14 @@
 #include "TODPlayerState.h"
 #include "TODEnemy.h"
 #include "TODEnemyStatComponent.h"
+#include "TODUserWidget.h"
 
 ATODPlayerController::ATODPlayerController()
 {
+	static ConstructorHelpers::FClassFinder<UTODUserWidget> BP_UI(TEXT("/Game/UI/InGame_UI.InGame_UI_C"));
+	if (BP_UI.Succeeded())
+		HUDWidgetClass = BP_UI.Class;
+
 	isMove = true;
 	MouseSpeed = 0.5f;
 	CanInputAction = false;
@@ -31,6 +36,9 @@ void ATODPlayerController::SetupInputComponent()
 void ATODPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	HUDWidget = CreateWidget<UTODUserWidget>(this, HUDWidgetClass);
+	HUDWidget->AddToViewport();
 
 	CPlayer = Cast<ATODCharacter>(GetPawn());
 	TODPlayerState = Cast<ATODPlayerState>(PlayerState);
