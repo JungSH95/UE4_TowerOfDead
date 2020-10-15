@@ -25,6 +25,8 @@ public:
 		class AController* EventInstigator, AActor* DamageCauser) override;
 
 	void SetControl();
+	UFUNCTION(BlueprintCallable)
+	void SetPlayerStart(bool start);
 	void SetPlayerDead();
 
 	UFUNCTION(BlueprintCallable)
@@ -34,6 +36,7 @@ public:
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
+	void SetCanAttack() { CanAttack = true; };
 	void AttackStartComboState();
 	void AttackEndComboState();
 
@@ -41,6 +44,7 @@ public:
 
 	void HardAttack();
 	void HardAttackCheck();
+	void HardAttackEnd();
 	void HardAttackCoolDownTimer();
 
 	FOnHardAttackCastDelegate OnHardAttackCast;
@@ -85,7 +89,10 @@ private:
 
 	// ÄÞº¸ °ø°Ý ------------------------------------------
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsAttaking;
+	bool IsAttacking;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool CanAttack;
 	
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool CanNextCombo;

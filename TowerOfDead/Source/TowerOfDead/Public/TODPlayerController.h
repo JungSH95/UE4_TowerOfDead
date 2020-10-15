@@ -24,6 +24,8 @@ public:
 
 	void SetMouseSpeed(float speed) { MouseSpeed = speed; }
 
+	void SetCanInputAction(bool input) { CanInputAction = input; }
+
 	void EnemyKill(class ATODEnemy* KilledEnemy);
 
 private:
@@ -50,6 +52,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
 	float MouseSpeed;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
+	bool CanInputAction;
 
 	UPROPERTY()
 	class ATODPlayerState* TODPlayerState;

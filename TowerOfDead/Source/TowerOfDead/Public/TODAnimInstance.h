@@ -6,7 +6,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHardAttackHitCheckElegate, int32, float);
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnHardAttackEndDelegate, bool);
+DECLARE_MULTICAST_DELEGATE(FOnHardAttackEndDelegate);
 
 UCLASS()
 class TOWEROFDEAD_API UTODAnimInstance : public UAnimInstance
@@ -43,9 +43,9 @@ public:
 
 private:
 	UFUNCTION()
-	void AnimNotify_LevelStartAnimEnd();
-	UFUNCTION()
 	void AnimNotify_NextAttackCheck();
+	UFUNCTION()
+	void AnimNotify_SetCanAttack();
 
 	UFUNCTION()
 	void AnimNotify_AttackHitCheckStart();

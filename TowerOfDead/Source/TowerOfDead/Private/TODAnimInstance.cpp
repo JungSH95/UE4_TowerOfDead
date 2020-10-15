@@ -95,22 +95,20 @@ void UTODAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 		Montage_JumpToSection(GetAttackMontageSectionName(NewSection), AttackMontage);
 }
 
-void UTODAnimInstance::AnimNotify_LevelStartAnimEnd()
+void UTODAnimInstance::AnimNotify_NextAttackCheck()
+{
+	OnNextAttackCheck.Broadcast();
+}
+
+void UTODAnimInstance::AnimNotify_SetCanAttack()
 {
 	auto PlayerPawn = TryGetPawnOwner();
 	if (::IsValid(PlayerPawn))
 	{
-		PlayerPawn->GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
-
-		ATODPlayerController* player = Cast< ATODPlayerController>(PlayerPawn->GetController());
-		if (player != nullptr)
-			player->SetIsMove(true);
+		ATODCharacter* Player = Cast<ATODCharacter>(PlayerPawn);
+		if (Player != nullptr)
+			Player->SetCanAttack();
 	}
-}
-
-void UTODAnimInstance::AnimNotify_NextAttackCheck()
-{
-	OnNextAttackCheck.Broadcast();
 }
 
 void UTODAnimInstance::AnimNotify_AttackHitCheckStart()
@@ -150,7 +148,7 @@ void UTODAnimInstance::AnimNotify_HardAttackStart()
 
 void UTODAnimInstance::AnimNotify_HardAttackEnd()
 {
-	OnHardAttackEnd.Broadcast(true);
+	OnHardAttackEnd.Broadcast();
 }
 
 void UTODAnimInstance::AnimNotify_HardAttackHitCheck()

@@ -7,6 +7,7 @@ ATODPlayerController::ATODPlayerController()
 {
 	isMove = true;
 	MouseSpeed = 0.5f;
+	CanInputAction = false;
 }
 
 
@@ -100,16 +101,25 @@ void ATODPlayerController::LookUp(float AxisValue)
 
 void ATODPlayerController::Attack()
 {
+	if (CanInputAction == false)
+		return;
+
 	CPlayer->Attack();
 }
 
 void ATODPlayerController::HardAttack()
 {
+	if (CanInputAction == false)
+		return;
+
 	CPlayer->HardAttack();
 }
 
 void ATODPlayerController::HardAttackEnd()
 {
+	if (CanInputAction == false)
+		return;
+
 	// 버튼에서 땠을 때 판정을 확인하여 성공일 경우 강공격 실행 후 이동 및 점프 가능
 	//									실패일 경우 Montage 정지 후 이동 및 점프 가능
 	CPlayer->HardAttackCheck();
@@ -117,10 +127,16 @@ void ATODPlayerController::HardAttackEnd()
 
 void ATODPlayerController::SpecialAttack()
 {
+	if (CanInputAction == false)
+		return;
+
 	CPlayer->SpecialAttack();
 }
 
 void ATODPlayerController::SpecialAttackEnd()
 {
+	if (CanInputAction == false)
+		return;
+
 	CPlayer->SpecialAttackEnd();
 }

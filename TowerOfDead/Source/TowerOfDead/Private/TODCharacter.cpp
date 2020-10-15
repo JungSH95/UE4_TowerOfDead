@@ -53,7 +53,8 @@ ATODCharacter::ATODCharacter()
 	IsDead = false;
 	
 	// 일반 공격 설정
-	IsAttaking = false;
+	IsAttacking = false;
+	CanAttack = true;
 	MaxCombo = 4;
 	AttackEndComboState();
 
@@ -189,7 +190,7 @@ void ATODCharacter::PostInitializeComponents()
 			}
 		});
 		
-		Anim->OnHardAttackEnd.AddUFunction(this, FName("SetCharacterMove"));
+		Anim->OnHardAttackEnd.AddUObject(this, &ATODCharacter::HardAttackEnd);
 		Anim->OnHardAttackHitCheck.AddUObject(this, &ATODCharacter::HardAndSpecialAttackHitCheck);
 	}
 
@@ -235,6 +236,13 @@ void ATODCharacter::SetControl()
 	GetCharacterMovement()->JumpZVelocity = 400.0f;
 }
 
+void ATODCharacter::SetPlayerStart(bool start)
+{
+	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
+	if (playerController != nullptr)
+		playerController->SetCanInputAction(start);
+}
+
 void ATODCharacter::SetPlayerDead()
 {
 	TODLOG_S(Warning);
@@ -271,11 +279,11 @@ void ATODCharacter::Attack()
 	if (Anim == nullptr)
 		return;
 
-	// 무기가 던져져 있다면 불가능
-	if (Anim->GetIsSpecialTarget() || IsHardAttacking || IsSpecialAttacking)
+	// 무기가 던져져 있다면 불가능 (기술 시전중일 때 불가능)
+	if (IsHardAttacking || IsSpecialAttacking || !CanAttack)
 		return;
 
-	if (IsAttaking)
+	if (IsAttacking)
 	{
 		if (CanNextCombo)
 		{
@@ -292,7 +300,7 @@ void ATODCharacter::Attack()
 		AttackStartComboState();
 		Anim->PlayAttackMontage();
 		Anim->JumpToAttackMontageSection(CurrentCombo);
-		IsAttaking = true;
+		IsAttacking = true;
 	}
 }
 
@@ -301,8 +309,14 @@ void ATODCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupte
 	// 일반 공격 몽타주라면
 	if (Montage == Anim->GetAttackMontage())
 	{
-		IsAttaking = false;
+		IsAttacking = false;
 		AttackEndComboState();
+	}
+
+	// 강 공격일 때 
+	if (Montage == Anim->GetHardAttackMontage())
+	{
+		CanAttack = true;
 	}
 }
 
@@ -333,6 +347,7 @@ void ATODCharacter::HardAttack()
 	Anim->PlayHardAttackMontage();
 	SetCharacterMove(false);
 
+	CanAttack = false;
 	IsHardAttacking = true;
 	IsCanHardAttack = false;
 
@@ -375,6 +390,12 @@ void ATODCharacter::HardAttackCheck()
 		&ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
 }
 
+void ATODCharacter::HardAttackEnd()
+{
+	SetCharacterMove(true);
+	CanAttack = true;
+}
+
 void ATODCharacter::HardAttackCoolDownTimer()
 {
 	print(FString::Printf(TEXT("Can Hard Attack!!")));
@@ -385,7 +406,7 @@ void ATODCharacter::HardAttackCoolDownTimer()
 void ATODCharacter::SpecialAttack()
 {
 	// 공격 중
-	if (IsAttaking || Anim->Montage_IsPlaying(Anim->GetHardAttackMontage()))
+	if (IsAttacking || Anim->Montage_IsPlaying(Anim->GetHardAttackMontage()))
 		return;
 
 	// 특수 공격 가능
@@ -395,6 +416,7 @@ void ATODCharacter::SpecialAttack()
 		IsSpecialAttacking = true;
 		IsCanSpecialAttack = false;
 		IsCanSpecialCatch = false;
+		CanAttack = false;
 
 		// 세계 시간 느리게
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4);
@@ -440,7 +462,7 @@ void ATODCharacter::SpecialAttackCatch()
 {
 	// 무기 받기
 	Anim->PlayCatchMontage();
-
+	
 	// 쿨타임 진행
 	GetWorldTimerManager().SetTimer(SpecialAttackTimerHandle, this,
 		&ATODCharacter::SpecialAttackCoolDownTimer, SpecialAttackCoolDownTime, false);
