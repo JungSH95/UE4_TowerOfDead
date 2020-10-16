@@ -2,6 +2,7 @@
 #include "TODCharacter.h"
 #include "TODCharacterStatComponent.h"
 #include "TODPlayerState.h"
+#include "TODEnemyStatComponent.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
@@ -19,6 +20,10 @@ void UTODUserWidget::NativeConstruct()
 	HPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Player_HPBar")));
 	CharacterName = Cast<UTextBlock>(GetWidgetFromName(TEXT("PlayerName_Text")));
 	CurrentSoul = Cast<UTextBlock>(GetWidgetFromName(TEXT("Soul_Text")));
+
+	BossHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Boss_HPBar")));
+	BossName = Cast<UTextBlock>(GetWidgetFromName(TEXT("BossName_Text")));
+	SetBossInfoVisible(false);
 }
 
 void UTODUserWidget::BindPlayerClass(class ATODCharacter* player)
@@ -46,6 +51,14 @@ void UTODUserWidget::BindPlayerStateClass(class ATODPlayerState* playerState)
 	{
 		CurrentPlayerState = playerState;
 		playerState->OnPlayerStateChange.AddUObject(this, &UTODUserWidget::UpdatePlayerState);
+	}
+}
+
+void UTODUserWidget::BindEnemyStateClass(class UTODEnemyStatComponent* enemyStat)
+{
+	if (enemyStat != nullptr)
+	{
+		BossEnemyStat = enemyStat;
 	}
 }
 
@@ -77,6 +90,17 @@ void UTODUserWidget::UpdateHardAttackCast()
 	HardAttackCastBar->SetPercent(CurrentPlayer->GetHardAttackRatio());
 }
 
+void UTODUserWidget::UpdateBossState()
+{
+	if (BossEnemyStat == nullptr)
+		return;
+
+	if(BossName != nullptr)
+		BossName->SetText(FText::FromString("BOSSSSSSSSSSSSSSSS"));
+	if(BossHPBar != nullptr)
+		BossHPBar->SetPercent(BossEnemyStat->GetHPRatio());
+}
+
 void UTODUserWidget::SetVisibleCast(bool isVisible)
 {
 	if (CastWidget != nullptr)
@@ -87,3 +111,21 @@ void UTODUserWidget::SetVisibleCast(bool isVisible)
 			CastWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
+
+void UTODUserWidget::SetBossInfoVisible(bool isVisible)
+{
+	if (BossName == nullptr || BossHPBar == nullptr)
+		return;
+
+	if (isVisible)
+	{
+		BossName->SetVisibility(ESlateVisibility::Visible);
+		BossHPBar->SetVisibility(ESlateVisibility::Visible);
+	}
+	else
+	{
+		BossName->SetVisibility(ESlateVisibility::Hidden);
+		BossHPBar->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+

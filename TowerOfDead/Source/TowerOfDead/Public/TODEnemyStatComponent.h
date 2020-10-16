@@ -25,6 +25,7 @@ public:
 	float GetAttack();
 
 	int32 GetDropSoul();
+	float GetHPRatio();
 
 	FOnHPIsZeroDelegate OnHPIsZero;
 

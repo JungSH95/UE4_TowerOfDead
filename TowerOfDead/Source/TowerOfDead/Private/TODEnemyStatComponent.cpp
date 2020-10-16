@@ -62,3 +62,11 @@ int32 UTODEnemyStatComponent::GetDropSoul()
 {
 	return CurrentStatData->DropSoul;
 }
+
+float UTODEnemyStatComponent::GetHPRatio()
+{
+	if (CurrentStatData == nullptr)
+		return 0.0f;
+
+	return CurrentHP / CurrentStatData->MaxHp; 
+}
