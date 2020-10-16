@@ -29,8 +29,8 @@ public:
 
 	float GetAttackRange() { return AttackRange; }
 	float GetEffectiveRange() { return EffectiveRange; }
-
 	bool GetIsCanAttack() { return IsCanAttack; }
+	bool GetIsDead() { return IsDead; }
 
 	void Attack();
 	UFUNCTION()
@@ -38,15 +38,17 @@ public:
 
 	void OnAttackCheck();
 	void OnAttackCheckEnd();
-
 	void AttackCoolDownTime();
 
-	bool GetIsDead() { return IsDead; }
+	void Dead();
 
 	FOnEnemyDeadDelegate OnEnemyDeadCheck;
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 	class UTODEnemyStatComponent* EnemyStat;
+
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* HPBarWidget;
 
 private:
 	UFUNCTION()

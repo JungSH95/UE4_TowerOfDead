@@ -4,6 +4,8 @@
 #include "TODAIAnimInstance.h"
 #include "TODCharacter.h"
 #include "TODPlayerController.h"
+#include "Components/WidgetComponent.h"
+#include "TODEnemyWidget.h"
 
 ATODEnemy::ATODEnemy()
 {
@@ -28,6 +30,20 @@ ATODEnemy::ATODEnemy()
 	
 	EnemyStat = CreateDefaultSubobject<UTODEnemyStatComponent>(TEXT("ENEMYSTAT"));
 
+	HPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
+	HPBarWidget->SetupAttachment(GetMesh());
+	HPBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+	HPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/UI/EnemyHPBar_UI.EnemyHPBar_UI_C"));
+	if (UI_HUD.Succeeded())
+	{
+		HPBarWidget->SetWidgetClass(UI_HUD.Class);
+		HPBarWidget->SetDrawSize(FVector2D(150.0f, 50.0f));
+	}
+	// 보이는 유무 설정
+	HPBarWidget->SetHiddenInGame(false);
+
 	State = EnemyState::PEACE;
 	IsDead = false;
 
@@ -42,6 +58,10 @@ void ATODEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// HPBar Enemy 연동
+	auto EnemyWidget = Cast<UTODEnemyWidget>(HPBarWidget->GetUserWidgetObject());
+	if (EnemyWidget != nullptr)
+		EnemyWidget->BindEnemyStat(EnemyStat);
 }
 
 void ATODEnemy::Tick(float DeltaTime)
@@ -71,8 +91,7 @@ void ATODEnemy::PostInitializeComponents()
 		State = EnemyState::DEAD;
 		IsDead = true;
 
-		SetActorEnableCollision(false);
-
+		Dead();
 		OnEnemyDeadCheck.Broadcast();
 	});
 }
@@ -163,6 +182,12 @@ void ATODEnemy::OnAttackCheckEnd()
 void ATODEnemy::AttackCoolDownTime()
 {
 	IsCanAttack = true;
+}
+
+void ATODEnemy::Dead()
+{
+	SetActorEnableCollision(false);
+	HPBarWidget->SetHiddenInGame(true);
 }
 
 void ATODEnemy::OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,

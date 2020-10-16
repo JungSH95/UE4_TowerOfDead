@@ -30,7 +30,7 @@ void UTODEnemyStatComponent::SetNewLevel(int32 NewLevel)
 		if (CurrentStatData != nullptr)
 		{
 			Level = CurrentStatData->Level;
-			CurrentHP = CurrentStatData->MaxHp;
+			SetHP(CurrentStatData->MaxHp);
 		}
 		else
 			TODLOG(Error, TEXT("Level Data Not Find"));
@@ -41,11 +41,19 @@ void UTODEnemyStatComponent::SetDamage(float NewDamage)
 {
 	if (CurrentStatData == nullptr)
 		return;
+	SetHP(FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHp));
+}
 
-	CurrentHP = FMath::Clamp<float>(CurrentHP - NewDamage, 0.0f, CurrentStatData->MaxHp);
+void UTODEnemyStatComponent::SetHP(float NewHP)
+{
+	CurrentHP = NewHP;
+	OnHPChanged.Broadcast();
 
 	if (CurrentHP <= 0.0f)
+	{
+		CurrentHP = 0.0f;
 		OnHPIsZero.Broadcast();
+	}
 }
 
 float UTODEnemyStatComponent::GetAttack()
