@@ -29,7 +29,13 @@ private:
 	TWeakObjectPtr<class ATODPlayerState> CurrentPlayerState;
 
 	UPROPERTY()
+	class UTextBlock* CharacterName;
+
+	UPROPERTY()
 	class UProgressBar* HPBar;
+
+	UPROPERTY()
+	class UTextBlock* CurrentSoul;
 
 	UPROPERTY()
 	class UProgressBar* HardAttackCastBar;

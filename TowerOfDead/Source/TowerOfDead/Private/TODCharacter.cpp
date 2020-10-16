@@ -262,6 +262,7 @@ void ATODCharacter::SetPlayerDead()
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
 	*/
+	PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
 
 	// 이동 불가
 	SetCharacterMove(false);
@@ -364,6 +365,7 @@ void ATODCharacter::HardAttack()
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->SetVisibleCast(true);
 	*/
+	PlayerController->GetUserHUDWidget()->SetVisibleCast(true);
 }
 
 void ATODCharacter::HardAttackCheck()
@@ -395,6 +397,7 @@ void ATODCharacter::HardAttackCheck()
 	if (gameMode != nullptr)
 		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
 	*/
+	PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
 
 	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this,
 		&ATODCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);

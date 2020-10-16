@@ -3,6 +3,7 @@
 #include "TODCharacterStatComponent.h"
 #include "TODPlayerState.h"
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 
 void UTODUserWidget::NativeConstruct()
 {
@@ -16,6 +17,8 @@ void UTODUserWidget::NativeConstruct()
 	}
 
 	HPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Player_HPBar")));
+	CharacterName = Cast<UTextBlock>(GetWidgetFromName(TEXT("PlayerName_Text")));
+	CurrentSoul = Cast<UTextBlock>(GetWidgetFromName(TEXT("Soul_Text")));
 }
 
 void UTODUserWidget::BindPlayerClass(class ATODCharacter* player)
@@ -42,6 +45,7 @@ void UTODUserWidget::BindPlayerStateClass(class ATODPlayerState* playerState)
 	if (playerState != nullptr)
 	{
 		CurrentPlayerState = playerState;
+		playerState->OnPlayerStateChange.AddUObject(this, &UTODUserWidget::UpdatePlayerState);
 	}
 }
 
@@ -52,8 +56,6 @@ void UTODUserWidget::UpdateCharacterStat()
 
 	if (HPBar != nullptr)
 		HPBar->SetPercent(CurrentCharacterStat->GetHPRatio());
-
-	TODLOG_S(Warning);
 }
 
 void UTODUserWidget::UpdatePlayerState()
@@ -61,6 +63,10 @@ void UTODUserWidget::UpdatePlayerState()
 	if (CurrentPlayerState == nullptr)
 		return;
 
+	if (CharacterName != nullptr)
+		CharacterName->SetText(FText::FromString("Kwang"));
+	if (CurrentSoul != nullptr)
+		CurrentSoul->SetText(FText::FromString(FString::FromInt(CurrentPlayerState->GetCurrentSoul())));
 }
 
 void UTODUserWidget::UpdateHardAttackCast()

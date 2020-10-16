@@ -44,6 +44,7 @@ void ATODPlayerController::BeginPlay()
 
 	HUDWidget->BindPlayerClass(CPlayer);
 	HUDWidget->BindPlayerStateClass(TODPlayerState);
+	TODPlayerState->OnPlayerStateChange.Broadcast();
 
 	SetInputMode(FInputModeGameOnly());
 	bShowMouseCursor = false;
@@ -74,6 +75,7 @@ void ATODPlayerController::EnemyKill(class ATODEnemy* KilledEnemy)
 		return;
 
 	TODPlayerState->AddSoul(KilledEnemy->EnemyStat->GetDropSoul());
+	TODPlayerState->OnPlayerStateChange.Broadcast();
 }
 
 void ATODPlayerController::UpDown(float AxisValue)
