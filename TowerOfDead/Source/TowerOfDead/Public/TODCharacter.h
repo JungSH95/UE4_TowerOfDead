@@ -84,6 +84,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystemComponent* SwordEffect;
 
+	UPROPERTY(VisibleAnywhere, Category = Effect)
+	UParticleSystemComponent* HitEffect;
+
 private:
 	class UTODAnimInstance* Anim;
 

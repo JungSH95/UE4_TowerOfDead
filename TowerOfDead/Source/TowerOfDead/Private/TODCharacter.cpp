@@ -21,6 +21,7 @@ ATODCharacter::ATODCharacter()
 	Decal = CreateDefaultSubobject <UDecalComponent>(TEXT("DECAL"));
 	WeaponTrigger = CreateDefaultSubobject<UCapsuleComponent>(TEXT("WEAPONTRIGGER"));
 	SwordEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
+	HitEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HITEFFECT"));
 
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->bEnableCameraRotationLag = true;
@@ -47,6 +48,13 @@ ATODCharacter::ATODCharacter()
 	static ConstructorHelpers::FClassFinder<UAnimInstance> KWANG_ANIM(TEXT("/Game/BluePrint/Anim_Player.Anim_Player_C"));
 	if (KWANG_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(KWANG_ANIM.Class);
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Primary/FX/P_Kwang_Primary_Impact.P_Kwang_Primary_Impact"));
+	if (P_HITEFFECT.Succeeded())
+	{
+		HitEffect->SetTemplate(P_HITEFFECT.Object);
+		HitEffect->bAutoActivate = false;
+	}
 
 	SetControl();
 	

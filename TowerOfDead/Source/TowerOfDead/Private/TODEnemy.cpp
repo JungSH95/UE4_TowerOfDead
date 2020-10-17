@@ -31,8 +31,8 @@ ATODEnemy::ATODEnemy()
 	EnemyStat = CreateDefaultSubobject<UTODEnemyStatComponent>(TEXT("ENEMYSTAT"));
 
 	HPBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
-	HPBarWidget->SetupAttachment(GetMesh());
-	HPBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
+	HPBarWidget->SetupAttachment(GetMesh(), FName(TEXT("HealthBar")));
+	HPBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	HPBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/UI/EnemyHPBar_UI.EnemyHPBar_UI_C"));
