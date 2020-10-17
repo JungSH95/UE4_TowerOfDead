@@ -5,6 +5,7 @@
 #include "TODEnemySpawnPoint.h"
 #include "TODCharacter.h"
 #include "TODGameMode.h"
+#include "Components/WidgetComponent.h"
 
 ATODStageManager::ATODStageManager()
 {
@@ -117,7 +118,7 @@ void ATODStageManager::InitEnemy()
 		if (EnemySpawnPoint[i]->GetEnemyNumber() > 0 && EnemySpawnPoint[i]->GetEnemyNumber() <= ArrEnemyType.Num())
 		{
 			ATODEnemy* Enemy = GetWorld()->SpawnActor<ATODEnemy>(ArrEnemyType[EnemySpawnPoint[i]->GetEnemyNumber() - 1],
-				EnemySpawnPoint[i]->GetActorLocation(), FRotator::ZeroRotator);
+				EnemySpawnPoint[i]->GetActorLocation(), EnemySpawnPoint[i]->GetActorRotation());
 			ArrEnemy.Add(Enemy);
 
 			Enemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
@@ -137,6 +138,7 @@ void ATODStageManager::StageStart()
 		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(ArrEnemy[i]->GetController());
 		if (EnemyAI != nullptr)
 			EnemyAI->StartAI();
+		ArrEnemy[i]->HPBarWidget->SetHiddenInGame(false);
 	}
 
 	if (ArrEnemy.Num() == 0)

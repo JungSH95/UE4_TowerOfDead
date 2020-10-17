@@ -42,7 +42,7 @@ ATODEnemy::ATODEnemy()
 		HPBarWidget->SetDrawSize(FVector2D(150.0f, 50.0f));
 	}
 	// 보이는 유무 설정
-	HPBarWidget->SetHiddenInGame(false);
+	HPBarWidget->SetHiddenInGame(true);
 
 	State = EnemyState::PEACE;
 	IsDead = false;

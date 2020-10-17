@@ -47,8 +47,9 @@ public:
 	void HardAttackEnd();
 	void HardAttackCoolDownTimer();
 
-	FOnHardAttackCastDelegate OnHardAttackCast;
+	
 	float GetHardAttackRatio() { return CastTime / HardAttackTime; }
+	bool GetIsDead() { return IsDead; }
 
 	void SpecialAttack();
 	void SpecialAttackCatch();
@@ -57,6 +58,8 @@ public:
 	void SpecialAttackCoolDownTimer();
 
 	void HardAndSpecialAttackHitCheck(int32 AttackType, float Range);
+
+	FOnHardAttackCastDelegate OnHardAttackCast;
 
 	UFUNCTION()
 	void OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
