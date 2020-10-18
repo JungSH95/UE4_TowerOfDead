@@ -49,6 +49,7 @@ ATODCharacter::ATODCharacter()
 	if (KWANG_ANIM.Succeeded())
 		GetMesh()->SetAnimInstanceClass(KWANG_ANIM.Class);
 
+	HitEffect->SetupAttachment(RootComponent);
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Primary/FX/P_Kwang_Primary_Impact.P_Kwang_Primary_Impact"));
 	if (P_HITEFFECT.Succeeded())
 	{
@@ -145,7 +146,7 @@ void ATODCharacter::Tick(float DeltaTime)
 	}
 
 	FVector EffectPoint = Anim->GetTargetPoint();
-	EffectPoint.Z = 20.0f;
+	EffectPoint.Z = 30.0f;
 	SwordEffect->SetWorldLocation(EffectPoint);
 
 	if (IsWeaponFall)

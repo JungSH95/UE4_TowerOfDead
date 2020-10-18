@@ -44,6 +44,15 @@ ATODEnemy::ATODEnemy()
 	// 보이는 유무 설정
 	HPBarWidget->SetHiddenInGame(true);
 
+	HitEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HITEFFECT"));
+	HitEffect->SetupAttachment(RootComponent);
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Primary/FX/P_Kwang_Primary_Impact.P_Kwang_Primary_Impact"));
+	if (P_HITEFFECT.Succeeded())
+	{
+		HitEffect->SetTemplate(P_HITEFFECT.Object);
+		HitEffect->bAutoActivate = false;
+	}
+
 	State = EnemyState::PEACE;
 	IsDead = false;
 
@@ -113,6 +122,11 @@ float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 		if (AnimInstance->PlayHitReactMontage(0))
 		{
 			TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+
+			FVector effectLoc = GetMesh()->GetSocketLocation("Impact");
+			HitEffect->SetWorldLocation(effectLoc);
+			HitEffect->Activate(true);
+
 			EnemyStat->SetDamage(FinalDamage);
 		}
 	}

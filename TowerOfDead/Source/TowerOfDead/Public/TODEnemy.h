@@ -50,6 +50,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* HPBarWidget;
 
+	UPROPERTY(VisibleAnywhere, Category = Effect)
+	UParticleSystemComponent* HitEffect;
+
 private:
 	UFUNCTION()
 	void OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
