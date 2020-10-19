@@ -52,6 +52,9 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TArray<TSubclassOf<class ATODEnemy>> ArrEnemyType;
 
+	UPROPERTY(VisibleAnywhere)
+	TArray<TSubclassOf<class ATODEnemy>> ArrBossType;
+
 	UPROPERTY()
 	TArray<ATODEnemySpawnPoint*> EnemySpawnPoint;
 
@@ -60,4 +63,7 @@ private:
 
 	UPROPERTY()
 	int32 EnemyDeadCount;
+
+	UPROPERTY()
+	ATODEnemy* BossEnemy;
 };

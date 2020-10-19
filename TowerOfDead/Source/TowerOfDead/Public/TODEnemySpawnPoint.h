@@ -18,6 +18,7 @@ protected:
 public:	
 	int32 GetEnemyNumber() { return EnemyNumber; }
 	int32 GetEnemyLevel() { return EnemyLevel; }
+	bool GetIsBoss() { return IsBoss; }
 
 private:
 	UPROPERTY(EditInstanceOnly, Category = EnemyInfo, Meta = (AllowPrivateAccess = true))
@@ -25,4 +26,7 @@ private:
 
 	UPROPERTY(EditInstanceOnly, Category = EnemyInfo, Meta = (AllowPrivateAccess = true))
 	int32 EnemyLevel;
+
+	UPROPERTY(EditInstanceOnly, Category = EnemyInfo, Meta = (AllowPrivateAccess = true))
+	bool IsBoss;
 };
