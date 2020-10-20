@@ -141,7 +141,6 @@ void ATODCharacter::Tick(float DeltaTime)
 			FVector Point = Hit.Location;
 			Point.Z = 2000.0f;
 			Anim->SetTargetPoint(Point);
-			IsWeaponFall = true;
 		}
 	}
 
@@ -478,6 +477,7 @@ void ATODCharacter::SpecialAttackEnd()
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
 
 	IsSpecialAttacking = false;
+	IsWeaponFall = true;
 
 	// ¸ñÇ¥ ÁöÁ¡¿¡ Ä® ÅõÃ´
 	Anim->PlayThrowMontage();
