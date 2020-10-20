@@ -13,11 +13,13 @@ protected:
 	virtual void NativeConstruct() override;
 
 public:
+	void BindGameModeClass(class ATODGameMode* gamemode);
 	void BindPlayerClass(class ATODCharacter* player);
 	void BindCharacterStatClass(class UTODCharacterStatComponent* characterStat);
 	void BindPlayerStateClass(class ATODPlayerState* playerState);
 	void BindEnemyStateClass(class UTODEnemyStatComponent* enemyStat);
 
+	void UpdateGameMode();
 	void UpdateCharacterStat();
 	void UpdatePlayerState();
 	void UpdateHardAttackCast();
@@ -27,6 +29,7 @@ public:
 	void SetBossInfoVisible(bool isVisible);
 
 private:
+	TWeakObjectPtr<class ATODGameMode> CurrentGameMode;
 	TWeakObjectPtr<class ATODCharacter> CurrentPlayer;
 	TWeakObjectPtr<class UTODCharacterStatComponent> CurrentCharacterStat;
 	TWeakObjectPtr<class ATODPlayerState> CurrentPlayerState;
@@ -34,6 +37,9 @@ private:
 
 	UPROPERTY()
 	class UTextBlock* CharacterName;
+
+	UPROPERTY()
+	class UTextBlock* CurrentStage;
 
 	UPROPERTY()
 	class UProgressBar* HPBar;

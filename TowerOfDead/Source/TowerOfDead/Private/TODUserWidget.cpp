@@ -3,6 +3,7 @@
 #include "TODCharacterStatComponent.h"
 #include "TODPlayerState.h"
 #include "TODEnemyStatComponent.h"
+#include "TODGameMode.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
@@ -17,6 +18,7 @@ void UTODUserWidget::NativeConstruct()
 		CastWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 
+	CurrentStage = Cast<UTextBlock>(GetWidgetFromName(TEXT("StageInfo_Text")));
 	HPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Player_HPBar")));
 	CharacterName = Cast<UTextBlock>(GetWidgetFromName(TEXT("PlayerName_Text")));
 	CurrentSoul = Cast<UTextBlock>(GetWidgetFromName(TEXT("Soul_Text")));
@@ -24,6 +26,16 @@ void UTODUserWidget::NativeConstruct()
 	BossHPBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Boss_HPBar")));
 	BossName = Cast<UTextBlock>(GetWidgetFromName(TEXT("BossName_Text")));
 	SetBossInfoVisible(false);
+}
+
+void UTODUserWidget::BindGameModeClass(class ATODGameMode* gamemode)
+{
+	if (gamemode != nullptr)
+	{
+		CurrentGameMode = gamemode;
+		CurrentGameMode->OnNextStage.AddUObject(this, &UTODUserWidget::UpdateGameMode);
+		UpdateGameMode();
+	}
 }
 
 void UTODUserWidget::BindPlayerClass(class ATODCharacter* player)
@@ -60,6 +72,15 @@ void UTODUserWidget::BindEnemyStateClass(class UTODEnemyStatComponent* enemyStat
 	{
 		BossEnemyStat = enemyStat;
 	}
+}
+
+void UTODUserWidget::UpdateGameMode()
+{
+	if (CurrentGameMode == nullptr)
+		return;
+
+	if (CurrentStage != nullptr)
+		CurrentStage->SetText(FText::FromString(CurrentGameMode->GetStageInfo()));
 }
 
 void UTODUserWidget::UpdateCharacterStat()

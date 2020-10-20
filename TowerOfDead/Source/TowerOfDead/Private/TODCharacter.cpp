@@ -580,6 +580,7 @@ void ATODCharacter::OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, 
 	ATODEnemy* Enemy = Cast<ATODEnemy>(OtherActor);
 	if (Enemy != nullptr)
 	{
+		print(FString::Printf(TEXT("Player Attack : %f"), CharacterStat->GetAttack()));
 		FDamageEvent DamageEvent;
 		Enemy->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
 	}

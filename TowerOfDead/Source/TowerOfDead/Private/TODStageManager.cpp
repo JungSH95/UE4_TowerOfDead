@@ -168,6 +168,13 @@ void ATODStageManager::StageStart()
 	}
 
 	// 보스 몬스터 AI 시작 & HP UI 활성화
+	if(BossEnemy != nullptr)
+	{
+		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(BossEnemy->GetController());
+		if (EnemyAI != nullptr)
+			EnemyAI->StartAI();
+		BossEnemy->HPBarWidget->SetHiddenInGame(false);
+	}
 
 	if (ArrEnemy.Num() == 0 && BossEnemy == nullptr)
 		IsClear = true;

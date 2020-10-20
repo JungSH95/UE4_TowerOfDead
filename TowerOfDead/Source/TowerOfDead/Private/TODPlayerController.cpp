@@ -3,6 +3,7 @@
 #include "TODEnemy.h"
 #include "TODEnemyStatComponent.h"
 #include "TODUserWidget.h"
+#include "TODGameMode.h"
 
 ATODPlayerController::ATODPlayerController()
 {
@@ -42,6 +43,9 @@ void ATODPlayerController::BeginPlay()
 	CPlayer = Cast<ATODCharacter>(GetPawn());
 	TODPlayerState = Cast<ATODPlayerState>(PlayerState);
 
+	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
+	if (gameMode != nullptr)
+		HUDWidget->BindGameModeClass(gameMode);
 	HUDWidget->BindPlayerClass(CPlayer);
 	HUDWidget->BindPlayerStateClass(TODPlayerState);
 	TODPlayerState->OnPlayerStateChange.Broadcast();

@@ -4,6 +4,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "TODGameMode.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnNextStageDelegate);
+
 UCLASS()
 class TOWEROFDEAD_API ATODGameMode : public AGameModeBase
 {
@@ -25,9 +27,13 @@ public:
 
 	void AddArrStageManager(class ATODStageManager* manager) { ArrStageManager.Add(manager); }
 	ATODStageManager* GetStageManager(FName name);
+	FString GetStageInfo();
+	void NextStage();
 
 	void PlayFadeIn();
 	void PlayFadeOut();
+
+	FOnNextStageDelegate OnNextStage;
 
 private:
 	UPROPERTY(EditAnywhere)
@@ -44,4 +50,10 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TArray<class ATODStageManager*> ArrStageManager;
+
+	UPROPERTY(EditAnywhere)
+	int32 StageLevel;
+
+	UPROPERTY(EditAnywhere)
+	int32 StageCount;
 };

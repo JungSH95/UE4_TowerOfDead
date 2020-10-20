@@ -16,8 +16,10 @@ ATODGameMode::ATODGameMode()
 	if (BP_PAWN_C.Succeeded())
 		DefaultPawnClass = BP_PAWN_C.Class;
 
-
 	IsSequencePlaying = false;
+
+	StageLevel = 1;
+	StageCount = 0;
 }
 
 void ATODGameMode::BeginPlay()
@@ -66,6 +68,24 @@ ATODStageManager* ATODGameMode::GetStageManager(FName name)
 		return ArrStageManager[num];
 	else
 		return nullptr;
+}
+
+FString ATODGameMode::GetStageInfo()
+{
+	FString SNextStageInfo = FString::Printf(TEXT("%d - %d"), StageLevel, StageCount);
+	return SNextStageInfo;
+}
+
+void ATODGameMode::NextStage()
+{
+	StageCount++;
+
+	if (StageCount > 4)
+	{
+		StageCount = 0;
+		StageLevel++;
+	}
+	OnNextStage.Broadcast();
 }
 
 void ATODGameMode::PlayFadeIn()

@@ -37,7 +37,10 @@ void ALevelStreamerActor::OverlapBegins(UPrimitiveComponent* OverlappedComponent
 
 		ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 		if (gameMode != nullptr)
+		{
+			gameMode->NextStage();
 			gameMode->PlayFadeOut();
+		}
 
 		// 이미 로드 되어 있는 레벨
 		if (gameMode->IsLoadLevel(LevelToLoad))
