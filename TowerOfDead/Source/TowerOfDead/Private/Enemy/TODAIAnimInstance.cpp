@@ -1,5 +1,5 @@
-#include "TODAIAnimInstance.h"
-#include "TODEnemy.h"
+#include "Enemy/TODAIAnimInstance.h"
+#include "Enemy/TODEnemy.h"
 
 UTODAIAnimInstance::UTODAIAnimInstance()
 {

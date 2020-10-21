@@ -1,6 +1,6 @@
-#include "BTTask_Attack.h"
-#include "TODEnemy.h"
-#include "TODEnemyAIController.h"
+#include "Enemy/BTTask_Attack.h"
+#include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_Attack::UBTTask_Attack()

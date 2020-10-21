@@ -1,6 +1,6 @@
-#include "BTDecorator_IsCanAttack.h"
-#include "TODEnemy.h"
-#include "TODEnemyAIController.h"
+#include "Enemy/BTDecorator_IsCanAttack.h"
+#include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyAIController.h"
 
 UBTDecorator_IsCanAttack::UBTDecorator_IsCanAttack()
 {

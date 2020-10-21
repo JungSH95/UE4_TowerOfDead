@@ -1,6 +1,6 @@
-#include "BTDecorator_DistanceCheck.h"
-#include "TODEnemy.h"
-#include "TODEnemyAIController.h"
+#include "Enemy/BTDecorator_DistanceCheck.h"
+#include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTDecorator_DistanceCheck::UBTDecorator_DistanceCheck()

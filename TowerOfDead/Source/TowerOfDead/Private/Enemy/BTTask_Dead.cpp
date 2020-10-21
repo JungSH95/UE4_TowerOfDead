@@ -1,6 +1,6 @@
-#include "BTTask_Dead.h"
-#include "TODEnemy.h"
-#include "TODEnemyAIController.h"
+#include "Enemy/BTTask_Dead.h"
+#include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyAIController.h"
 
 UBTTask_Dead::UBTTask_Dead()
 {

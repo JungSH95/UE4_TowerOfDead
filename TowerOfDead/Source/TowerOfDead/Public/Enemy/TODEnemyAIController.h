@@ -26,7 +26,8 @@ public:
 	void SetIsDead();
 
 	void StartAI();
-private:
+
+protected:
 	UPROPERTY()
 	class UBehaviorTree* BTAsset;
 

@@ -1,19 +1,21 @@
-#include "TODEnemy.h"
-#include "TODEnemyStatComponent.h"
-#include "TODEnemyAIController.h"
-#include "TODAIAnimInstance.h"
+#include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyStatComponent.h"
+#include "Enemy/TODEnemyAIController.h"
+#include "Enemy/TODAIAnimInstance.h"
 #include "TODCharacter.h"
 #include "TODPlayerController.h"
 #include "Components/WidgetComponent.h"
-#include "TODEnemyWidget.h"
+#include "Enemy/TODEnemyWidget.h"
 
 ATODEnemy::ATODEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	/*
 	AIControllerClass = ATODEnemyAIController::StaticClass();
 	// 레벨에 배치하거나 새롭게 생성되는 Enemy마다 ANNSEnemyAIController액터 생성 및 지배를 받는다.
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	*/
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODEnemy"));
 	

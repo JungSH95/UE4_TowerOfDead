@@ -1,5 +1,5 @@
-#include "BTService_TargetLook.h"
-#include "TODEnemyAIController.h"
+#include "Enemy/BTService_TargetLook.h"
+#include "Enemy/TODEnemyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 

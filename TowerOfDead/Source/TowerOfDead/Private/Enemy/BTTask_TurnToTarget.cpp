@@ -1,7 +1,7 @@
-#include "BTTask_TurnToTarget.h"
-#include "TODEnemy.h"
+#include "Enemy/BTTask_TurnToTarget.h"
+#include "Enemy/TODEnemy.h"
 #include "TODCharacter.h"
-#include "TODEnemyAIController.h"
+#include "Enemy/TODEnemyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_TurnToTarget::UBTTask_TurnToTarget()

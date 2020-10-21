@@ -1,6 +1,6 @@
-#include "BTTask_FindRandomPos.h"
-#include "TODEnemy.h"
-#include "TODEnemyAIController.h"
+#include "Enemy/BTTask_FindRandomPos.h"
+#include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_FindRandomPos::UBTTask_FindRandomPos()

@@ -2,7 +2,7 @@
 #include "TODCharacter.h"
 #include "TODCharacterStatComponent.h"
 #include "TODPlayerState.h"
-#include "TODEnemyStatComponent.h"
+#include "Enemy/TODEnemyStatComponent.h"
 #include "TODGameMode.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"

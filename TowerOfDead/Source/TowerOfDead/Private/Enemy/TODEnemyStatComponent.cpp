@@ -1,4 +1,4 @@
-#include "TODEnemyStatComponent.h"
+#include "Enemy/TODEnemyStatComponent.h"
 #include "TODGameInstance.h"
 
 UTODEnemyStatComponent::UTODEnemyStatComponent()

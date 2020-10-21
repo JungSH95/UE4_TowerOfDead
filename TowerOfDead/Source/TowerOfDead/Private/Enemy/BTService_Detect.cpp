@@ -1,7 +1,7 @@
-#include "BTService_Detect.h"
+#include "Enemy/BTService_Detect.h"
 #include "TODCharacter.h"
-#include "TODEnemy.h"
-#include "TODEnemyAIController.h"
+#include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyAIController.h"
 #include "BehaviorTree//BlackboardComponent.h"
 
 UBTService_Detect::UBTService_Detect()

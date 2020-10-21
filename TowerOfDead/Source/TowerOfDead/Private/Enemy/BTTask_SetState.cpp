@@ -1,6 +1,6 @@
-#include "BTTask_SetState.h"
-#include "TODEnemy.h"
-#include "TODEnemyAIController.h"
+#include "Enemy/BTTask_SetState.h"
+#include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyAIController.h"
 #include "TODCharacter.h"
 #include "BehaviorTree//BlackboardComponent.h"
 

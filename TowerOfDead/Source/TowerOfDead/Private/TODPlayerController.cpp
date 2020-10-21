@@ -1,7 +1,7 @@
 #include "TODPlayerController.h"
 #include "TODPlayerState.h"
-#include "TODEnemy.h"
-#include "TODEnemyStatComponent.h"
+#include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyStatComponent.h"
 #include "TODUserWidget.h"
 #include "TODGameMode.h"
 

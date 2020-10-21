@@ -5,7 +5,7 @@
 #include "TODPlayerState.h"
 #include "TODGameMode.h"
 #include "TODUserWidget.h"
-#include "TODEnemy.h"
+#include "Enemy/TODEnemy.h"
 #include "DrawDebugHelpers.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
