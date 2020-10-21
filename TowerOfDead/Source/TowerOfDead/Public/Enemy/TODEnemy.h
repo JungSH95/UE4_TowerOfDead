@@ -26,13 +26,16 @@ public:
 
 	EnemyState GetState() { return State; }
 	void SetState(EnemyState newState) { State = newState; }
+	void SetIsCanAttack(bool isCanAttack) { IsCanAttack = isCanAttack; }
 
 	float GetAttackRange() { return AttackRange; }
 	float GetEffectiveRange() { return EffectiveRange; }
 	bool GetIsCanAttack() { return IsCanAttack; }
 	bool GetIsDead() { return IsDead; }
 
-	void Attack();
+	virtual void Attack() PURE_VIRTUAL(ATODEnemy::PlayAttackMontage, return;);
+	//void Attack();
+
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 

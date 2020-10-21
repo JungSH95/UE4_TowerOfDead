@@ -18,8 +18,6 @@ void ATODEnemyMeleeAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	TODLOG_S(Warning);
-
 	if (UseBlackboard(BBAsset, Blackboard))
 	{
 		Blackboard->SetValueAsBool(IsAttackingKey, false);

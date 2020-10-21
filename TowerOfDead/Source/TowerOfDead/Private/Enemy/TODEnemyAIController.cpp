@@ -18,13 +18,6 @@ void ATODEnemyAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	/*
-	if (UseBlackboard(BBAsset, Blackboard))
-	{
-		Blackboard->SetValueAsBool(IsAttackingKey, false);
-		Blackboard->SetValueAsBool(IsCanOutRangeAttackKey, false);
-	}
-	*/
 }
 
 void ATODEnemyAIController::SetIsAttaking(bool isattack)

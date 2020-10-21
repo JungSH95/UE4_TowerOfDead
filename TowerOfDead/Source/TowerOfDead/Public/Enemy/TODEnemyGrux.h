@@ -12,4 +12,5 @@ class TOWEROFDEAD_API ATODEnemyGrux : public ATODEnemy
 public:
 	ATODEnemyGrux();
 	
+	void Attack();
 };

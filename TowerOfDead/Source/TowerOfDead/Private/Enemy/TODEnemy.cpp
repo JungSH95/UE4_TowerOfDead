@@ -11,12 +11,6 @@ ATODEnemy::ATODEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	/*
-	AIControllerClass = ATODEnemyAIController::StaticClass();
-	// 레벨에 배치하거나 새롭게 생성되는 Enemy마다 ANNSEnemyAIController액터 생성 및 지배를 받는다.
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
-	*/
-
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODEnemy"));
 	
 	GetMesh()->bReceivesDecals = false;
@@ -48,12 +42,13 @@ ATODEnemy::ATODEnemy()
 
 	HitEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HITEFFECT"));
 	HitEffect->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Primary/FX/P_Kwang_Primary_Impact.P_Kwang_Primary_Impact"));
+
+	/*static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Primary/FX/P_Kwang_Primary_Impact.P_Kwang_Primary_Impact"));
 	if (P_HITEFFECT.Succeeded())
 	{
 		HitEffect->SetTemplate(P_HITEFFECT.Object);
 		HitEffect->bAutoActivate = false;
-	}
+	}*/
 
 	State = EnemyState::PEACE;
 	IsDead = false;
@@ -144,19 +139,6 @@ float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 	}
 
 	return FinalDamage;
-}
-
-void ATODEnemy::Attack()
-{
-	if (!IsCanAttack)
-		return;
-
-	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
-	if (AnimInstance == nullptr)
-		return;
-
-	AnimInstance->PlayAttackMontage();
-	IsCanAttack = false;
 }
 
 void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

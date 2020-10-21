@@ -11,4 +11,6 @@ class TOWEROFDEAD_API ATODEnemyMelee : public ATODEnemy
 
 public:
 	ATODEnemyMelee();
+
+	void Attack();
 };

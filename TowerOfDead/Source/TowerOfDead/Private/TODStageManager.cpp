@@ -173,7 +173,8 @@ void ATODStageManager::StageStart()
 		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(BossEnemy->GetController());
 		if (EnemyAI != nullptr)
 			EnemyAI->StartAI();
-		BossEnemy->HPBarWidget->SetHiddenInGame(false);
+		
+		// BOSS 전용 HP UI 활성화
 	}
 
 	if (ArrEnemy.Num() == 0 && BossEnemy == nullptr)
