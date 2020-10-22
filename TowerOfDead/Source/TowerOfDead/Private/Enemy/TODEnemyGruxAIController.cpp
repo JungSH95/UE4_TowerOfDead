@@ -23,6 +23,6 @@ void ATODEnemyGruxAIController::OnPossess(APawn* InPawn)
 	if (UseBlackboard(BBAsset, Blackboard))
 	{
 		Blackboard->SetValueAsBool(IsAttackingKey, false);
-		Blackboard->SetValueAsBool(IsCanOutRangeAttackKey, false);
+		Blackboard->SetValueAsBool(IsCanOutRangeAttackKey, true);
 	}
 }

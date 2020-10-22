@@ -20,9 +20,14 @@ void ATODEnemyAIController::OnPossess(APawn* InPawn)
 
 }
 
-void ATODEnemyAIController::SetIsAttaking(bool isattack)
+void ATODEnemyAIController::SetIsAttaking(bool isAttack)
 {
-	Blackboard->SetValueAsBool(IsAttackingKey, isattack);
+	Blackboard->SetValueAsBool(IsAttackingKey, isAttack);
+}
+
+void ATODEnemyAIController::SetIsCanOutRangeAttack(bool isCanOutRangeAttack)
+{
+	Blackboard->SetValueAsBool(IsCanOutRangeAttackKey, isCanOutRangeAttack);
 }
 
 void ATODEnemyAIController::SetIsDead()

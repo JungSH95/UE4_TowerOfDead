@@ -22,7 +22,8 @@ public:
 
 	static const FName RandomPosKey;
 
-	void SetIsAttaking(bool isattack);
+	void SetIsAttaking(bool isAttack);
+	void SetIsCanOutRangeAttack(bool isCanOutRangeAttack);
 	void SetIsDead();
 
 	void StartAI();

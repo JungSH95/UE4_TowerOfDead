@@ -33,7 +33,8 @@ public:
 	bool GetIsCanAttack() { return IsCanAttack; }
 	bool GetIsDead() { return IsDead; }
 
-	virtual void Attack() PURE_VIRTUAL(ATODEnemy::PlayAttackMontage, return;);
+	virtual void Attack() PURE_VIRTUAL(ATODEnemy::Attack, return;);
+	virtual bool OutRangeAttack() PURE_VIRTUAL(ATODEnemy::OutRangeAttack, return false;);
 	//void Attack();
 
 	UFUNCTION()
@@ -90,4 +91,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Attack, Meta = (AllowPrivateAccess = true))
 	class UBoxComponent* AttackTrigger;
+
+	// 
 };

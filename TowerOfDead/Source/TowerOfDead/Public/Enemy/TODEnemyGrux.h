@@ -13,4 +13,9 @@ public:
 	ATODEnemyGrux();
 	
 	void Attack();
+	bool OutRangeAttack();
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool IsCanDashAttack;
 };
