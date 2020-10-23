@@ -200,6 +200,15 @@ void ATODEnemy::OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class
 		FVector effectLoc = Player->GetMesh()->GetSocketLocation("Impact");
 		StartHitEffect(effectLoc);
 
+		// 넉백 효과 임시 적용
+		//if (!IsAttacking)
+		{
+			if(Player->GetMovementComponent()->IsFalling())
+				Player->GetCharacterMovement()->AddImpulse(this->GetActorForwardVector() * 100.0f, true);
+			else
+				Player->GetCharacterMovement()->AddImpulse(this->GetActorForwardVector() * 1000.0f, true);
+		}
+
 		// 플레이어 타격 후 바로 비활성화
 		AttackTrigger->SetGenerateOverlapEvents(false);
 	}
