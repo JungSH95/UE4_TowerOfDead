@@ -1,4 +1,5 @@
 #include "Enemy/TODGruxAIAnimInstance.h"
+#include "Enemy/TODEnemyGrux.h"
 
 UTODGruxAIAnimInstance::UTODGruxAIAnimInstance()
 {
@@ -51,4 +52,18 @@ void UTODGruxAIAnimInstance::AnimNotify_RandomDoubleAttack()
 
 	if (Rand >= 0.4f)
 		Montage_Play(DoubleAttackMontage, 1.0f);
+}
+
+void UTODGruxAIAnimInstance::AnimNotify_DoubleAttackHitCheck()
+{
+	ATODEnemyGrux* Enemy = Cast<ATODEnemyGrux>(TryGetPawnOwner());
+	if (Enemy != nullptr)
+		Enemy->DoubleAttackHitCheck();
+}
+
+void UTODGruxAIAnimInstance::AnimNotify_DoubleAttackHitCheckEnd()
+{
+	ATODEnemyGrux* Enemy = Cast<ATODEnemyGrux>(TryGetPawnOwner());
+	if (Enemy != nullptr)
+		Enemy->DoubleAttackHitCheckEnd();
 }

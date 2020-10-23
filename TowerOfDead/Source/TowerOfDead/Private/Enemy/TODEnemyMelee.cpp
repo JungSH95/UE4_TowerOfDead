@@ -28,3 +28,9 @@ void ATODEnemyMelee::Attack()
 	AnimInstance->PlayAttackMontage();
 	SetIsCanAttack(false);
 }
+
+void ATODEnemyMelee::StartHitEffect(FVector pos)
+{
+	HitEffect->SetWorldLocation(pos);
+	HitEffect->Activate(true);
+}

@@ -22,6 +22,11 @@ private:
 	UFUNCTION()
 	void AnimNotify_RandomDoubleAttack();
 
+	UFUNCTION()
+	void AnimNotify_DoubleAttackHitCheck();
+	UFUNCTION()
+	void AnimNotify_DoubleAttackHitCheckEnd();
+
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	TArray<UAnimMontage*> ArrAttackMontage;

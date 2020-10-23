@@ -13,4 +13,6 @@ public:
 	ATODEnemyMelee();
 
 	void Attack();
+	void StartHitEffect(FVector pos);
+
 };

@@ -149,8 +149,6 @@ void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 		if (EnemyAI == nullptr)
 			return;
 
-		TODLOG_S(Warning);
-
 		EnemyAI->SetIsAttaking(false);
 		AnimInstance->NowMontage = nullptr;
 
@@ -163,6 +161,7 @@ void ATODEnemy::OnAttackCheck()
 	if (AttackTrigger == nullptr)
 		return;
 
+	IsAttacking = true;
 	AttackTrigger->SetGenerateOverlapEvents(true);
 }
 
@@ -171,6 +170,7 @@ void ATODEnemy::OnAttackCheckEnd()
 	if (AttackTrigger == nullptr)
 		return;
 
+	IsAttacking = false;
 	AttackTrigger->SetGenerateOverlapEvents(false);
 }
 
@@ -198,8 +198,7 @@ void ATODEnemy::OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class
 		OtherActor->TakeDamage(EnemyStat->GetAttack(), DamageEvent, GetController(), this);
 
 		FVector effectLoc = Player->GetMesh()->GetSocketLocation("Impact");
-		HitEffect->SetWorldLocation(effectLoc);
-		HitEffect->Activate(true);
+		StartHitEffect(effectLoc);
 
 		// 플레이어 타격 후 바로 비활성화
 		AttackTrigger->SetGenerateOverlapEvents(false);

@@ -31,10 +31,14 @@ public:
 	float GetAttackRange() { return AttackRange; }
 	float GetEffectiveRange() { return EffectiveRange; }
 	bool GetIsCanAttack() { return IsCanAttack; }
+	bool GetIsAttacking() { return IsAttacking; }
 	bool GetIsDead() { return IsDead; }
+	class UBoxComponent* GetAttackTrigger() { return AttackTrigger;	}
 
 	virtual void Attack() PURE_VIRTUAL(ATODEnemy::Attack, return;);
 	virtual bool OutRangeAttack() PURE_VIRTUAL(ATODEnemy::OutRangeAttack, return false;);
+
+	virtual void StartHitEffect(FVector pos) PURE_VIRTUAL(ATODEnemy::Effect, return;);
 	//void Attack();
 
 	UFUNCTION()
@@ -82,6 +86,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsCanAttack;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsAttacking;
+
 	// 일반 공격 쿨타임
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	float NormalAttackCoolDownTime;
@@ -91,6 +98,4 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Attack, Meta = (AllowPrivateAccess = true))
 	class UBoxComponent* AttackTrigger;
-
-	// 
 };
