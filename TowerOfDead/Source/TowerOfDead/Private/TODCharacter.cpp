@@ -50,7 +50,7 @@ ATODCharacter::ATODCharacter()
 		GetMesh()->SetAnimInstanceClass(KWANG_ANIM.Class);
 
 	HitEffect->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonMinions/FX/Particles/Minions/Minion_melee/FX/Impacts/P_Minion_Impact_Default.P_Minion_Impact_Default"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Primary/FX/P_Kwang_Primary_Impact.P_Kwang_Primary_Impact"));
 	if (P_HITEFFECT.Succeeded())
 	{
 		HitEffect->SetTemplate(P_HITEFFECT.Object);
@@ -218,10 +218,6 @@ float ATODCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 	class AController* EventInstigator, AActor* DamageCauser)
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	FVector effectLoc = GetMesh()->GetSocketLocation("Impact");
-	HitEffect->SetWorldLocation(effectLoc);
-	HitEffect->Activate(true);
 
 	CharacterStat->SetDamage(FinalDamage);
 	return FinalDamage;
@@ -583,5 +579,9 @@ void ATODCharacter::OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, 
 		print(FString::Printf(TEXT("Player Attack : %f"), CharacterStat->GetAttack()));
 		FDamageEvent DamageEvent;
 		Enemy->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
+
+		FVector effectLoc = Enemy->GetMesh()->GetSocketLocation("Impact");
+		HitEffect->SetWorldLocation(effectLoc);
+		HitEffect->Activate(true);
 	}
 }

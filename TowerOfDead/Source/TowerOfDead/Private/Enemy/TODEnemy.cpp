@@ -43,7 +43,7 @@ ATODEnemy::ATODEnemy()
 	HitEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HITEFFECT"));
 	HitEffect->SetupAttachment(RootComponent);
 
-	/*static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Primary/FX/P_Kwang_Primary_Impact.P_Kwang_Primary_Impact"));
+	/*static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonMinions/FX/Particles/Minions/Minion_melee/FX/Impacts/P_Minion_Impact_Default.P_Minion_Impact_Default"));
 	if (P_HITEFFECT.Succeeded())
 	{
 		HitEffect->SetTemplate(P_HITEFFECT.Object);
@@ -119,11 +119,6 @@ float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 		if (AnimInstance->PlayHitReactMontage(0))
 		{
 			TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
-
-			FVector effectLoc = GetMesh()->GetSocketLocation("Impact");
-			HitEffect->SetWorldLocation(effectLoc);
-			HitEffect->Activate(true);
-
 			EnemyStat->SetDamage(FinalDamage);
 		}
 	}
@@ -153,6 +148,8 @@ void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
 		if (EnemyAI == nullptr)
 			return;
+
+		TODLOG_S(Warning);
 
 		EnemyAI->SetIsAttaking(false);
 		AnimInstance->NowMontage = nullptr;
@@ -199,6 +196,10 @@ void ATODEnemy::OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class
 
 		FDamageEvent DamageEvent;
 		OtherActor->TakeDamage(EnemyStat->GetAttack(), DamageEvent, GetController(), this);
+
+		FVector effectLoc = Player->GetMesh()->GetSocketLocation("Impact");
+		HitEffect->SetWorldLocation(effectLoc);
+		HitEffect->Activate(true);
 
 		// 플레이어 타격 후 바로 비활성화
 		AttackTrigger->SetGenerateOverlapEvents(false);

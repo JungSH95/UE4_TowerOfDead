@@ -7,6 +7,13 @@ ATODEnemyGrux::ATODEnemyGrux()
 	AIControllerClass = ATODEnemyGruxAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonGrux/FX/Particles/Abilities/Primary/FX/P_Grux_ApplyBleed.P_Grux_ApplyBleed"));
+	if (P_HITEFFECT.Succeeded())
+	{
+		HitEffect->SetTemplate(P_HITEFFECT.Object);
+		HitEffect->bAutoActivate = false;
+	}
+
 	IsCanDashAttack = true;
 }
 
