@@ -20,6 +20,9 @@ public:
 	void DoubleAttackHitCheck();
 	void DoubleAttackHitCheckEnd();
 
+	// 메테오 or 몬스터 소환에 사용
+	void RandomPointInit(int count);
+
 	void MeteorSkillCoolDownTimer();
 
 	void DashSkill();
@@ -39,9 +42,16 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystem* DoubleAttackHitEffect;
 
+	// 소환할 Actor Test용
+	UPROPERTY(EditAnywhere, Category = Point)
+	TSubclassOf<AActor> ActorToSpawn;
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsDoubleAttacking;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	TArray<FVector> RandomPoint;
 	
 	// 메테오 기술 ------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))

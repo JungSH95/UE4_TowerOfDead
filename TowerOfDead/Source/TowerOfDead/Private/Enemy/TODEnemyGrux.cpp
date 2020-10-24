@@ -1,6 +1,7 @@
 #include "Enemy/TODEnemyGrux.h"
 #include "Enemy/TODEnemyGruxAIController.h"
 #include "Enemy/TODAIAnimInstance.h"
+#include "NavigationSystem.h"
 
 ATODEnemyGrux::ATODEnemyGrux()
 {
@@ -44,7 +45,7 @@ void ATODEnemyGrux::Tick(float DeltaTime)
 
 	if (IsDashSKilling)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 3000.0f;
+		GetCharacterMovement()->MaxWalkSpeed = 2000.0f;
 		AddMovementInput(GetActorForwardVector(), 1.0f);
 	}
 }
@@ -76,6 +77,26 @@ void ATODEnemyGrux::DoubleAttackHitCheckEnd()
 
 	if (GetAttackTrigger() != nullptr)
 		GetAttackTrigger()->SetGenerateOverlapEvents(false);
+}
+
+void ATODEnemyGrux::RandomPointInit(int count)
+{
+	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(GetWorld());
+	if (NavSystem == nullptr)
+		return;
+
+	FNavLocation NewPoint;
+	if (NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 1500.0f, NewPoint))
+	{
+		if (ActorToSpawn == nullptr)
+			return;
+		
+		RandomPoint.Add(NewPoint.Location);
+
+		FActorSpawnParameters SpawnParams;
+		AActor* SpawnedActorRef = GetWorld()->SpawnActor<AActor>(ActorToSpawn, NewPoint.Location,
+			FRotator::ZeroRotator, SpawnParams);
+	}
 }
 
 void ATODEnemyGrux::MeteorSkillCoolDownTimer()

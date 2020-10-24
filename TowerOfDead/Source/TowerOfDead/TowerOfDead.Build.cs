@@ -9,7 +9,7 @@ public class TowerOfDead : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule",
-        "GameplayTasks", "UMG", "LevelSequence", "MovieScene"});
+        "GameplayTasks", "UMG", "NavigationSystem", "LevelSequence", "MovieScene"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
