@@ -26,7 +26,8 @@ public:
 	void SetIsCanOutRangeAttack(bool isCanOutRangeAttack);
 	void SetIsDead();
 
-	void StartAI();
+	virtual void StartAI() PURE_VIRTUAL(ATODEnemy::Attack, return;);
+	//void StartAI();
 
 protected:
 	UPROPERTY()

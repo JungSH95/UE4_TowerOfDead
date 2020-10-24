@@ -13,4 +13,8 @@ public:
 	ATODEnemyMeleeAIController();
 
 	virtual void OnPossess(APawn* InPawn) override;
+
+public:
+	void StartAI();
+
 };

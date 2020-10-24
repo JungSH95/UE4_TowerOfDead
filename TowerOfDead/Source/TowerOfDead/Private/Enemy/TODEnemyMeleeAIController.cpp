@@ -24,3 +24,12 @@ void ATODEnemyMeleeAIController::OnPossess(APawn* InPawn)
 		Blackboard->SetValueAsBool(IsCanOutRangeAttackKey, false);
 	}
 }
+
+void ATODEnemyMeleeAIController::StartAI()
+{
+	if (BTAsset != nullptr)
+	{
+		if (!RunBehaviorTree(BTAsset))
+			TODLOG(Error, TEXT("AIController not Run BT"));
+	}
+}

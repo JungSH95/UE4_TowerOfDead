@@ -152,7 +152,7 @@ void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 		EnemyAI->SetIsAttaking(false);
 		AnimInstance->NowMontage = nullptr;
 
-		GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTime, NormalAttackCoolDownTime, false);
+		GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTimer, NormalAttackCoolDownTime, false);
 	}
 }
 
@@ -174,7 +174,7 @@ void ATODEnemy::OnAttackCheckEnd()
 	AttackTrigger->SetGenerateOverlapEvents(false);
 }
 
-void ATODEnemy::AttackCoolDownTime()
+void ATODEnemy::AttackCoolDownTimer()
 {
 	IsCanAttack = true;
 }

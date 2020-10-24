@@ -36,7 +36,7 @@ public:
 	class UBoxComponent* GetAttackTrigger() { return AttackTrigger;	}
 
 	virtual void Attack() PURE_VIRTUAL(ATODEnemy::Attack, return;);
-	virtual bool OutRangeAttack() PURE_VIRTUAL(ATODEnemy::OutRangeAttack, return false;);
+	virtual bool OutRangeAttack(float dis) PURE_VIRTUAL(ATODEnemy::OutRangeAttack, return false;);
 
 	virtual void StartHitEffect(FVector pos) PURE_VIRTUAL(ATODEnemy::Effect, return;);
 	//void Attack();
@@ -46,7 +46,7 @@ public:
 
 	void OnAttackCheck();
 	void OnAttackCheckEnd();
-	void AttackCoolDownTime();
+	void AttackCoolDownTimer();
 
 	void Dead();
 

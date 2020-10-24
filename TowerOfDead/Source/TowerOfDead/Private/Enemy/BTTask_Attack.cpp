@@ -25,16 +25,19 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	// 2) 사정거리 밖에 있고 IsCanOutRangeAttackKey 키가 true일 때
 
 	// IsCanOutRangeAttackKey키가 true : 돌진기술/광역기술/소환기술 등이 존재
-	if(OwnerComp.GetBlackboardComponent()->GetValueAsBool(ATODEnemyAIController::IsCanOutRangeAttackKey))
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(ATODEnemyAIController::IsCanOutRangeAttackKey))
 	{
-		// 원거리 기술들 중 하나라도 사용 불가능(대상 추격)
-		if (!Enemy->OutRangeAttack())
+		APawn* Target = Cast<APawn>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ATODEnemyAIController::TargetKey));
+		if (Target == nullptr)
+			return EBTNodeResult::Succeeded;
+		float dis = Target->GetDistanceTo(Enemy);
+
+		// 원거리 기술 사용 & 원거리 기술들 중 하나라도 사용 불가능 하다면 대상 추격
+		if (!Enemy->OutRangeAttack(dis))
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ATODEnemyAIController::IsCanOutRangeAttackKey, false);
 			return EBTNodeResult::Succeeded;
 		}
-		else
-			Enemy->OutRangeAttack();
 	}
 	else
 		Enemy->Attack();

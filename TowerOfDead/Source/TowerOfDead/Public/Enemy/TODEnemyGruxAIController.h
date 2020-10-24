@@ -13,4 +13,7 @@ public:
 	ATODEnemyGruxAIController();
 
 	virtual void OnPossess(APawn* InPawn) override;
+
+public:
+	void StartAI();
 };

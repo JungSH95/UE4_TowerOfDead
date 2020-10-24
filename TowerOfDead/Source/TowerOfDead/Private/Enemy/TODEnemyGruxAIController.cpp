@@ -1,4 +1,5 @@
 #include "Enemy/TODEnemyGruxAIController.h"
+#include "Enemy/TODEnemyGrux.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -24,5 +25,14 @@ void ATODEnemyGruxAIController::OnPossess(APawn* InPawn)
 	{
 		Blackboard->SetValueAsBool(IsAttackingKey, false);
 		Blackboard->SetValueAsBool(IsCanOutRangeAttackKey, true);
+	}
+}
+
+void ATODEnemyGruxAIController::StartAI()
+{
+	if (BTAsset != nullptr)
+	{
+		if (!RunBehaviorTree(BTAsset))
+			TODLOG(Error, TEXT("AIController not Run BT"));
 	}
 }
