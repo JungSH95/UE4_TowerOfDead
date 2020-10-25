@@ -18,6 +18,10 @@ ATODEnemyGrux::ATODEnemyGrux()
 	if (P_DOUBLEATTACKHITEFFECT.Succeeded())
 		DoubleAttackHitEffect = P_DOUBLEATTACKHITEFFECT.Object;
 
+	DashTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("DashTriggerSphere"));
+	DashTrigger->SetupAttachment(GetMesh());
+	DashTrigger->SetGenerateOverlapEvents(false);
+	
 	HitEffect->bAutoActivate = false;
 
 	IsDoubleAttacking = false;
@@ -145,8 +149,18 @@ void ATODEnemyGrux::DashSkill()
 	IsDashSKilling = true;
 	IsCanMeteorSKill = false;
 
+	// 대시 유지 시간
+	//GetWorldTimerManager().SetTimer(DashSkillEndTimerHandle, this, &ATODEnemyGrux::DashSkillEndTimer,
+	//	3.0f, false);
+
+	// 쿨타임
 	GetWorldTimerManager().SetTimer(DashSkillTimerHandle, this, &ATODEnemyGrux::DashSkillCoolDownTimer,
 		DashSkillCoolDownTime, false);
+}
+
+void ATODEnemyGrux::DashSkillEndTimer()
+{
+	IsDashSKilling = false;
 }
 
 void ATODEnemyGrux::DashSkillCoolDownTimer()

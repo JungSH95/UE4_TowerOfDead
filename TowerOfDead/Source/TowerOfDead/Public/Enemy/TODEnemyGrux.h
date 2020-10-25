@@ -33,6 +33,7 @@ public:
 	void MeteorSkillCoolDownTimer();
 
 	void DashSkill();
+	void DashSkillEndTimer();
 	void DashSkillCoolDownTimer();
 
 	void EnemySpawnSkill();
@@ -49,7 +50,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystem* DoubleAttackHitEffect;
-
+	
 	// 소환할 Actor Test용
 	UPROPERTY(EditAnywhere, Category = Point)
 	TSubclassOf<AActor> ActorToSpawn;
@@ -79,11 +80,17 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	bool IsDashSKilling;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Attack, Meta = (AllowPrivateAccess = true))
+	class USphereComponent* DashTrigger;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	float DashSkillCoolDownTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	FTimerHandle DashSkillTimerHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
+	FTimerHandle DashSkillEndTimerHandle;
 	// -------------------------------------
 
 	// 몬스터 소환 기술 ------------------------
