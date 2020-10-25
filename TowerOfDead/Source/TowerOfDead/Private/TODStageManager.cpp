@@ -175,6 +175,7 @@ void ATODStageManager::StageStart()
 			EnemyAI->StartAI();
 		
 		// BOSS 전용 HP UI 활성화
+		BossEnemy->StartAllSkillCoolDown();
 	}
 
 	if (ArrEnemy.Num() == 0 && BossEnemy == nullptr)

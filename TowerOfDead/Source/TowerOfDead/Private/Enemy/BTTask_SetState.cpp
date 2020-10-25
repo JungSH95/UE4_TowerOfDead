@@ -21,6 +21,7 @@ EBTNodeResult::Type UBTTask_SetState::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		if (Target == nullptr)
 			return EBTNodeResult::Failed;
 
+		// 플레이어가 죽어있다면 몬스터는 대기 상태로
 		if (Target->GetIsDead())
 		{
 			ATODEnemy* Enemy = Cast<ATODEnemy>(OwnerComp.GetAIOwner()->GetPawn());

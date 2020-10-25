@@ -41,3 +41,12 @@ bool UTODMeleeAIAnimInstance::PlayHitReactMontage(int dir)
 
 	return false;
 }
+
+bool UTODMeleeAIAnimInstance::IsAttackMontage(UAnimMontage* montage)
+{
+	for (int i = 0; i < ArrAttackMontage.Num(); i++)
+		if (montage == ArrAttackMontage[i])
+			return true;
+
+	return false;
+}

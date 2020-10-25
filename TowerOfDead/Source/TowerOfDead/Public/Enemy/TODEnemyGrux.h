@@ -14,7 +14,13 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	bool GetIsDashSkilling() { return IsDashSKilling; }
+
 public:
+	void StartAllSkillCoolDown();
+
 	void Attack();
 
 	void DoubleAttackHitCheck();
@@ -23,11 +29,13 @@ public:
 	// 메테오 or 몬스터 소환에 사용
 	void RandomPointInit(int count);
 
+	void MeteorSkill();
 	void MeteorSkillCoolDownTimer();
 
 	void DashSkill();
 	void DashSkillCoolDownTimer();
 
+	void EnemySpawnSkill();
 	void EnemySpawnSkillCoolDownTimer();
 
 	// BTTask_Attack에서 실행, 가능한 스킬 판별 후 사용

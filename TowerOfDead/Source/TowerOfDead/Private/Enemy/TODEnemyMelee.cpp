@@ -16,6 +16,26 @@ ATODEnemyMelee::ATODEnemyMelee()
 	}
 }
 
+void ATODEnemyMelee::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance == nullptr)
+		return;
+
+	// NowMontage에는 공격 몽타주가 저장되어 있다.
+	if (AnimInstance->IsAttackMontage(Montage))
+	{
+		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
+		if (EnemyAI == nullptr)
+			return;
+
+		EnemyAI->SetIsAttaking(false);
+		AnimInstance->NowMontage = nullptr;
+
+		AttackCoolDownTimerStart();
+	}
+}
+
 void ATODEnemyMelee::Attack()
 {
 	if (!GetIsCanAttack())

@@ -31,11 +31,12 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		if (Target == nullptr)
 			return EBTNodeResult::Succeeded;
 		float dis = Target->GetDistanceTo(Enemy);
+		print(FString::Printf(TEXT("Distance : %f"), dis));
 
 		// 원거리 기술 사용 & 원거리 기술들 중 하나라도 사용 불가능 하다면 대상 추격
 		if (!Enemy->OutRangeAttack(dis))
 		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ATODEnemyAIController::IsCanOutRangeAttackKey, false);
+			//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ATODEnemyAIController::IsCanOutRangeAttackKey, false);
 			return EBTNodeResult::Succeeded;
 		}
 	}

@@ -16,6 +16,8 @@ public:
 	virtual void PlayAttackMontage() PURE_VIRTUAL(UTODAIAnimInstance::PlayAttackMontage, return;);
 	virtual bool PlayHitReactMontage(int dir) PURE_VIRTUAL(UTODAIAnimInstance::PlayHitReactMontage, return false;);
 
+	virtual bool IsAttackMontage(UAnimMontage* montage) PURE_VIRTUAL(ATODEnemy::IsAttackMontage, return false;);
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack)
 	UAnimMontage* NowMontage;
 

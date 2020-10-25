@@ -34,18 +34,19 @@ public:
 	bool GetIsAttacking() { return IsAttacking; }
 	bool GetIsDead() { return IsDead; }
 	class UBoxComponent* GetAttackTrigger() { return AttackTrigger;	}
-
+	
 	virtual void Attack() PURE_VIRTUAL(ATODEnemy::Attack, return;);
 	virtual bool OutRangeAttack(float dis) PURE_VIRTUAL(ATODEnemy::OutRangeAttack, return false;);
 
-	virtual void StartHitEffect(FVector pos) PURE_VIRTUAL(ATODEnemy::Effect, return;);
-	//void Attack();
+	virtual void StartHitEffect(FVector pos) PURE_VIRTUAL(ATODEnemy::StartHitEffect, return;);
+	virtual void StartAllSkillCoolDown() PURE_VIRTUAL(ATODEnemy::StartAllSkillCoolDown, return;);
 
 	UFUNCTION()
-	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted) PURE_VIRTUAL(ATODEnemy::OnAttackMontageEnded, return;);
 
 	void OnAttackCheck();
 	void OnAttackCheckEnd();
+	void AttackCoolDownTimerStart();
 	void AttackCoolDownTimer();
 
 	void Dead();

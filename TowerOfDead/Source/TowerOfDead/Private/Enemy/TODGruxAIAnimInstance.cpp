@@ -3,6 +3,10 @@
 
 UTODGruxAIAnimInstance::UTODGruxAIAnimInstance()
 {
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> LEVELSTART_MONTAGE(TEXT("/Game/ParagonGrux/Characters/Heroes/Grux/Animations/LevelStart_Montage.LevelStart_Montage"));
+	if (LEVELSTART_MONTAGE.Succeeded())
+		LevelStartMontage = LEVELSTART_MONTAGE.Object;
+
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE_1(TEXT("/Game/ParagonGrux/Characters/Heroes/Grux/Animations/Montage/Grux_Attack1_Montage.Grux_Attack1_Montage"));
 	if (ATTACK_MONTAGE_1.Succeeded())
 		ArrAttackMontage.Add(ATTACK_MONTAGE_1.Object);
@@ -14,12 +18,27 @@ UTODGruxAIAnimInstance::UTODGruxAIAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> DOUBLEATTACK_MONTAGE(TEXT("/Game/ParagonGrux/Characters/Heroes/Grux/Animations/Montage/Grux_DoubleAttack_Montage.Grux_DoubleAttack_Montage"));
 	if (DOUBLEATTACK_MONTAGE.Succeeded())
 		DoubleAttackMontage = DOUBLEATTACK_MONTAGE.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ENEMYSPAWNCAST_MONTAGE(TEXT("/Game/ParagonGrux/Characters/Heroes/Grux/Animations/Montage/Grux_EnemySpawn_Montage.Grux_EnemySpawn_Montage"));
+	if (ENEMYSPAWNCAST_MONTAGE.Succeeded())
+		EnemySpawnCastMontage = ENEMYSPAWNCAST_MONTAGE.Object;
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> METEORCAST_MONTAGE(TEXT("/Game/ParagonGrux/Characters/Heroes/Grux/Animations/Montage/Grux_MeteorAttack_Montage.Grux_MeteorAttack_Montage"));
+	if (METEORCAST_MONTAGE.Succeeded())
+		MeteorCastMontage = METEORCAST_MONTAGE.Object;
 }
 
 void UTODGruxAIAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+	auto EnemyPawn = TryGetPawnOwner();
+	if (::IsValid(EnemyPawn))
+	{
+		ATODEnemyGrux* EnemyClass = Cast<ATODEnemyGrux>(EnemyPawn);
+		if (EnemyClass != nullptr)
+			IsDash = EnemyClass->GetIsDashSkilling();
+	}
 }
 
 void UTODGruxAIAnimInstance::PlayAttackMontage()
@@ -40,7 +59,33 @@ bool UTODGruxAIAnimInstance::PlayHitReactMontage(int dir)
 		Montage_Play(ArrHitReactMontage[dir], 1.0f);
 		return true;
 	}*/
-	TODLOG_S(Warning);
+
+	return false;
+}
+
+void UTODGruxAIAnimInstance::PlayEnemySpawnCastMontage()
+{
+	// 동작중인 몽타주가 없다면
+	if (NowMontage == nullptr)
+	{
+		Montage_Play(EnemySpawnCastMontage, 1.0f);
+	}
+}
+
+void UTODGruxAIAnimInstance::PlayMeteorCastMontage()
+{
+	// 동작중인 몽타주가 없다면
+	if (NowMontage == nullptr)
+	{
+		Montage_Play(MeteorCastMontage, 1.0f);
+	}
+}
+
+bool UTODGruxAIAnimInstance::IsAttackMontage(UAnimMontage* montage)
+{
+	for (int i = 0; i < ArrAttackMontage.Num(); i++)
+		if (montage == ArrAttackMontage[i])
+			return true;
 
 	return false;
 }

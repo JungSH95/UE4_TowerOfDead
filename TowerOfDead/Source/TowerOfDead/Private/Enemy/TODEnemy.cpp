@@ -136,6 +136,7 @@ float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& Damag
 	return FinalDamage;
 }
 
+/*
 void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
@@ -155,6 +156,7 @@ void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 		GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTimer, NormalAttackCoolDownTime, false);
 	}
 }
+*/
 
 void ATODEnemy::OnAttackCheck()
 {
@@ -172,6 +174,11 @@ void ATODEnemy::OnAttackCheckEnd()
 
 	IsAttacking = false;
 	AttackTrigger->SetGenerateOverlapEvents(false);
+}
+
+void ATODEnemy::AttackCoolDownTimerStart()
+{
+	GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTimer, NormalAttackCoolDownTime, false);
 }
 
 void ATODEnemy::AttackCoolDownTimer()

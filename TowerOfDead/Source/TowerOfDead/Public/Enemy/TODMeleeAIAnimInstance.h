@@ -16,6 +16,7 @@ public:
 	void PlayAttackMontage();
 	bool PlayHitReactMontage(int dir);
 
+	bool IsAttackMontage(UAnimMontage* montage);
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	TArray<UAnimMontage*> ArrAttackMontage;

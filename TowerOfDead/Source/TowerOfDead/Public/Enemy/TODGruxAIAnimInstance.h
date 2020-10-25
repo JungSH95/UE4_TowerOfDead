@@ -11,13 +11,17 @@ class TOWEROFDEAD_API UTODGruxAIAnimInstance : public UTODAIAnimInstance
 
 public:
 	UTODGruxAIAnimInstance();
+
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+public:
 	void PlayAttackMontage();
 	bool PlayHitReactMontage(int dir);
 
-	void PlayDoubleAttackMontage();
+	void PlayEnemySpawnCastMontage();
+	void PlayMeteorCastMontage();
 
+	bool IsAttackMontage(UAnimMontage* montage);
 private:
 	UFUNCTION()
 	void AnimNotify_RandomDoubleAttack();
@@ -29,13 +33,20 @@ private:
 
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* LevelStartMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	TArray<UAnimMontage*> ArrAttackMontage;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* DoubleAttackMontage;
 
-	/*
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	TArray<UAnimMontage*> ArrHitReactMontage;
-	*/
+	UAnimMontage* EnemySpawnCastMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* MeteorCastMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsDash;
 };
