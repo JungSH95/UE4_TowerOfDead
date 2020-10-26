@@ -1,6 +1,8 @@
 #include "Enemy/TODEnemyGrux.h"
+#include "Enemy/TODEnemyStatComponent.h"
 #include "Enemy/TODEnemyGruxAIController.h"
 #include "Enemy/TODGruxAIAnimInstance.h"
+#include "TODCharacter.h"
 #include "NavigationSystem.h"
 
 ATODEnemyGrux::ATODEnemyGrux()
@@ -18,6 +20,11 @@ ATODEnemyGrux::ATODEnemyGrux()
 	if (P_DOUBLEATTACKHITEFFECT.Succeeded())
 		DoubleAttackHitEffect = P_DOUBLEATTACKHITEFFECT.Object;
 
+	// 대쉬 피격 이펙트
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_DASHSKILLHITEFFECT(TEXT("/Game/ParagonGrux/FX/Particles/Skins/Grux_Beetle_Magma/P_Grux_Magma_Ultimate_Clang.P_Grux_Magma_Ultimate_Clang"));
+	if (P_DASHSKILLHITEFFECT.Succeeded())
+		DashSkillHitEffect = P_DASHSKILLHITEFFECT.Object;
+
 	DashTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("DashTriggerSphere"));
 	DashTrigger->SetupAttachment(GetMesh());
 	DashTrigger->SetGenerateOverlapEvents(false);
@@ -31,7 +38,7 @@ ATODEnemyGrux::ATODEnemyGrux()
 
 	IsCanDashSKill = true;
 	IsDashSKilling = false;
-	DashSkillCoolDownTime = 3.0f;
+	DashSkillCoolDownTime = 10.0f;
 
 	IsCanEnemySpawnSKill = false;
 	EnemySpawnSkillCoolDownTime = 9.0f;
@@ -46,6 +53,13 @@ void ATODEnemyGrux::Tick(float DeltaTime)
 		GetCharacterMovement()->MaxWalkSpeed = 2000.0f;
 		AddMovementInput(GetActorForwardVector(), 1.0f);
 	}
+}
+
+void ATODEnemyGrux::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	DashTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODEnemyGrux::OnDashTriggerOverlap);
 }
 
 void ATODEnemyGrux::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -147,11 +161,12 @@ void ATODEnemyGrux::MeteorSkillCoolDownTimer()
 void ATODEnemyGrux::DashSkill()
 {
 	IsDashSKilling = true;
-	IsCanMeteorSKill = false;
+	IsCanDashSKill = false;
+	DashTrigger->SetGenerateOverlapEvents(true);
 
 	// 대시 유지 시간
-	//GetWorldTimerManager().SetTimer(DashSkillEndTimerHandle, this, &ATODEnemyGrux::DashSkillEndTimer,
-	//	3.0f, false);
+	GetWorldTimerManager().SetTimer(DashSkillEndTimerHandle, this, &ATODEnemyGrux::DashSkillEndTimer,
+		10.0f, false);
 
 	// 쿨타임
 	GetWorldTimerManager().SetTimer(DashSkillTimerHandle, this, &ATODEnemyGrux::DashSkillCoolDownTimer,
@@ -161,12 +176,22 @@ void ATODEnemyGrux::DashSkill()
 void ATODEnemyGrux::DashSkillEndTimer()
 {
 	IsDashSKilling = false;
+	DashTrigger->SetGenerateOverlapEvents(false);	
 }
 
 void ATODEnemyGrux::DashSkillCoolDownTimer()
 {
 	TODLOG_S(Warning);
 	IsCanDashSKill = true;
+}
+
+void ATODEnemyGrux::StunEnd()
+{
+	TODLOG_S(Warning);
+
+	ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
+	if (EnemyAI != nullptr)
+		EnemyAI->SetIsAttaking(false);
 }
 
 void ATODEnemyGrux::EnemySpawnSkill()
@@ -214,6 +239,38 @@ void ATODEnemyGrux::StartHitEffect(FVector pos)
 	if (IsDoubleAttacking)
 		HitEffect->SetTemplate(DoubleAttackHitEffect);
 
+	if(IsDashSKilling)
+		HitEffect->SetTemplate(DashSkillHitEffect);
+
 	HitEffect->SetWorldLocation(pos);
 	HitEffect->Activate(true);
+}
+
+void ATODEnemyGrux::OnDashTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
+	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,	bool bFromSweep, const FHitResult& SweepResult)
+{	
+	ATODCharacter* Player = Cast<ATODCharacter>(OtherActor);
+	if (Player != nullptr)
+	{
+		// 캐릭터 일 경우 처리
+		if (Player->GetMovementComponent()->IsFalling())
+			Player->GetCharacterMovement()->AddImpulse(this->GetActorForwardVector() * 2000.0f, true);
+		else
+			Player->GetCharacterMovement()->AddImpulse(this->GetActorForwardVector() * 20000.0f, true);
+
+		FDamageEvent DamageEvent;
+		OtherActor->TakeDamage(EnemyStat->GetAttack(), DamageEvent, GetController(), this);
+
+		FVector effectLoc = Player->GetMesh()->GetSocketLocation("Impact");
+		StartHitEffect(effectLoc);
+
+		DashSkillEndTimer();
+		return;
+	}
+
+	// 나머지 환경 요소(벽 등) 충돌 시
+	FVector effectLoc = GetMesh()->GetSocketLocation("FX_Head");
+	StartHitEffect(effectLoc);
+
+	DashSkillEndTimer();
 }

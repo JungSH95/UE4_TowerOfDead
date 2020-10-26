@@ -112,3 +112,10 @@ void UTODGruxAIAnimInstance::AnimNotify_DoubleAttackHitCheckEnd()
 	if (Enemy != nullptr)
 		Enemy->DoubleAttackHitCheckEnd();
 }
+
+void UTODGruxAIAnimInstance::AnimNotify_StunEnd()
+{
+	ATODEnemyGrux* Enemy = Cast<ATODEnemyGrux>(TryGetPawnOwner());
+	if (Enemy != nullptr)
+		Enemy->StunEnd();
+}

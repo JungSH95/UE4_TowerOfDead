@@ -31,6 +31,9 @@ private:
 	UFUNCTION()
 	void AnimNotify_DoubleAttackHitCheckEnd();
 
+	UFUNCTION()
+	void AnimNotify_StunEnd();
+
 private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* LevelStartMontage;

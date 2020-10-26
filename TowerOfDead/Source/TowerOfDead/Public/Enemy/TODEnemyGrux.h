@@ -13,6 +13,7 @@ public:
 	ATODEnemyGrux();
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void PostInitializeComponents() override;
 
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
@@ -35,6 +36,7 @@ public:
 	void DashSkill();
 	void DashSkillEndTimer();
 	void DashSkillCoolDownTimer();
+	void StunEnd();
 
 	void EnemySpawnSkill();
 	void EnemySpawnSkillCoolDownTimer();
@@ -45,15 +47,24 @@ public:
 	// 공격에 맞는 이펙트를 설정
 	void StartHitEffect(FVector pos);
 
+	UFUNCTION()
+	void OnDashTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
+		class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystem* AttackHitEffect;
 
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystem* DoubleAttackHitEffect;
 	
+	UPROPERTY(VisibleAnywhere, Category = Effect)
+	UParticleSystem* DashSkillHitEffect;
+
 	// 소환할 Actor Test용
 	UPROPERTY(EditAnywhere, Category = Point)
 	TSubclassOf<AActor> ActorToSpawn;
+
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
