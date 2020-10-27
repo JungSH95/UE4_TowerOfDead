@@ -41,6 +41,11 @@ void UTODGruxAIAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
+void UTODGruxAIAnimInstance::PlayLevelStartMontage()
+{
+	Montage_Play(LevelStartMontage, 1.0f);
+}
+
 void UTODGruxAIAnimInstance::PlayAttackMontage()
 {
 	// 동작중인 몽타주가 없다면

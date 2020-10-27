@@ -15,6 +15,8 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 public:
+	void PlayLevelStartMontage();
+
 	void PlayAttackMontage();
 	bool PlayHitReactMontage(int dir);
 

@@ -23,7 +23,6 @@ ATODStageManager::ATODStageManager()
 	if (ENEMYBOSSCLASS_1.Class != NULL)
 		ArrBossType.Add(ENEMYBOSSCLASS_1.Class);
 	
-
 	IsClear = false;
 	IsBattleStart = false;
 	EnemyDeadCount = 0;
@@ -71,6 +70,8 @@ void ATODStageManager::Tick(float DeltaTime)
 		// FadeOut 진행 중이 아니라면
 		if (!TODGameMode->GetIsSequencePlaying())
 		{
+			print(FString::Printf(TEXT("Battle Start")));
+
 			IsBattleStart = true;
 			SetPlayerPosition();
 			
@@ -94,9 +95,8 @@ void ATODStageManager::SetNextStage()
 	// 다음 스테이지를 랜덤? 순차?
 	int RandomNumber = FMath::RandRange(1, 2);
 	FString SNextStageName = FString::Printf(TEXT("StageMap%d"), RandomNumber);
-	//NextPortal->SetNextLevel(FName(*SNextStageName));
+	NextPortal->SetNextLevel(FName(*SNextStageName));
 
-	NextPortal->SetNextLevel("BossStageMap");
 	// 다음 지역 이동할 수 있게 충돌 이벤트 활성화
 	NextPortal->SetNextLevelEvent(true);
 	NextPortal->SetPortalEffectActive(true);
@@ -129,24 +129,29 @@ void ATODStageManager::InitEnemy()
 			{
 				ATODEnemy* Enemy = GetWorld()->SpawnActor<ATODEnemy>(ArrEnemyType[EnemySpawnPoint[i]->GetEnemyNumber() - 1],
 					EnemySpawnPoint[i]->GetActorLocation(), EnemySpawnPoint[i]->GetActorRotation());
-				ArrEnemy.Add(Enemy);
-
-				Enemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
-				Enemy->OnEnemyDeadCheck.AddUObject(this, &ATODStageManager::StageClearCheck);
+				if (Enemy != nullptr)
+				{
+					Enemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
+					Enemy->OnEnemyDeadCheck.AddUObject(this, &ATODStageManager::StageClearCheck);
+					ArrEnemy.Add(Enemy);
+				}
 			}
 		}
 		// 보스몬스터 소환
 		else
 		{
-			print(FString::Printf(TEXT("Boss Enemy Init")));
-
-			if (EnemySpawnPoint[i]->GetEnemyNumber() > 0 && EnemySpawnPoint[i]->GetEnemyNumber() <= ArrBossType.Num())
+			if (EnemySpawnPoint[i]->GetEnemyNumber() > 0 && 
+				EnemySpawnPoint[i]->GetEnemyNumber() <= ArrBossType.Num())
 			{
+				print(FString::Printf(TEXT("Boss Enemy Init")));
+
 				BossEnemy = GetWorld()->SpawnActor<ATODEnemy>(ArrBossType[EnemySpawnPoint[i]->GetEnemyNumber() - 1],
 					EnemySpawnPoint[i]->GetActorLocation(), EnemySpawnPoint[i]->GetActorRotation());
-
-				BossEnemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
-				BossEnemy->OnEnemyDeadCheck.AddUObject(this, &ATODStageManager::StageClearCheck);
+				if (BossEnemy != nullptr)
+				{
+					BossEnemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
+					BossEnemy->OnEnemyDeadCheck.AddUObject(this, &ATODStageManager::StageClearCheck);
+				}
 			}
 		}
 	}

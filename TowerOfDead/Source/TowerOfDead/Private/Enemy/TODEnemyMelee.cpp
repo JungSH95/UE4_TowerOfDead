@@ -15,8 +15,6 @@ ATODEnemyMelee::ATODEnemyMelee()
 		HitEffect->SetTemplate(P_HITEFFECT.Object);
 		HitEffect->bAutoActivate = false;
 	}
-
-	HPBarWidget->SetHiddenInGame(false);
 }
 
 void ATODEnemyMelee::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
