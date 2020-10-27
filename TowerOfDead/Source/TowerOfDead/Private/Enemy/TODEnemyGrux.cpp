@@ -33,6 +33,8 @@ ATODEnemyGrux::ATODEnemyGrux()
 
 	IsDoubleAttacking = false;
 
+	SkillDelayTime = 10.0f;
+
 	IsCanMeteorSKill = false;
 	MeteorSkillCoolDownTime = 6.0f;
 
@@ -69,7 +71,7 @@ void ATODEnemyGrux::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupte
 		return;
 
 	// NowMontage에는 공격 몽타주가 저장되어 있다.
-	if (AnimInstance->NowMontage == Montage)
+	if (AnimInstance->IsAttackMontage(Montage))
 	{
 		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
 		if (EnemyAI == nullptr)
@@ -79,7 +81,20 @@ void ATODEnemyGrux::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupte
 		AnimInstance->NowMontage = nullptr;
 
 		AttackCoolDownTimerStart();
+
+		TODLOG_S(Warning);
 	}
+}
+
+bool ATODEnemyGrux::GetIsCanOutRangeAttack()
+{
+	if (IsCanDashSKill == false)
+		return false;
+
+	if (!IsCanDashSKill || !IsCanMeteorSKill && !IsCanEnemySpawnSKill)
+		return false;
+
+	return true;
 }
 
 void ATODEnemyGrux::StartAllSkillCoolDown()
@@ -122,6 +137,13 @@ void ATODEnemyGrux::DoubleAttackHitCheckEnd()
 
 	if (GetAttackTrigger() != nullptr)
 		GetAttackTrigger()->SetGenerateOverlapEvents(false);
+}
+
+void ATODEnemyGrux::SkillDelayTimer()
+{
+	ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
+	if (EnemyAI != nullptr)
+		EnemyAI->SetIsCanOutRangeAttack(true);
 }
 
 void ATODEnemyGrux::RandomPointInit(int count)
@@ -176,6 +198,8 @@ void ATODEnemyGrux::DashSkill()
 void ATODEnemyGrux::DashSkillEndTimer()
 {
 	IsDashSKilling = false;
+	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
+
 	DashTrigger->SetGenerateOverlapEvents(false);	
 }
 
@@ -187,8 +211,6 @@ void ATODEnemyGrux::DashSkillCoolDownTimer()
 
 void ATODEnemyGrux::StunEnd()
 {
-	TODLOG_S(Warning);
-
 	ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
 	if (EnemyAI != nullptr)
 		EnemyAI->SetIsAttaking(false);
@@ -208,25 +230,25 @@ void ATODEnemyGrux::EnemySpawnSkillCoolDownTimer()
 	IsCanEnemySpawnSKill = true;
 }
 
-bool ATODEnemyGrux::OutRangeAttack(float dis)
+void ATODEnemyGrux::OutRangeAttack(float dis)
 {
-	// 모든 기술 사용 불가능 상태
-	if (!IsCanDashSKill && !IsCanMeteorSKill && !IsCanEnemySpawnSKill)
-		return false;
-
 	// 어떤 기술을 사용할 것인지? & 해당 기술은 사용 가능한 상태인지
 
 	// 1순위 - 거리가 멀고 & 대쉬 기술 사용 가능
-	if (dis >= 500.0f && IsCanDashSKill)
+	if (IsCanDashSKill)
 	{
 		DashSkill();
-		return true;
+
+		// 다음 기술 사용까지의 딜레이
+		GetWorldTimerManager().SetTimer(SkillDelayTimerHandle, this, &ATODEnemyGrux::SkillDelayTimer,
+			SkillDelayTime, false);
+		return;
 	}
 
 	// 일정 체력 이하 시 메테오, 몬스터 소환 기술 사용
 	// -> 일단 테스트 하기위해 바로 사용
 
-	return false;
+	return;
 }
 
 void ATODEnemyGrux::StartHitEffect(FVector pos)

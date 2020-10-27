@@ -18,6 +18,7 @@ public:
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	bool GetIsDashSkilling() { return IsDashSKilling; }
+	bool GetIsCanOutRangeAttack();
 
 public:
 	void StartAllSkillCoolDown();
@@ -26,6 +27,8 @@ public:
 
 	void DoubleAttackHitCheck();
 	void DoubleAttackHitCheckEnd();
+
+	void SkillDelayTimer();
 
 	// 메테오 or 몬스터 소환에 사용
 	void RandomPointInit(int count);
@@ -42,7 +45,7 @@ public:
 	void EnemySpawnSkillCoolDownTimer();
 
 	// BTTask_Attack에서 실행, 가능한 스킬 판별 후 사용
-	bool OutRangeAttack(float dis);
+	void OutRangeAttack(float dis);
 
 	// 공격에 맞는 이펙트를 설정
 	void StartHitEffect(FVector pos);
@@ -70,7 +73,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsDoubleAttacking;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
+	FTimerHandle SkillDelayTimerHandle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
+	float SkillDelayTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	TArray<FVector> RandomPoint;
 	
 	// 메테오 기술 ------------------------
@@ -91,7 +100,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	bool IsDashSKilling;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Skill, Meta = (AllowPrivateAccess = true))
 	class USphereComponent* DashTrigger;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))

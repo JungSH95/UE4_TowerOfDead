@@ -25,6 +25,7 @@ void ATODEnemyGruxAIController::OnPossess(APawn* InPawn)
 	{
 		Blackboard->SetValueAsBool(IsAttackingKey, false);
 		Blackboard->SetValueAsBool(IsCanOutRangeAttackKey, true);
+		Blackboard->SetValueAsFloat(RandomAttackCheckKey, -1.0f);
 	}
 }
 

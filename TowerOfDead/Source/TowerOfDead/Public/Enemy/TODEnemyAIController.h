@@ -19,7 +19,7 @@ public:
 
 	static const FName IsAttackingKey;
 	static const FName IsCanOutRangeAttackKey;
-
+	static const FName RandomAttackCheckKey;
 	static const FName RandomPosKey;
 
 	void SetIsAttaking(bool isAttack);

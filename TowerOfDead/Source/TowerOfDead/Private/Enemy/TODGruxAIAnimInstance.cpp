@@ -83,9 +83,13 @@ void UTODGruxAIAnimInstance::PlayMeteorCastMontage()
 
 bool UTODGruxAIAnimInstance::IsAttackMontage(UAnimMontage* montage)
 {
+	// Attack or DoubleAttack ½Ã true;
 	for (int i = 0; i < ArrAttackMontage.Num(); i++)
 		if (montage == ArrAttackMontage[i])
 			return true;
+
+	if (DoubleAttackMontage == montage)
+		return true;
 
 	return false;
 }
