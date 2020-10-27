@@ -41,6 +41,7 @@ public:
 
 	virtual void StartHitEffect(FVector pos) PURE_VIRTUAL(ATODEnemy::StartHitEffect, return;);
 	virtual void StartAllSkillCoolDown() PURE_VIRTUAL(ATODEnemy::StartAllSkillCoolDown, return;);
+	virtual void LevelStartMontage() PURE_VIRTUAL(ATODEnemy::LevelStartMontage, return;);
 
 	UFUNCTION()
 	virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted) PURE_VIRTUAL(ATODEnemy::OnAttackMontageEnded, return;);

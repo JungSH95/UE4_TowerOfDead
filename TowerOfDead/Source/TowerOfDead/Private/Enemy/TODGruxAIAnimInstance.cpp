@@ -3,7 +3,7 @@
 
 UTODGruxAIAnimInstance::UTODGruxAIAnimInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> LEVELSTART_MONTAGE(TEXT("/Game/ParagonGrux/Characters/Heroes/Grux/Animations/LevelStart_Montage.LevelStart_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> LEVELSTART_MONTAGE(TEXT("/Game/ParagonGrux/Characters/Heroes/Grux/Animations/Montage/Grux_LevelStart_Montage.Grux_LevelStart_Montage"));
 	if (LEVELSTART_MONTAGE.Succeeded())
 		LevelStartMontage = LEVELSTART_MONTAGE.Object;
 
@@ -43,7 +43,8 @@ void UTODGruxAIAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UTODGruxAIAnimInstance::PlayLevelStartMontage()
 {
-	Montage_Play(LevelStartMontage, 1.0f);
+	if (LevelStartMontage != nullptr)
+		Montage_Play(LevelStartMontage, 1.0f);
 }
 
 void UTODGruxAIAnimInstance::PlayAttackMontage()

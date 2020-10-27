@@ -22,6 +22,7 @@ public:
 
 public:
 	void StartAllSkillCoolDown();
+	void LevelStartMontage();
 
 	void Attack();
 

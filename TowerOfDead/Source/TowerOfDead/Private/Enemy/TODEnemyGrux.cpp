@@ -116,6 +116,16 @@ void ATODEnemyGrux::StartAllSkillCoolDown()
 		EnemySpawnSkillCoolDownTime, false);
 }
 
+void ATODEnemyGrux::LevelStartMontage()
+{
+	auto AnimInstance = Cast<UTODGruxAIAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance == nullptr)
+		return;
+
+	print(FString::Printf(TEXT("Enemy Grux Level Start Montage")));
+	AnimInstance->PlayLevelStartMontage();
+}
+
 void ATODEnemyGrux::Attack()
 {
 	if (!GetIsCanAttack())
@@ -243,15 +253,18 @@ void ATODEnemyGrux::EnemySpawnSkill()
 	{
 		ATODEnemy* SpawnEnemy = GetWorld()->SpawnActor<ATODEnemy>(ActorToSpawn, RandomPoint[i],
 			GetActorRotation());
-		SpawnEnemy->EnemyStat->SetNewLevel(EnemyStat->GetLevel());
-		//SpawnEnemy->HPBarWidget->SetHiddenInGame(false);
-		SpawnEnemy->OnEnemyDeadCheck.AddUObject(this, &ATODEnemyGrux::EnemySpawnDeadCount);
-		
-		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(SpawnEnemy->GetController());
-		if (EnemyAI != nullptr)
-			EnemyAI->StartAI();
+		if (SpawnEnemy != nullptr)
+		{
+			SpawnEnemy->EnemyStat->SetNewLevel(EnemyStat->GetLevel());
+			SpawnEnemy->OnEnemyDeadCheck.AddUObject(this, &ATODEnemyGrux::EnemySpawnDeadCount);
 
-		SpawnEnemys.Add(SpawnEnemy);
+			ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(SpawnEnemy->GetController());
+			if (EnemyAI != nullptr)
+				EnemyAI->StartAI();
+			SpawnEnemy->HPBarWidget->SetHiddenInGame(false);
+
+			SpawnEnemys.Add(SpawnEnemy);
+		}
 	}
 
 	GetWorldTimerManager().SetTimer(EnemySpawnSkillTimerHandle, this, &ATODEnemyGrux::EnemySpawnSkillCoolDownTimer,

@@ -34,8 +34,10 @@ void ATODStageManager::BeginPlay()
 
 	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 	if (gameMode != nullptr)
+	{
 		TODGameMode = gameMode;
-	TODGameMode->AddArrStageManager(this);
+		TODGameMode->AddArrStageManager(this);
+	}
 
 	// StartPoint & Portal & EnemySawnPoint 찾기
 	if (StartPoint == nullptr || NextPortal == nullptr)
@@ -180,6 +182,7 @@ void ATODStageManager::StageStart()
 			EnemyAI->StartAI();
 		
 		// BOSS 전용 HP UI 활성화
+		BossEnemy->LevelStartMontage();
 		BossEnemy->StartAllSkillCoolDown();
 	}
 
