@@ -1,6 +1,7 @@
 #include "Enemy/TODEnemyMelee.h"
 #include "Enemy/TODEnemyMeleeAIController.h"
 #include "Enemy/TODAIAnimInstance.h"
+#include "Components/WidgetComponent.h"
 
 ATODEnemyMelee::ATODEnemyMelee()
 {
@@ -14,6 +15,8 @@ ATODEnemyMelee::ATODEnemyMelee()
 		HitEffect->SetTemplate(P_HITEFFECT.Object);
 		HitEffect->bAutoActivate = false;
 	}
+
+	HPBarWidget->SetHiddenInGame(false);
 }
 
 void ATODEnemyMelee::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

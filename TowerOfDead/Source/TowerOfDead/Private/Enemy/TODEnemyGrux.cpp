@@ -4,6 +4,7 @@
 #include "Enemy/TODGruxAIAnimInstance.h"
 #include "TODCharacter.h"
 #include "NavigationSystem.h"
+#include "Components/WidgetComponent.h"
 
 ATODEnemyGrux::ATODEnemyGrux()
 {
@@ -33,7 +34,7 @@ ATODEnemyGrux::ATODEnemyGrux()
 
 	IsDoubleAttacking = false;
 
-	SkillDelayTime = 10.0f;
+	SkillDelayTime = 5.0f;
 
 	IsCanMeteorSKill = false;
 	MeteorSkillCoolDownTime = 6.0f;
@@ -69,32 +70,37 @@ void ATODEnemyGrux::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupte
 	auto AnimInstance = Cast<UTODGruxAIAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance == nullptr)
 		return;
+	
+	ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
+	if (EnemyAI == nullptr)
+		return;
 
-	// NowMontage에는 공격 몽타주가 저장되어 있다.
+	// 공격 몽타주가 끝났다면
 	if (AnimInstance->IsAttackMontage(Montage))
 	{
-		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
-		if (EnemyAI == nullptr)
-			return;
-
 		EnemyAI->SetIsAttaking(false);
 		AnimInstance->NowMontage = nullptr;
 
 		AttackCoolDownTimerStart();
 
-		TODLOG_S(Warning);
+		print(FString::Printf(TEXT("Enemy Grux Attack Montage End")));
+	}
+	// 몬스터 소환 몽타주가 끝났다면
+	else if (AnimInstance->IsEnemySpawnCastMontage(Montage))
+	{
+		EnemyAI->SetIsAttaking(false);
+
+		print(FString::Printf(TEXT("Enemy Grux Enemy Spawn Montage End")));
 	}
 }
 
 bool ATODEnemyGrux::GetIsCanOutRangeAttack()
 {
-	if (IsCanDashSKill == false)
-		return false;
+	// 스킬이 하나라도 사용이 가능하다면
+	if (IsCanDashSKill || IsCanMeteorSKill || IsCanMeteorSKill)
+		return true;
 
-	if (!IsCanDashSKill || !IsCanMeteorSKill && !IsCanEnemySpawnSKill)
-		return false;
-
-	return true;
+	return false;
 }
 
 void ATODEnemyGrux::StartAllSkillCoolDown()
@@ -103,8 +109,8 @@ void ATODEnemyGrux::StartAllSkillCoolDown()
 	GetWorldTimerManager().SetTimer(DashSkillTimerHandle, this, &ATODEnemyGrux::DashSkillCoolDownTimer,
 		DashSkillCoolDownTime, false);
 
-	GetWorldTimerManager().SetTimer(MeteorSkillTimerHandle, this, &ATODEnemyGrux::MeteorSkillCoolDownTimer,
-		MeteorSkillCoolDownTime, false);
+	//GetWorldTimerManager().SetTimer(MeteorSkillTimerHandle, this, &ATODEnemyGrux::MeteorSkillCoolDownTimer,
+	//	MeteorSkillCoolDownTime, false);
 
 	GetWorldTimerManager().SetTimer(EnemySpawnSkillTimerHandle, this, &ATODEnemyGrux::EnemySpawnSkillCoolDownTimer,
 		EnemySpawnSkillCoolDownTime, false);
@@ -148,21 +154,21 @@ void ATODEnemyGrux::SkillDelayTimer()
 
 void ATODEnemyGrux::RandomPointInit(int count)
 {
+	RandomPoint.Empty();
+
 	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(GetWorld());
 	if (NavSystem == nullptr)
 		return;
 
-	FNavLocation NewPoint;
-	if (NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 1500.0f, NewPoint))
+	for (int i = 0; i < count; i++)
 	{
-		if (ActorToSpawn == nullptr)
-			return;
-		
-		RandomPoint.Add(NewPoint.Location);
-
-		//FActorSpawnParameters SpawnParams;
-		//AActor* SpawnedActorRef = GetWorld()->SpawnActor<AActor>(ActorToSpawn, NewPoint.Location,
-		//	FRotator::ZeroRotator, SpawnParams);
+		FNavLocation NewPoint;
+		if (NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 1500.0f, NewPoint))
+		{
+			if (ActorToSpawn == nullptr)
+				return;
+			RandomPoint.Add(NewPoint.Location);
+		}
 	}
 }
 
@@ -187,7 +193,7 @@ void ATODEnemyGrux::DashSkill()
 
 	// 대시 유지 시간
 	GetWorldTimerManager().SetTimer(DashSkillEndTimerHandle, this, &ATODEnemyGrux::DashSkillEndTimer,
-		10.0f, false);
+		5.0f, false);
 
 	// 쿨타임
 	GetWorldTimerManager().SetTimer(DashSkillTimerHandle, this, &ATODEnemyGrux::DashSkillCoolDownTimer,
@@ -222,32 +228,83 @@ void ATODEnemyGrux::StunEnd()
 
 void ATODEnemyGrux::EnemySpawnSkill()
 {
+	auto AnimInstance = Cast<UTODGruxAIAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance == nullptr)
+		return;
+
+	AnimInstance->PlayEnemySpawnCastMontage();
 	IsCanEnemySpawnSKill = false;
+	EnemySpawnCount = 0;
+
+	SpawnEnemys.Empty();
+	RandomPointInit(5);
+
+	for (int i = 0; i < 5; i++)
+	{
+		ATODEnemy* SpawnEnemy = GetWorld()->SpawnActor<ATODEnemy>(ActorToSpawn, RandomPoint[i],
+			GetActorRotation());
+		SpawnEnemy->EnemyStat->SetNewLevel(EnemyStat->GetLevel());
+		//SpawnEnemy->HPBarWidget->SetHiddenInGame(false);
+		SpawnEnemy->OnEnemyDeadCheck.AddUObject(this, &ATODEnemyGrux::EnemySpawnDeadCount);
+		
+		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(SpawnEnemy->GetController());
+		if (EnemyAI != nullptr)
+			EnemyAI->StartAI();
+
+		SpawnEnemys.Add(SpawnEnemy);
+	}
 
 	GetWorldTimerManager().SetTimer(EnemySpawnSkillTimerHandle, this, &ATODEnemyGrux::EnemySpawnSkillCoolDownTimer,
 		EnemySpawnSkillCoolDownTime, false);
 }
 
+void ATODEnemyGrux::EnemySpawnDeadCount()
+{
+	EnemySpawnCount++;
+
+	if (EnemySpawnCount >= SpawnEnemys.Num())
+		EnemySpawnCount = SpawnEnemys.Num();
+}
+
 void ATODEnemyGrux::EnemySpawnSkillCoolDownTimer()
 {
-	TODLOG_S(Warning);
+	print(FString::Printf(TEXT("Enemy Grux : Can Enemy Spawn Skill")));
 	IsCanEnemySpawnSKill = true;
 }
 
 void ATODEnemyGrux::OutRangeAttack(float dis)
 {
+	// 다음 기술 사용까지의 딜레이
+	ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
+	if (EnemyAI != nullptr)
+		EnemyAI->SetIsCanOutRangeAttack(false);
+	
+	GetWorldTimerManager().SetTimer(SkillDelayTimerHandle, this, &ATODEnemyGrux::SkillDelayTimer,
+		SkillDelayTime, false);
+
 	// 어떤 기술을 사용할 것인지? & 해당 기술은 사용 가능한 상태인지
+
+	// 필수 패턴 (몬스터 소환 - 스킬 사용 가능하면서 소환된 몬스터가 없다면)
+	if (IsCanEnemySpawnSKill && (SpawnEnemys.Num() == EnemySpawnCount))
+	{
+		EnemySpawnSkill();
+		return;
+	}
 
 	// 1순위 - 거리가 멀고 & 대쉬 기술 사용 가능
 	if (IsCanDashSKill)
 	{
 		DashSkill();
-
-		// 다음 기술 사용까지의 딜레이
-		GetWorldTimerManager().SetTimer(SkillDelayTimerHandle, this, &ATODEnemyGrux::SkillDelayTimer,
-			SkillDelayTime, false);
 		return;
 	}
+
+	if (IsCanMeteorSKill)
+	{
+		MeteorSkill();
+		return;
+	}
+
+	
 
 	// 일정 체력 이하 시 메테오, 몬스터 소환 기술 사용
 	// -> 일단 테스트 하기위해 바로 사용

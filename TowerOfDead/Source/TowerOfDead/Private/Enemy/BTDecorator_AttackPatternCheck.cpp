@@ -17,12 +17,12 @@ bool UBTDecorator_AttackPatternCheck::CalculateRawConditionValue(UBehaviorTreeCo
 	if (Enemy == nullptr)
 		return false;
 
-	// 원거리 공격 or 기술이 존재
+	// 사용 가능한 원거리 공격 or 기술이 존재
 	if (Enemy->GetIsCanOutRangeAttack())
 	{
 		// 일정 확률(임시 : 30퍼)은 일반 공격 패턴 진행
 		float Rand = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(ATODEnemyAIController::RandomAttackCheckKey);
-		if (Rand == -1.0f)
+		if (Rand <= -1.0f)
 		{
 			Rand = FMath::FRandRange(0.0f, 1.0f);
 			OwnerComp.GetBlackboardComponent()->SetValueAsFloat(ATODEnemyAIController::RandomAttackCheckKey, Rand);

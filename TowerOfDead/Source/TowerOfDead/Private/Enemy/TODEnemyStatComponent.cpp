@@ -56,6 +56,11 @@ void UTODEnemyStatComponent::SetHP(float NewHP)
 	}
 }
 
+int32 UTODEnemyStatComponent::GetLevel()
+{
+	return Level;
+}
+
 float UTODEnemyStatComponent::GetAttack()
 {
 	float Damage = 0.0f;

@@ -19,7 +19,11 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 		return EBTNodeResult::Failed;
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(ATODEnemyAIController::IsAttackingKey, true);
-	Enemy->Attack();
+
+	if (Enemy->GetIsCanAttack())
+		Enemy->Attack();
+	else
+		return EBTNodeResult::Failed;
 	
 	return EBTNodeResult::InProgress;
 }

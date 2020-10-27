@@ -24,6 +24,7 @@ public:
 	void SetDamage(float NewDamage);
 	void SetHP(float NewHP);
 
+	int32 GetLevel();
 	float GetAttack();
 	int32 GetDropSoul();
 	float GetHPRatio();

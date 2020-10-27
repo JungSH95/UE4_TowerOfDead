@@ -44,6 +44,7 @@ public:
 	void StunEnd();
 
 	void EnemySpawnSkill();
+	void EnemySpawnDeadCount();
 	void EnemySpawnSkillCoolDownTimer();
 
 	// BTTask_Attack에서 실행, 가능한 스킬 판별 후 사용
@@ -118,6 +119,12 @@ private:
 	// 몬스터 소환 기술 ------------------------
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	bool IsCanEnemySpawnSKill;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
+	int32 EnemySpawnCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
+	TArray<ATODEnemy*> SpawnEnemys;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	float EnemySpawnSkillCoolDownTime;

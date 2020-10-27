@@ -22,6 +22,8 @@ public:
 	void PlayMeteorCastMontage();
 
 	bool IsAttackMontage(UAnimMontage* montage);
+
+	bool IsEnemySpawnCastMontage(UAnimMontage* montage);
 private:
 	UFUNCTION()
 	void AnimNotify_RandomDoubleAttack();
