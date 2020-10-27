@@ -184,7 +184,6 @@ void ATODEnemyGrux::DashSkill()
 {
 	IsDashSKilling = true;
 	IsCanDashSKill = false;
-	DashTrigger->SetGenerateOverlapEvents(true);
 
 	// 대시 유지 시간
 	GetWorldTimerManager().SetTimer(DashSkillEndTimerHandle, this, &ATODEnemyGrux::DashSkillEndTimer,
@@ -193,6 +192,11 @@ void ATODEnemyGrux::DashSkill()
 	// 쿨타임
 	GetWorldTimerManager().SetTimer(DashSkillTimerHandle, this, &ATODEnemyGrux::DashSkillCoolDownTimer,
 		DashSkillCoolDownTime, false);
+}
+
+void ATODEnemyGrux::OnDashSkillOverlap()
+{
+	DashTrigger->SetGenerateOverlapEvents(true);
 }
 
 void ATODEnemyGrux::DashSkillEndTimer()

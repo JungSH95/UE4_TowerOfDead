@@ -37,6 +37,8 @@ public:
 	void MeteorSkillCoolDownTimer();
 
 	void DashSkill();
+	void OnDashSkillOverlap();
+
 	void DashSkillEndTimer();
 	void DashSkillCoolDownTimer();
 	void StunEnd();

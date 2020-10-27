@@ -32,6 +32,9 @@ private:
 	void AnimNotify_DoubleAttackHitCheckEnd();
 
 	UFUNCTION()
+	void AnimNotify_StartDashSkill();
+
+	UFUNCTION()
 	void AnimNotify_StunEnd();
 
 private:

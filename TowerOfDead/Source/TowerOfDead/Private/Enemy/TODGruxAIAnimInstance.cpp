@@ -117,6 +117,13 @@ void UTODGruxAIAnimInstance::AnimNotify_DoubleAttackHitCheckEnd()
 		Enemy->DoubleAttackHitCheckEnd();
 }
 
+void UTODGruxAIAnimInstance::AnimNotify_StartDashSkill()
+{
+	ATODEnemyGrux* Enemy = Cast<ATODEnemyGrux>(TryGetPawnOwner());
+	if (Enemy != nullptr)
+		Enemy->OnDashSkillOverlap();
+}
+
 void UTODGruxAIAnimInstance::AnimNotify_StunEnd()
 {
 	ATODEnemyGrux* Enemy = Cast<ATODEnemyGrux>(TryGetPawnOwner());
