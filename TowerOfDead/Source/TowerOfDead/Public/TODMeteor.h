@@ -19,7 +19,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostInitializeComponents() override;
 
-	void SetMeteor();
+	void SetMeteor(float damage);
 	void MeteorDropStart();
 	void MeteorDropEnd();
 
@@ -48,6 +48,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Skill, Meta = (AllowPrivateAccess = true))
 	class USphereComponent* ExplodeTrigger;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Skill, Meta = (AllowPrivateAccess = true))
+	float MeteorDamage;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Skill, Meta = (AllowPrivateAccess = true))
 	class UDecalComponent* Decal;

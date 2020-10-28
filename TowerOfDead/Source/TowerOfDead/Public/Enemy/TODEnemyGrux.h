@@ -97,6 +97,9 @@ private:
 	float MeteorSkillCoolDownTime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
+	TArray<ATODMeteor*> SpawnMeteors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	FTimerHandle MeteorSkillTimerHandle;
 	// -------------------------------------
 

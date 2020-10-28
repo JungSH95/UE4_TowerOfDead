@@ -190,20 +190,40 @@ void ATODEnemyGrux::RandomPointInit(float distance, int count)
 
 void ATODEnemyGrux::MeteorSkill()
 {
-	print(FString::Printf(TEXT("Enemy Grux MeteorSkill Cast")));
 	IsCanMeteorSKill = false;
-
 	RandomPointInit(3000.0f, 15);
-	for (int i = 0; i < 15; i++)
-	{
-		FVector NewLocation = RandomPoint[i];
-		NewLocation.Z = 3000.0f;
 
-		ATODMeteor* SpawnMeteor = GetWorld()->SpawnActor<ATODMeteor>(MeteorToSpawn, NewLocation,
-			GetActorRotation());
-		if (SpawnMeteor != nullptr)
-			SpawnMeteor->SetMeteor();
+	// 생성 안했다면 생성
+	if (SpawnMeteors.Num() == 0)
+	{
+		for (int i = 0; i < 15; i++)
+		{
+			FVector NewLocation = RandomPoint[i];
+			NewLocation.Z = 3000.0f;
+
+			ATODMeteor* SpawnMeteor = GetWorld()->SpawnActor<ATODMeteor>(MeteorToSpawn, NewLocation,
+				GetActorRotation());
+			if (SpawnMeteor != nullptr)
+			{
+				SpawnMeteor->SetMeteor(3.0f);
+				SpawnMeteors.Add(SpawnMeteor);
+			}
+		}
 	}
+	// 생성되있는거 재활용
+	else
+	{
+		for (int i = 0; i < 15; i++)
+		{
+			FVector NewLocation = RandomPoint[i];
+			NewLocation.Z = 3000.0f;
+
+			SpawnMeteors[i]->SetActorLocation(NewLocation);
+			SpawnMeteors[i]->SetMeteor(3.0f);
+		}
+	}
+
+	print(FString::Printf(TEXT("Enemy Grux MeteorSkill Count : %d"), SpawnMeteors.Num()));
 
 	GetWorldTimerManager().SetTimer(MeteorSkillTimerHandle, this, &ATODEnemyGrux::MeteorSkillCoolDownTimer,
 		MeteorSkillCoolDownTime, false);
@@ -244,7 +264,6 @@ void ATODEnemyGrux::DashSkillEndTimer()
 
 void ATODEnemyGrux::DashSkillCoolDownTimer()
 {
-	TODLOG_S(Warning);
 	IsCanDashSKill = true;
 }
 

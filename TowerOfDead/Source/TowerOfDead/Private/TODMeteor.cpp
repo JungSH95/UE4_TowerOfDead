@@ -33,6 +33,8 @@ ATODMeteor::ATODMeteor()
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_METEOREXPLODESKILLHITEFFECT(TEXT("/Game/VFX_Toolkit_V1/ParticleSystems/356Days/Par_Meteora_Explode_01.Par_Meteora_Explode_01"));
 	if (P_METEOREXPLODESKILLHITEFFECT.Succeeded())
 		MeteorHitEffect = P_METEOREXPLODESKILLHITEFFECT.Object;
+
+	MeteorDamage = 1.0f;
 }
 
 void ATODMeteor::BeginPlay()
@@ -57,9 +59,10 @@ void ATODMeteor::PostInitializeComponents()
 	ExplodeTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODMeteor::OnExplodeTriggerOverlap);
 }
 
-void ATODMeteor::SetMeteor()
+void ATODMeteor::SetMeteor(float damage)
 {
 	MeteorEffect->SetTemplate(BaseEffect);
+	MeteorDamage = damage;
 
 	float RandTime = FMath::FRandRange(2.0f, 7.0f);
 	GetWorldTimerManager().SetTimer(MeteorDropTimerHandle, this, &ATODMeteor::MeteorDropStart,
@@ -89,7 +92,10 @@ void ATODMeteor::OnMeteorTriggerOverlap(class UPrimitiveComponent* HitComp, clas
 	if (Player != nullptr)
 	{
 		print(FString::Printf(TEXT("Meteor Overlap is Player")));
+
 		// 데미지 처리
+		FDamageEvent DamageEvent;
+		OtherActor->TakeDamage(MeteorDamage, DamageEvent, nullptr, this);
 	}
 	// Player가 맞지 않았다면 Explode로 2차 Damage 체크
 	else
@@ -118,7 +124,9 @@ void ATODMeteor::OnExplodeTriggerOverlap(class UPrimitiveComponent* HitComp, cla
 	{
 		print(FString::Printf(TEXT("Explode Overlap is Player")));
 
-		// 데미지 수행
+		// 데미지 처리
+		FDamageEvent DamageEvent;
+		OtherActor->TakeDamage(MeteorDamage, DamageEvent, nullptr, this);
 
 		ExplodeTrigger->SetGenerateOverlapEvents(false);
 	}
