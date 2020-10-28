@@ -48,7 +48,7 @@ ATODEnemyGrux::ATODEnemyGrux()
 	SkillDelayTime = 5.0f;
 
 	IsCanMeteorSKill = true;
-	MeteorSkillCoolDownTime = 10.0f;
+	MeteorSkillCoolDownTime = 20.0f;
 
 	IsCanDashSKill = true;
 	IsDashSKilling = false;
@@ -197,11 +197,12 @@ void ATODEnemyGrux::MeteorSkill()
 	for (int i = 0; i < 15; i++)
 	{
 		FVector NewLocation = RandomPoint[i];
-		NewLocation.Z = 1500.0f;
+		NewLocation.Z = 3000.0f;
 
 		ATODMeteor* SpawnMeteor = GetWorld()->SpawnActor<ATODMeteor>(MeteorToSpawn, NewLocation,
 			GetActorRotation());
-
+		if (SpawnMeteor != nullptr)
+			SpawnMeteor->SetMeteor();
 	}
 
 	GetWorldTimerManager().SetTimer(MeteorSkillTimerHandle, this, &ATODEnemyGrux::MeteorSkillCoolDownTimer,
@@ -364,6 +365,8 @@ void ATODEnemyGrux::StartHitEffect(FVector pos)
 void ATODEnemyGrux::OnDashTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
 	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,	bool bFromSweep, const FHitResult& SweepResult)
 {	
+	print(OtherActor->GetName());
+
 	ATODCharacter* Player = Cast<ATODCharacter>(OtherActor);
 	if (Player != nullptr)
 	{
@@ -383,9 +386,11 @@ void ATODEnemyGrux::OnDashTriggerOverlap(class UPrimitiveComponent* HitComp, cla
 		return;
 	}
 
-	// 나머지 환경 요소(벽 등) 충돌 시
-	FVector effectLoc = GetMesh()->GetSocketLocation("FX_Head");
-	StartHitEffect(effectLoc);
-
-	DashSkillEndTimer();
+	// 나머지 환경 요소(벽) 충돌 시
+	if (OtherActor->ActorHasTag("Wall"))
+	{
+		FVector effectLoc = GetMesh()->GetSocketLocation("FX_Head");
+		StartHitEffect(effectLoc);
+		DashSkillEndTimer();
+	}
 }
