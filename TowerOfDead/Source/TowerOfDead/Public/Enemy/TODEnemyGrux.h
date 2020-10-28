@@ -32,7 +32,7 @@ public:
 	void SkillDelayTimer();
 
 	// 메테오 or 몬스터 소환에 사용
-	void RandomPointInit(int count);
+	void RandomPointInit(float distance, int count);
 
 	void MeteorSkill();
 	void MeteorSkillCoolDownTimer();
@@ -68,10 +68,13 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystem* DashSkillHitEffect;
 
-	// 소환할 Actor Test용
+	// 소환할 Enemy 
 	UPROPERTY(EditAnywhere, Category = Point)
-	TSubclassOf<AActor> ActorToSpawn;
+	TSubclassOf<class ATODEnemy> EnemyToSpawn;
 
+	// 소환할 Meteor
+	UPROPERTY(EditAnywhere, Category = Point)
+	TSubclassOf<class ATODMeteor> MeteorToSpawn;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))

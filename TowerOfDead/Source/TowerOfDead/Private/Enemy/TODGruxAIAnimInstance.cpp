@@ -108,6 +108,14 @@ bool UTODGruxAIAnimInstance::IsEnemySpawnCastMontage(UAnimMontage* montage)
 	return false;
 }
 
+bool UTODGruxAIAnimInstance::IsMeteorCastMonatage(UAnimMontage* montage)
+{
+	if (MeteorCastMontage == montage)
+		return true;
+
+	return false;
+}
+
 void UTODGruxAIAnimInstance::AnimNotify_RandomDoubleAttack()
 {
 	float Rand = FMath::FRandRange(0.0f, 1.0f);

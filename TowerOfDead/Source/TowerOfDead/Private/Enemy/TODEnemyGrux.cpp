@@ -3,6 +3,7 @@
 #include "Enemy/TODEnemyGruxAIController.h"
 #include "Enemy/TODGruxAIAnimInstance.h"
 #include "TODCharacter.h"
+#include "TODMeteor.h"
 #include "NavigationSystem.h"
 #include "Components/WidgetComponent.h"
 
@@ -26,6 +27,16 @@ ATODEnemyGrux::ATODEnemyGrux()
 	if (P_DASHSKILLHITEFFECT.Succeeded())
 		DashSkillHitEffect = P_DASHSKILLHITEFFECT.Object;
 
+	// 소환할 몬스터 1
+	ConstructorHelpers::FClassFinder<ATODEnemy> ENEMYCLASS_1(TEXT("/Game/BluePrint/Enemy/BP_Enemy_1.BP_Enemy_1_C"));
+	if (ENEMYCLASS_1.Class != NULL)
+		EnemyToSpawn = ENEMYCLASS_1.Class;
+
+	// 소환할 Meteor
+	ConstructorHelpers::FClassFinder<ATODMeteor> METEORCLASS(TEXT("/Game/BluePrint/BP_Meteor.BP_Meteor_C"));
+	if (METEORCLASS.Class != NULL)
+		MeteorToSpawn = METEORCLASS.Class;
+
 	DashTrigger = CreateDefaultSubobject<USphereComponent>(TEXT("DashTriggerSphere"));
 	DashTrigger->SetupAttachment(GetMesh());
 	DashTrigger->SetGenerateOverlapEvents(false);
@@ -36,8 +47,8 @@ ATODEnemyGrux::ATODEnemyGrux()
 
 	SkillDelayTime = 5.0f;
 
-	IsCanMeteorSKill = false;
-	MeteorSkillCoolDownTime = 6.0f;
+	IsCanMeteorSKill = true;
+	MeteorSkillCoolDownTime = 10.0f;
 
 	IsCanDashSKill = true;
 	IsDashSKilling = false;
@@ -92,6 +103,8 @@ void ATODEnemyGrux::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupte
 
 		print(FString::Printf(TEXT("Enemy Grux Enemy Spawn Montage End")));
 	}
+	else if (AnimInstance->IsMeteorCastMonatage(Montage))
+		EnemyAI->SetIsAttaking(false);
 }
 
 bool ATODEnemyGrux::GetIsCanOutRangeAttack()
@@ -108,9 +121,6 @@ void ATODEnemyGrux::StartAllSkillCoolDown()
 	// StartAI와 동시에 스킬 쿨타임 진행
 	GetWorldTimerManager().SetTimer(DashSkillTimerHandle, this, &ATODEnemyGrux::DashSkillCoolDownTimer,
 		DashSkillCoolDownTime, false);
-
-	//GetWorldTimerManager().SetTimer(MeteorSkillTimerHandle, this, &ATODEnemyGrux::MeteorSkillCoolDownTimer,
-	//	MeteorSkillCoolDownTime, false);
 
 	GetWorldTimerManager().SetTimer(EnemySpawnSkillTimerHandle, this, &ATODEnemyGrux::EnemySpawnSkillCoolDownTimer,
 		EnemySpawnSkillCoolDownTime, false);
@@ -162,7 +172,7 @@ void ATODEnemyGrux::SkillDelayTimer()
 		EnemyAI->SetIsCanOutRangeAttack(true);
 }
 
-void ATODEnemyGrux::RandomPointInit(int count)
+void ATODEnemyGrux::RandomPointInit(float distance, int count)
 {
 	RandomPoint.Empty();
 
@@ -173,18 +183,26 @@ void ATODEnemyGrux::RandomPointInit(int count)
 	for (int i = 0; i < count; i++)
 	{
 		FNavLocation NewPoint;
-		if (NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), 1500.0f, NewPoint))
-		{
-			if (ActorToSpawn == nullptr)
-				return;
+		if (NavSystem->GetRandomPointInNavigableRadius(GetActorLocation(), distance, NewPoint))
 			RandomPoint.Add(NewPoint.Location);
-		}
 	}
 }
 
 void ATODEnemyGrux::MeteorSkill()
 {
+	print(FString::Printf(TEXT("Enemy Grux MeteorSkill Cast")));
 	IsCanMeteorSKill = false;
+
+	RandomPointInit(3000.0f, 15);
+	for (int i = 0; i < 15; i++)
+	{
+		FVector NewLocation = RandomPoint[i];
+		NewLocation.Z = 1500.0f;
+
+		ATODMeteor* SpawnMeteor = GetWorld()->SpawnActor<ATODMeteor>(MeteorToSpawn, NewLocation,
+			GetActorRotation());
+
+	}
 
 	GetWorldTimerManager().SetTimer(MeteorSkillTimerHandle, this, &ATODEnemyGrux::MeteorSkillCoolDownTimer,
 		MeteorSkillCoolDownTime, false);
@@ -192,8 +210,8 @@ void ATODEnemyGrux::MeteorSkill()
 
 void ATODEnemyGrux::MeteorSkillCoolDownTimer()
 {
-	TODLOG_S(Warning);
-	IsCanMeteorSKill = true;
+	// 일정 시간마다 자동 사용
+	MeteorSkill();
 }
 
 void ATODEnemyGrux::DashSkill()
@@ -247,11 +265,11 @@ void ATODEnemyGrux::EnemySpawnSkill()
 	EnemySpawnCount = 0;
 
 	SpawnEnemys.Empty();
-	RandomPointInit(5);
+	RandomPointInit(1500.0f, 5);
 
 	for (int i = 0; i < 5; i++)
 	{
-		ATODEnemy* SpawnEnemy = GetWorld()->SpawnActor<ATODEnemy>(ActorToSpawn, RandomPoint[i],
+		ATODEnemy* SpawnEnemy = GetWorld()->SpawnActor<ATODEnemy>(EnemyToSpawn, RandomPoint[i],
 			GetActorRotation());
 		if (SpawnEnemy != nullptr)
 		{
@@ -304,23 +322,24 @@ void ATODEnemyGrux::OutRangeAttack(float dis)
 		return;
 	}
 
-	// 1순위 - 거리가 멀고 & 대쉬 기술 사용 가능
+	// 체력 50퍼 남았을 때 시전 후 지속
+	if (IsCanMeteorSKill)
+	{
+		auto AnimInstance = Cast<UTODGruxAIAnimInstance>(GetMesh()->GetAnimInstance());
+		if (AnimInstance == nullptr)
+			return;
+		AnimInstance->PlayMeteorCastMontage();
+
+		MeteorSkill();
+		return;
+	}
+
+	// 거리가 멀고 & 대쉬 기술 사용 가능
 	if (IsCanDashSKill)
 	{
 		DashSkill();
 		return;
 	}
-
-	if (IsCanMeteorSKill)
-	{
-		MeteorSkill();
-		return;
-	}
-
-	
-
-	// 일정 체력 이하 시 메테오, 몬스터 소환 기술 사용
-	// -> 일단 테스트 하기위해 바로 사용
 
 	return;
 }
