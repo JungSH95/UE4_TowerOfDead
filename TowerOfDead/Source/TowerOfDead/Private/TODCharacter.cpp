@@ -6,6 +6,7 @@
 #include "TODGameMode.h"
 #include "TODUserWidget.h"
 #include "Enemy/TODEnemy.h"
+#include "Enemy/TODEnemyStatComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -288,6 +289,14 @@ void ATODCharacter::SetCharacterMove(bool isMoveing)
 		PlayerController->SetIsMove(isMoveing);
 
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = isMoveing;
+}
+
+void ATODCharacter::SetBossEnemyStatBind(class UTODEnemyStatComponent* enemyStat)
+{
+	if (enemyStat == nullptr)
+		return;
+
+	PlayerController->GetUserHUDWidget()->BindBossEnemyStateClass(enemyStat);
 }
 
 void ATODCharacter::Attack()

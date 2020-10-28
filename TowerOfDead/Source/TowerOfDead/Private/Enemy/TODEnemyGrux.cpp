@@ -76,6 +76,16 @@ void ATODEnemyGrux::PostInitializeComponents()
 	DashTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODEnemyGrux::OnDashTriggerOverlap);
 }
 
+float ATODEnemyGrux::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	
+	print(FString::Printf(TEXT("Enemy took Damage : %f"), FinalDamage));
+
+	return FinalDamage;
+}
+
 void ATODEnemyGrux::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	auto AnimInstance = Cast<UTODGruxAIAnimInstance>(GetMesh()->GetAnimInstance());

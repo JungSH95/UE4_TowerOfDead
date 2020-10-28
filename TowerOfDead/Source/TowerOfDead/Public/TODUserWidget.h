@@ -17,7 +17,7 @@ public:
 	void BindPlayerClass(class ATODCharacter* player);
 	void BindCharacterStatClass(class UTODCharacterStatComponent* characterStat);
 	void BindPlayerStateClass(class ATODPlayerState* playerState);
-	void BindEnemyStateClass(class UTODEnemyStatComponent* enemyStat);
+	void BindBossEnemyStateClass(class UTODEnemyStatComponent* enemyStat);
 
 	void UpdateGameMode();
 	void UpdateCharacterStat();

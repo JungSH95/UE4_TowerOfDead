@@ -32,6 +32,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetCharacterMove(bool isMoveing);
 
+	void SetBossEnemyStatBind(class UTODEnemyStatComponent* enemyStat);
+
 	void Attack();
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
@@ -47,7 +49,6 @@ public:
 	void HardAttackEnd();
 	void HardAttackCoolDownTimer();
 
-	
 	float GetHardAttackRatio() { return CastTime / HardAttackTime; }
 	bool GetIsDead() { return IsDead; }
 

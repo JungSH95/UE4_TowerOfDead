@@ -163,6 +163,9 @@ void ATODStageManager::InitEnemy()
 
 void ATODStageManager::StageStart()
 {
+	if (TODGameMode == nullptr)
+		return;
+
 	TODGameMode->PlayFadeIn();
 
 	// 일반 몬스터 AI 시작 & HP UI 활성화
@@ -182,6 +185,13 @@ void ATODStageManager::StageStart()
 			EnemyAI->StartAI();
 		
 		// BOSS 전용 HP UI 활성화
+		ATODCharacter* playerCharacter = Cast<ATODCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		if (playerCharacter != nullptr)
+		{
+			print(FString::Printf(TEXT("Boss Stat Bind")));
+			playerCharacter->SetBossEnemyStatBind(BossEnemy->EnemyStat);
+		}
+
 		BossEnemy->LevelStartMontage();
 		BossEnemy->StartAllSkillCoolDown();
 	}

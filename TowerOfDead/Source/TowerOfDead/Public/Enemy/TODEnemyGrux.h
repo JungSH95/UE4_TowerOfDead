@@ -14,6 +14,8 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostInitializeComponents() override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+		class AController* EventInstigator, AActor* DamageCauser) override;
 
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 

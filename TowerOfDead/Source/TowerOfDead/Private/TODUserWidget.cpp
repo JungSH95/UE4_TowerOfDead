@@ -66,12 +66,17 @@ void UTODUserWidget::BindPlayerStateClass(class ATODPlayerState* playerState)
 	}
 }
 
-void UTODUserWidget::BindEnemyStateClass(class UTODEnemyStatComponent* enemyStat)
+void UTODUserWidget::BindBossEnemyStateClass(class UTODEnemyStatComponent* enemyStat)
 {
 	if (enemyStat != nullptr)
 	{
 		BossEnemyStat = enemyStat;
+		BossEnemyStat->OnHPChanged.AddUObject(this, &UTODUserWidget::UpdateBossState);
+		UpdateBossState();
+		SetBossInfoVisible(true);
 	}
+	else
+		SetBossInfoVisible(false);
 }
 
 void UTODUserWidget::UpdateGameMode()
