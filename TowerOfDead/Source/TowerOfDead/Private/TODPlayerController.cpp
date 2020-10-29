@@ -32,6 +32,8 @@ void ATODPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("HardAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::HardAttackEnd);
 	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::SpecialAttack);
 	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::SpecialAttackEnd);
+
+	InputComponent->BindAction(TEXT("ObjInteraction"), EInputEvent::IE_Pressed, this, &ATODPlayerController::SpecialAttack);
 }
 
 void ATODPlayerController::BeginPlay()
@@ -172,4 +174,11 @@ void ATODPlayerController::SpecialAttackEnd()
 		return;
 
 	CPlayer->SpecialAttackEnd();
+}
+
+void ATODPlayerController::ObjInteraction()
+{
+	if (CanInputAction == false)
+		return;
+
 }

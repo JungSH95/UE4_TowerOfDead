@@ -48,6 +48,9 @@ private:
 	void SpecialAttack();
 	void SpecialAttackEnd();
 
+	// Object와 상호작용(캐릭터 성장 & 회복)
+	void ObjInteraction();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = UI)
 	TSubclassOf<class UTODUserWidget> HUDWidgetClass;

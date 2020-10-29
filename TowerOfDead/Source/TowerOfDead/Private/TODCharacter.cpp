@@ -258,20 +258,19 @@ void ATODCharacter::SetPlayerStart(bool start)
 
 void ATODCharacter::SetPlayerDead()
 {
-	TODLOG_S(Warning);
-
 	// 특수 공격 관련 종료(Decal)
 	Decal->SetVisibility(false);
 	IsSpecialAttacking = false;
 
 	// 강공격 관련 종료
 	IsHardAttacking = false;
-
 	PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
 
 	// 이동 불가
 	SetCharacterMove(false);
 	IsDead = true;
+	// 키 입력 불가
+	PlayerController->SetCanInputAction(false);
 }
 
 void ATODCharacter::SetCharacterMove(bool isMoveing)
