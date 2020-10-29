@@ -78,6 +78,7 @@ void ATODEnemyGrux::PostInitializeComponents()
 
 	DashTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODEnemyGrux::OnDashTriggerOverlap);
 
+	EnemyStat->SetName("Magma Grux");
 	EnemyStat->OnHPChanged.AddLambda([this]() -> void {
 		// 몬스터 소환기술 사용 가능
 		if (EnemyStat->GetHPRatio() <= 0.3f)

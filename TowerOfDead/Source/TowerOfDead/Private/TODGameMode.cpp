@@ -20,6 +20,8 @@ ATODGameMode::ATODGameMode()
 
 	StageLevel = 1;
 	StageCount = 0;
+
+	IsSafeZone = false;
 }
 
 void ATODGameMode::BeginPlay()
@@ -73,18 +75,31 @@ ATODStageManager* ATODGameMode::GetStageManager(FName name)
 FString ATODGameMode::GetStageInfo()
 {
 	FString SNextStageInfo = FString::Printf(TEXT("%d - %d"), StageLevel, StageCount);
+	
+	if (IsSafeZone)
+		return "Safe Zone";
+	if (StageCount == 3)
+		return "Boss Stage";
+
 	return SNextStageInfo;
 }
 
 void ATODGameMode::NextStage()
 {
-	StageCount++;
-
-	if (StageCount > 4)
+	if (StageCount == 2 && !IsSafeZone)
+		IsSafeZone = true;
+	else
 	{
-		StageCount = 0;
-		StageLevel++;
+		StageCount++;
+		IsSafeZone = false;
+
+		if (StageCount > 3)
+		{
+			StageCount = 0;
+			StageLevel++;
+		}
 	}
+
 	OnNextStage.Broadcast();
 }
 

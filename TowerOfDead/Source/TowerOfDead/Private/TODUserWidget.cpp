@@ -121,10 +121,14 @@ void UTODUserWidget::UpdateBossState()
 	if (BossEnemyStat == nullptr)
 		return;
 
-	if(BossName != nullptr)
-		BossName->SetText(FText::FromString("BOSSSSSSSSSSSSSSSS"));
-	if(BossHPBar != nullptr)
+	if (BossName != nullptr)
+		BossName->SetText(FText::FromString(BossEnemyStat->GetName()));
+	if (BossHPBar != nullptr)
+	{
 		BossHPBar->SetPercent(BossEnemyStat->GetHPRatio());
+		if (BossEnemyStat->GetHPRatio() <= 0.0f)
+			SetBossInfoVisible(false);
+	}
 }
 
 void UTODUserWidget::SetVisibleCast(bool isVisible)

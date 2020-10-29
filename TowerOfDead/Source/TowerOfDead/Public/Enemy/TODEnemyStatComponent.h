@@ -20,10 +20,12 @@ protected:
 	virtual void InitializeComponent() override;
 
 public:
+	void SetName(FString NewName);
 	void SetNewLevel(int32 NewLevel);
 	void SetDamage(float NewDamage);
 	void SetHP(float NewHP);
 
+	FString GetName();
 	int32 GetLevel();
 	float GetAttack();
 	int32 GetDropSoul();
@@ -34,6 +36,9 @@ public:
 
 private:
 	struct FTODEnemyData* CurrentStatData = nullptr;
+
+	UPROPERTY()
+	FString Name;
 
 	UPROPERTY(EditInstanceOnly, Category = Stat, Meta = (AllowPrivateAccess = true))
 	int32 Level;

@@ -31,17 +31,6 @@ float ATODEnemyMelee::TakeDamage(float DamageAmount, struct FDamageEvent const& 
 		AnimInstance->PlayHitReactMontage(0);
 
 	EnemyStat->SetDamage(FinalDamage);
-	
-	/*
-	
-	{
-		if (AnimInstance->PlayHitReactMontage(0))
-		{
-			//TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
-			EnemyStat->SetDamage(FinalDamage);
-		}
-	}
-	*/
 
 	if (GetIsDead())
 	{

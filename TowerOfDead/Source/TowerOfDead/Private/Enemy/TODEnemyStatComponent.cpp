@@ -6,6 +6,7 @@ UTODEnemyStatComponent::UTODEnemyStatComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 	bWantsInitializeComponent = true;
 
+	Name = "NoneName";
 	Level = 1;
 }
 
@@ -18,6 +19,11 @@ void UTODEnemyStatComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 	SetNewLevel(Level);
+}
+
+void UTODEnemyStatComponent::SetName(FString NewName)
+{
+	Name = NewName;
 }
 
 void UTODEnemyStatComponent::SetNewLevel(int32 NewLevel)
@@ -54,6 +60,11 @@ void UTODEnemyStatComponent::SetHP(float NewHP)
 		CurrentHP = 0.0f;
 		OnHPIsZero.Broadcast();
 	}
+}
+
+FString UTODEnemyStatComponent::GetName()
+{
+	return Name;
 }
 
 int32 UTODEnemyStatComponent::GetLevel()

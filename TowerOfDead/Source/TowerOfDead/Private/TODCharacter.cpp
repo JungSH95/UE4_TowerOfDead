@@ -266,12 +266,7 @@ void ATODCharacter::SetPlayerDead()
 
 	// 강공격 관련 종료
 	IsHardAttacking = false;
-	
-	/*
-	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
-	if (gameMode != nullptr)
-		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
-	*/
+
 	PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
 
 	// 이동 불가

@@ -94,16 +94,34 @@ void ATODStageManager::SetNextStage()
 	if (NextPortal == nullptr)
 		return;
 
-	// 다음 스테이지를 랜덤? 순차?
-	int RandomNumber = FMath::RandRange(1, 2);
-	FString SNextStageName = FString::Printf(TEXT("StageMap%d"), RandomNumber);
-	NextPortal->SetNextLevel(FName(*SNextStageName));
+	if (TODGameMode != nullptr)
+	{
+		// 3번째 지역은 회복 or 성장
+		if ((TODGameMode->GetStageCount() == 2) && (!TODGameMode->GetIsSafeZone()))
+		{
+			FString SNextStageName = FString::Printf(TEXT("SafeStageMap"));
+			NextPortal->SetNextLevel(FName(*SNextStageName));
+		}
+		// 4번째 지역은 보스 스테이지
+		else if (TODGameMode->GetStageCount() == 2)
+		{
+			FString SNextStageName = FString::Printf(TEXT("BossStageMap"));
+			NextPortal->SetNextLevel(FName(*SNextStageName));
+		}
+		else
+		{
+			// 다음 스테이지를 랜덤? 순차?
+			int RandomNumber = FMath::RandRange(1, 2);
+			FString SNextStageName = FString::Printf(TEXT("StageMap%d"), RandomNumber);
+			NextPortal->SetNextLevel(FName(*SNextStageName));
+		}
 
-	// 다음 지역 이동할 수 있게 충돌 이벤트 활성화
-	NextPortal->SetNextLevelEvent(true);
-	NextPortal->SetPortalEffectActive(true);
+		// 다음 지역 이동할 수 있게 충돌 이벤트 활성화
+		NextPortal->SetNextLevelEvent(true);
+		NextPortal->SetPortalEffectActive(true);
 
-	IsClear = false;
+		IsClear = false;
+	}
 }
 
 void ATODStageManager::SetPlayerPosition()

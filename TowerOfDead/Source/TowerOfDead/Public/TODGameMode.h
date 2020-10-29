@@ -26,8 +26,11 @@ public:
 	bool IsLoadLevel(FName name);
 
 	void AddArrStageManager(class ATODStageManager* manager) { ArrStageManager.Add(manager); }
+	
 	ATODStageManager* GetStageManager(FName name);
 	FString GetStageInfo();
+	int32 GetStageCount() { return StageCount; }
+	bool GetIsSafeZone() { return IsSafeZone; }
 	void NextStage();
 
 	void PlayFadeIn();
@@ -56,4 +59,7 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	int32 StageCount;
+
+	UPROPERTY(EditAnywhere)
+	bool IsSafeZone;
 };
