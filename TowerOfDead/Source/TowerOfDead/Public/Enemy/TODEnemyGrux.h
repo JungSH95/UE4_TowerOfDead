@@ -23,7 +23,6 @@ public:
 	bool GetIsCanOutRangeAttack();
 
 public:
-	void StartAllSkillCoolDown();
 	void LevelStartMontage();
 
 	void Attack();
@@ -80,11 +79,15 @@ public:
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	int32 PhaseCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsDoubleAttacking;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	FTimerHandle SkillDelayTimerHandle;
 
+	// 다음 기술 사용하기까지의 딜레이
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Skill, Meta = (AllowPrivateAccess = true))
 	float SkillDelayTime;
 

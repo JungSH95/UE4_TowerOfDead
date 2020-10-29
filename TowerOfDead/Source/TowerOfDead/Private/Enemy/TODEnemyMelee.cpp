@@ -1,6 +1,8 @@
 #include "Enemy/TODEnemyMelee.h"
 #include "Enemy/TODEnemyMeleeAIController.h"
+#include "Enemy/TODEnemyStatComponent.h"
 #include "Enemy/TODAIAnimInstance.h"
+#include "TODPlayerController.h"
 #include "Components/WidgetComponent.h"
 
 ATODEnemyMelee::ATODEnemyMelee()
@@ -15,6 +17,43 @@ ATODEnemyMelee::ATODEnemyMelee()
 		HitEffect->SetTemplate(P_HITEFFECT.Object);
 		HitEffect->bAutoActivate = false;
 	}
+}
+
+float ATODEnemyMelee::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	print(FString::Printf(TEXT("Melee Enemy took Damage : %f"), FinalDamage));
+
+	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
+	if (AnimInstance != nullptr)
+		AnimInstance->PlayHitReactMontage(0);
+
+	EnemyStat->SetDamage(FinalDamage);
+	
+	/*
+	
+	{
+		if (AnimInstance->PlayHitReactMontage(0))
+		{
+			//TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
+			EnemyStat->SetDamage(FinalDamage);
+		}
+	}
+	*/
+
+	if (GetIsDead())
+	{
+		if (EventInstigator->IsPlayerController())
+		{
+			auto PlayerController = Cast<ATODPlayerController>(EventInstigator);
+			if (PlayerController != nullptr)
+				PlayerController->EnemyKill(this);
+		}
+	}
+
+	return FinalDamage;
 }
 
 void ATODEnemyMelee::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

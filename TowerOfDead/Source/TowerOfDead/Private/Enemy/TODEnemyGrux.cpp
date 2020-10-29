@@ -3,6 +3,7 @@
 #include "Enemy/TODEnemyGruxAIController.h"
 #include "Enemy/TODGruxAIAnimInstance.h"
 #include "TODCharacter.h"
+#include "TODPlayerController.h"
 #include "TODMeteor.h"
 #include "NavigationSystem.h"
 #include "Components/WidgetComponent.h"
@@ -43,14 +44,16 @@ ATODEnemyGrux::ATODEnemyGrux()
 	
 	HitEffect->bAutoActivate = false;
 
+	PhaseCount = 1;
+
 	IsDoubleAttacking = false;
 
 	SkillDelayTime = 5.0f;
 
-	IsCanMeteorSKill = true;
+	IsCanMeteorSKill = false;
 	MeteorSkillCoolDownTime = 20.0f;
 
-	IsCanDashSKill = true;
+	IsCanDashSKill = false;
 	IsDashSKilling = false;
 	DashSkillCoolDownTime = 10.0f;
 
@@ -74,6 +77,36 @@ void ATODEnemyGrux::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	DashTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODEnemyGrux::OnDashTriggerOverlap);
+
+	EnemyStat->OnHPChanged.AddLambda([this]() -> void {
+		// 몬스터 소환기술 사용 가능
+		if (EnemyStat->GetHPRatio() <= 0.3f)
+		{
+			if (PhaseCount == 3)
+			{
+				PhaseCount++;
+				IsCanEnemySpawnSKill = true;
+			}
+		}
+		// 유성우 소환기술 사용 가능
+		else if (EnemyStat->GetHPRatio() <= 0.6f)
+		{
+			if (PhaseCount == 2)
+			{
+				PhaseCount++;
+				IsCanMeteorSKill = true;
+			}
+		}
+		// 대쉬 기술 사용 가능
+		else if (EnemyStat->GetHPRatio() <= 0.9f)
+		{
+			if (PhaseCount == 1)
+			{
+				PhaseCount++;
+				IsCanDashSKill = true;
+			}
+		}
+	});
 }
 
 float ATODEnemyGrux::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
@@ -81,7 +114,19 @@ float ATODEnemyGrux::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	
-	print(FString::Printf(TEXT("Enemy took Damage : %f"), FinalDamage));
+	print(FString::Printf(TEXT("Grux Enemy took Damage : %f"), FinalDamage));
+
+	EnemyStat->SetDamage(FinalDamage);
+
+	if (GetIsDead())
+	{
+		if (EventInstigator->IsPlayerController())
+		{
+			auto PlayerController = Cast<ATODPlayerController>(EventInstigator);
+			if (PlayerController != nullptr)
+				PlayerController->EnemyKill(this);
+		}
+	}
 
 	return FinalDamage;
 }
@@ -124,16 +169,6 @@ bool ATODEnemyGrux::GetIsCanOutRangeAttack()
 		return true;
 
 	return false;
-}
-
-void ATODEnemyGrux::StartAllSkillCoolDown()
-{
-	// StartAI와 동시에 스킬 쿨타임 진행
-	GetWorldTimerManager().SetTimer(DashSkillTimerHandle, this, &ATODEnemyGrux::DashSkillCoolDownTimer,
-		DashSkillCoolDownTime, false);
-
-	GetWorldTimerManager().SetTimer(EnemySpawnSkillTimerHandle, this, &ATODEnemyGrux::EnemySpawnSkillCoolDownTimer,
-		EnemySpawnSkillCoolDownTime, false);
 }
 
 void ATODEnemyGrux::LevelStartMontage()
@@ -329,8 +364,11 @@ void ATODEnemyGrux::EnemySpawnDeadCount()
 
 void ATODEnemyGrux::EnemySpawnSkillCoolDownTimer()
 {
-	print(FString::Printf(TEXT("Enemy Grux : Can Enemy Spawn Skill")));
-	IsCanEnemySpawnSKill = true;
+	if (EnemyStat->GetHPRatio() <= 0.6f)
+	{
+		print(FString::Printf(TEXT("Enemy Grux : Can Enemy Spawn Skill")));
+		IsCanEnemySpawnSKill = true;
+	}
 }
 
 void ATODEnemyGrux::OutRangeAttack(float dis)

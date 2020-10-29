@@ -193,7 +193,6 @@ void ATODStageManager::StageStart()
 		}
 
 		BossEnemy->LevelStartMontage();
-		BossEnemy->StartAllSkillCoolDown();
 	}
 
 	if (ArrEnemy.Num() == 0 && BossEnemy == nullptr)

@@ -3,7 +3,6 @@
 #include "Enemy/TODEnemyAIController.h"
 #include "Enemy/TODAIAnimInstance.h"
 #include "TODCharacter.h"
-#include "TODPlayerController.h"
 #include "Components/WidgetComponent.h"
 #include "Enemy/TODEnemyWidget.h"
 
@@ -42,13 +41,6 @@ ATODEnemy::ATODEnemy()
 
 	HitEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HITEFFECT"));
 	HitEffect->SetupAttachment(RootComponent);
-
-	/*static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonMinions/FX/Particles/Minions/Minion_melee/FX/Impacts/P_Minion_Impact_Default.P_Minion_Impact_Default"));
-	if (P_HITEFFECT.Succeeded())
-	{
-		HitEffect->SetTemplate(P_HITEFFECT.Object);
-		HitEffect->bAutoActivate = false;
-	}*/
 
 	State = EnemyState::PEACE;
 	IsDead = false;
@@ -105,58 +97,8 @@ void ATODEnemy::PostInitializeComponents()
 void ATODEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
-float ATODEnemy::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
-	class AController* EventInstigator, AActor* DamageCauser)
-{
-	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
-	if (AnimInstance != nullptr)
-	{
-		if (AnimInstance->PlayHitReactMontage(0))
-		{
-			TODLOG(Warning, TEXT("Actor : %s took Damage : %f"), *GetName(), FinalDamage);
-			EnemyStat->SetDamage(FinalDamage);
-		}
-	}
-
-	if (IsDead)
-	{
-		if (EventInstigator->IsPlayerController())
-		{
-			auto PlayerController = Cast<ATODPlayerController>(EventInstigator);
-			if (PlayerController != nullptr)
-				PlayerController->EnemyKill(this);
-		}
-	}
-
-	return FinalDamage;
-}
-
-/*
-void ATODEnemy::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
-	if (AnimInstance == nullptr)
-		return;
-
-	// NowMontage에는 공격 몽타주가 저장되어 있다.
-	if (AnimInstance->NowMontage == Montage)
-	{
-		ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(GetController());
-		if (EnemyAI == nullptr)
-			return;
-
-		EnemyAI->SetIsAttaking(false);
-		AnimInstance->NowMontage = nullptr;
-
-		GetWorldTimerManager().SetTimer(AttackTimerHandle, this, &ATODEnemy::AttackCoolDownTimer, NormalAttackCoolDownTime, false);
-	}
-}
-*/
 
 void ATODEnemy::OnAttackCheck()
 {

@@ -347,6 +347,8 @@ void ATODCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupte
 
 void ATODCharacter::AttackStartComboState()
 {
+	ArrHitEnemyCheck.Empty();
+
 	CanNextCombo = false;
 	IsComboInputOn = false;
 	CurrentCombo += 1;
@@ -354,9 +356,25 @@ void ATODCharacter::AttackStartComboState()
 
 void ATODCharacter::AttackEndComboState()
 {
+	ArrHitEnemyCheck.Empty();
+
 	IsComboInputOn = false;
 	CanNextCombo = false;
 	CurrentCombo = 0;
+}
+
+bool ATODCharacter::HitEnemyCheck(class ATODEnemy* enemy)
+{
+	bool isEnemy = ArrHitEnemyCheck.Contains(enemy);
+	
+	// 공격 처리 안한 몬스터라면
+	if (!isEnemy)
+	{
+		ArrHitEnemyCheck.Add(enemy);
+		return true;
+	}
+	else
+		return false;
 }
 
 void ATODCharacter::HardAttack()
@@ -378,11 +396,6 @@ void ATODCharacter::HardAttack()
 
 	CastTime = 0.0f;
 
-	/*
-	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
-	if (gameMode != nullptr)
-		gameMode->GetUserHUDWidget()->SetVisibleCast(true);
-	*/
 	PlayerController->GetUserHUDWidget()->SetVisibleCast(true);
 }
 
@@ -410,11 +423,6 @@ void ATODCharacter::HardAttackCheck()
 		Anim->Montage_Stop(0.2f, Anim->GetCurrentActiveMontage());
 	}
 
-	/*
-	ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
-	if (gameMode != nullptr)
-		gameMode->GetUserHUDWidget()->SetVisibleCast(false);
-	*/
 	PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
 
 	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this,
@@ -585,12 +593,15 @@ void ATODCharacter::OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, 
 	ATODEnemy* Enemy = Cast<ATODEnemy>(OtherActor);
 	if (Enemy != nullptr)
 	{
-		print(FString::Printf(TEXT("Player Attack : %f"), CharacterStat->GetAttack()));
-		FDamageEvent DamageEvent;
-		Enemy->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
+		// 공격받은 몬스터 확인
+		if (HitEnemyCheck(Enemy))
+		{
+			FDamageEvent DamageEvent;
+			Enemy->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
 
-		FVector effectLoc = Enemy->GetMesh()->GetSocketLocation("Impact");
-		HitEffect->SetWorldLocation(effectLoc);
-		HitEffect->Activate(true);
+			FVector effectLoc = Enemy->GetMesh()->GetSocketLocation("Impact");
+			HitEffect->SetWorldLocation(effectLoc);
+			HitEffect->Activate(true);
+		}
 	}
 }

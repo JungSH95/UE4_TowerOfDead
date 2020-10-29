@@ -41,6 +41,7 @@ public:
 	void SetCanAttack() { CanAttack = true; };
 	void AttackStartComboState();
 	void AttackEndComboState();
+	bool HitEnemyCheck(class ATODEnemy* enemy);
 
 	void SetCanAttackDamage(bool bCan){ WeaponTrigger->SetGenerateOverlapEvents(bCan); }
 
@@ -96,6 +97,9 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsDead;
+
+	UPROPERTY()
+	TArray<ATODEnemy*> ArrHitEnemyCheck;
 
 	// ÄÞº¸ °ø°Ý ------------------------------------------
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
