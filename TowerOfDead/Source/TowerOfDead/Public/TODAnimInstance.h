@@ -39,6 +39,7 @@ public:
 	void SetTargetPoint(FVector pos) { TargetPoint = pos; }
 	FVector GetTargetPoint() { return TargetPoint; }
 
+	void SetIsSoulRecovery(bool isSoulRecovery) { IsSoulRecovery = isSoulRecovery; }
 	void SetIsDead() { IsDead = true; }
 
 private:
@@ -63,6 +64,12 @@ private:
 
 	UFUNCTION()
 	void AnimNotify_SpecialTargeting();
+
+	UFUNCTION()
+	void AnimNotify_SoulRecoveryLoopStart();
+
+	UFUNCTION()
+	void AnimNotify_SoulRecoveryEnd();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -106,4 +113,7 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* SpecialAttackCatchMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool IsSoulRecovery;
 };

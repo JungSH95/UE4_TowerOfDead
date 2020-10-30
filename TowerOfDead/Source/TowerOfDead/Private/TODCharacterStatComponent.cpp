@@ -55,3 +55,9 @@ void UTODCharacterStatComponent::SetDamage(float NewDamage)
 	if (CurrentHP <= 0.0f)
 		OnHPIsZero.Broadcast();
 }
+
+void UTODCharacterStatComponent::RecoveryHP()
+{
+	CurrentHP = MaxHP;
+	OnHPChanged.Broadcast();
+}

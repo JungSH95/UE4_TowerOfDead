@@ -12,6 +12,7 @@ UTODAnimInstance::UTODAnimInstance()
 
 	IsAir = false;
 	IsEquip = true;
+	IsSoulRecovery = false;
 	IsSpecialAttacking = false;
 	IsSpecialTarget = false;
 
@@ -159,4 +160,26 @@ void UTODAnimInstance::AnimNotify_HardAttackHitCheck()
 void UTODAnimInstance::AnimNotify_SpecialTargeting()
 {
 	IsSpecialTarget = true;
+}
+
+void UTODAnimInstance::AnimNotify_SoulRecoveryLoopStart()
+{
+	auto PlayerPawn = TryGetPawnOwner();
+	if (::IsValid(PlayerPawn))
+	{
+		ATODCharacter* Player = Cast<ATODCharacter>(PlayerPawn);
+		if (Player != nullptr)
+			Player->SetIsCanStopSoulRecovery(true);
+	}
+}
+
+void UTODAnimInstance::AnimNotify_SoulRecoveryEnd()
+{
+	auto PlayerPawn = TryGetPawnOwner();
+	if (::IsValid(PlayerPawn))
+	{
+		ATODCharacter* Player = Cast<ATODCharacter>(PlayerPawn);
+		if (Player != nullptr)
+			Player->SetIsSoulRecovery(false);
+	}
 }

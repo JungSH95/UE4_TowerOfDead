@@ -95,7 +95,7 @@ void ATODGameMode::NextStage()
 
 		if (StageCount > 3)
 		{
-			StageCount = 0;
+			StageCount = 1;
 			StageLevel++;
 		}
 	}

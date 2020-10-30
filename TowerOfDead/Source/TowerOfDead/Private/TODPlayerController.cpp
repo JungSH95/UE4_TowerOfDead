@@ -11,9 +11,10 @@ ATODPlayerController::ATODPlayerController()
 	if (BP_UI.Succeeded())
 		HUDWidgetClass = BP_UI.Class;
 
-	isMove = true;
+	IsMove = true;
 	MouseSpeed = 0.5f;
 	CanInputAction = false;
+	IsCanObjectInteraction = false;
 }
 
 
@@ -33,7 +34,7 @@ void ATODPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::SpecialAttack);
 	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::SpecialAttackEnd);
 
-	InputComponent->BindAction(TEXT("ObjInteraction"), EInputEvent::IE_Pressed, this, &ATODPlayerController::SpecialAttack);
+	InputComponent->BindAction(TEXT("ObjInteraction"), EInputEvent::IE_Pressed, this, &ATODPlayerController::ObjInteraction);
 }
 
 void ATODPlayerController::BeginPlay()
@@ -86,7 +87,11 @@ void ATODPlayerController::EnemyKill(class ATODEnemy* KilledEnemy)
 
 void ATODPlayerController::UpDown(float AxisValue)
 {	
-	if (isMove == false)
+	if (CPlayer != nullptr)
+		if (CPlayer->GetIsCanStopSoulRecovery())
+			CPlayer->SoulRecoveryEnd();
+
+	if (IsMove == false)
 		return;
 
 	if (CPlayer == nullptr)
@@ -103,7 +108,11 @@ void ATODPlayerController::UpDown(float AxisValue)
 
 void ATODPlayerController::LeftRight(float AxisValue)
 {
-	if (isMove == false)
+	if (CPlayer != nullptr)
+		if (CPlayer->GetIsCanStopSoulRecovery())
+			CPlayer->SoulRecoveryEnd();
+
+	if (IsMove == false)
 		return;
 
 	if (CPlayer == nullptr)
@@ -120,7 +129,7 @@ void ATODPlayerController::LeftRight(float AxisValue)
 
 void ATODPlayerController::Turn(float AxisValue)
 {
-	if (isMove == false)
+	if (IsMove == false)
 		return;
 	
 	AddYawInput(AxisValue * MouseSpeed);
@@ -128,9 +137,9 @@ void ATODPlayerController::Turn(float AxisValue)
 
 void ATODPlayerController::LookUp(float AxisValue)
 {
-	if (isMove == false)
+	if (IsMove == false)
 		return;
-
+	
 	AddPitchInput(AxisValue * MouseSpeed);
 }
 
@@ -178,7 +187,9 @@ void ATODPlayerController::SpecialAttackEnd()
 
 void ATODPlayerController::ObjInteraction()
 {
-	if (CanInputAction == false)
+	if (IsCanObjectInteraction == false)
 		return;
-
+	else
+		// 회복 진행
+		CPlayer->SoulRecovery();
 }

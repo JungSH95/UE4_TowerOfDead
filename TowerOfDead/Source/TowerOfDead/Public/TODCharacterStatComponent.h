@@ -24,6 +24,8 @@ public:
 
 	void SetDamage(float NewDamage);
 
+	void RecoveryHP();
+
 	float GetAttack() { return Attack; }
 	float GetHPRatio() { return CurrentHP / MaxHP; }
 

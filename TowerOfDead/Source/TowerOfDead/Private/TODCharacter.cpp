@@ -76,6 +76,10 @@ ATODCharacter::ATODCharacter()
 	IsSpecialAttacking = false;
 	IsCanSpecialAttack = true;
 	IsCanSpecialCatch = false;
+
+	// 회복 or 성장 Object
+	IsSoulRecovery = false;
+	IsCanStopSoulRecovery = false;
 }
 
 void ATODCharacter::BeginPlay()
@@ -291,6 +295,55 @@ void ATODCharacter::SetBossEnemyStatBind(class UTODEnemyStatComponent* enemyStat
 		return;
 
 	PlayerController->GetUserHUDWidget()->BindBossEnemyStateClass(enemyStat);
+}
+
+void ATODCharacter::SoulRecovery()
+{
+	if (IsSoulRecovery)
+		return;
+
+	SetIsSoulRecovery(true);	
+
+	// 무기가 던져져 있다면 캐치 실행 후 회복
+	if (Anim->GetIsSpecialTarget())
+		SpecialAttackCatch();
+
+	// 애니메이션 Flag On
+	Anim->SetIsSoulRecovery(true);
+	// 체력 회복
+	CharacterStat->RecoveryHP();
+}
+
+void ATODCharacter::SoulRecoveryEnd()
+{
+	// SoulRecovery 중이 아닐때 들어오면 X
+	if (!IsSoulRecovery || !IsCanStopSoulRecovery)
+		return;
+
+	Anim->SetIsSoulRecovery(false);
+}
+
+void ATODCharacter::SetIsSoulRecovery(bool isSoulRecovery)
+{
+	// Soul Recovery 시작
+	if (isSoulRecovery)
+	{
+		// 이동 불가
+		SetCharacterMove(false);
+		// 키 입력 불가
+		PlayerController->SetCanInputAction(false);
+	}
+	// Soul Recovery 종료
+	else
+	{
+		// 이동 가능
+		SetCharacterMove(true);
+		// 키 입력 가능
+		PlayerController->SetCanInputAction(true);
+	}
+
+	IsSoulRecovery = isSoulRecovery;
+	IsCanStopSoulRecovery = false;
 }
 
 void ATODCharacter::Attack()
@@ -571,7 +624,7 @@ void ATODCharacter::HardAndSpecialAttackHitCheck(int32 AttackType, float Range)
 				if (isCanDamage)
 				{
 					FDamageEvent DamageEvent;
-					Enemy->TakeDamage(50.0f, DamageEvent, GetController(), this);
+					Enemy->TakeDamage(15.0f, DamageEvent, GetController(), this);
 
 					DrawDebugLine(GetWorld(), VTarget, Enemy->GetActorLocation(),
 						FColor::Blue, false, 5.0f);

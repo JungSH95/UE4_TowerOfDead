@@ -34,6 +34,14 @@ public:
 
 	void SetBossEnemyStatBind(class UTODEnemyStatComponent* enemyStat);
 
+	void SoulRecovery();
+	void SoulRecoveryEnd();
+
+	void SetIsSoulRecovery(bool isSoulRecovery);
+
+	void SetIsCanStopSoulRecovery(bool isCanStopSoulRecovery) { IsCanStopSoulRecovery = isCanStopSoulRecovery; }
+	bool GetIsCanStopSoulRecovery() { return IsCanStopSoulRecovery; }
+
 	void Attack();
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
@@ -153,4 +161,9 @@ private:
 	float FalldeltaTime = 0.0f;
 	// -------------------------------------------------------
 
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Recovery, Meta = (AllowPrivateAccess = true))
+	bool IsSoulRecovery;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Recovery, Meta = (AllowPrivateAccess = true))
+	bool IsCanStopSoulRecovery;
 };

@@ -169,7 +169,8 @@ void ATODStageManager::InitEnemy()
 					EnemySpawnPoint[i]->GetActorLocation(), EnemySpawnPoint[i]->GetActorRotation());
 				if (BossEnemy != nullptr)
 				{
-					BossEnemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
+					//BossEnemy->EnemyStat->SetNewLevel(EnemySpawnPoint[i]->GetEnemyLevel());
+					BossEnemy->EnemyStat->SetNewLevel(2);
 					BossEnemy->OnEnemyDeadCheck.AddUObject(this, &ATODStageManager::StageClearCheck);
 				}
 			}

@@ -22,12 +22,12 @@ protected:
 	virtual void OnPossess(APawn* aPawn) override;
 
 public:
-	bool GetIsMove() { return isMove; }
-	void SetIsMove(bool move) { isMove = move; }
+	bool GetIsMove() { return IsMove; }
 
+	void SetIsMove(bool move) { IsMove = move; }
 	void SetMouseSpeed(float speed) { MouseSpeed = speed; }
-
 	void SetCanInputAction(bool input) { CanInputAction = input; }
+	void SetIsCanObjectInteraction(bool interaction) { IsCanObjectInteraction = interaction; }
 
 	void EnemyKill(class ATODEnemy* KilledEnemy);
 
@@ -63,7 +63,7 @@ private:
 	class ATODCharacter* CPlayer;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
-	bool isMove;
+	bool IsMove;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
 	float MouseSpeed;
@@ -71,6 +71,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
 	bool CanInputAction;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Controller, Meta = (AllowPrivateAccess = true))
+	bool IsCanObjectInteraction;
+
 	UPROPERTY()
-	class ATODPlayerState* TODPlayerState;
+	class ATODPlayerState* TODPlayerState;	
 };
