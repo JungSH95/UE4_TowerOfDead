@@ -88,7 +88,7 @@ void ATODPlayerController::EnemyKill(class ATODEnemy* KilledEnemy)
 void ATODPlayerController::UpDown(float AxisValue)
 {	
 	if (CPlayer != nullptr)
-		if (CPlayer->GetIsCanStopSoulRecovery())
+		if (CPlayer->GetIsCanStopSoulRecovery() && AxisValue != 0.0f)
 			CPlayer->SoulRecoveryEnd();
 
 	if (IsMove == false)
@@ -109,7 +109,7 @@ void ATODPlayerController::UpDown(float AxisValue)
 void ATODPlayerController::LeftRight(float AxisValue)
 {
 	if (CPlayer != nullptr)
-		if (CPlayer->GetIsCanStopSoulRecovery())
+		if (CPlayer->GetIsCanStopSoulRecovery() && AxisValue != 0.0f)
 			CPlayer->SoulRecoveryEnd();
 
 	if (IsMove == false)

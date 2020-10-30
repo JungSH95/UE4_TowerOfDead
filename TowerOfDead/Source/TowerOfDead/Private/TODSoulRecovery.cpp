@@ -1,6 +1,7 @@
 #include "TODSoulRecovery.h"
 #include "TODCharacter.h"
 #include "TODPlayerController.h"
+#include "Components/WidgetComponent.h"
 
 ATODSoulRecovery::ATODSoulRecovery()
 {
@@ -17,6 +18,11 @@ ATODSoulRecovery::ATODSoulRecovery()
 	PlayerCheckTrigger->SetGenerateOverlapEvents(true);
 	PlayerCheckTrigger->SetSphereRadius(300.0f);
 
+	KeyWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("KEYWIDGET"));
+	KeyWidget->SetupAttachment(RootComponent);
+	KeyWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+	KeyWidget->SetWidgetSpace(EWidgetSpace::Screen);
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_BASEGROUND(TEXT("/Game/ParagonProps/Agora/Props/Meshes/Tower_Base.Tower_Base"));
 	if (SM_BASEGROUND.Succeeded())
 		BaseGroundObject->SetStaticMesh(SM_BASEGROUND.Object);
@@ -24,6 +30,13 @@ ATODSoulRecovery::ATODSoulRecovery()
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_BASEEFFECT(TEXT("/Game/ParagonMinions/FX/Particles/PlayerBuffs/P_DroppedBuff_GoldBuff.P_DroppedBuff_GoldBuff"));
 	if (P_BASEEFFECT.Succeeded())
 		BaseEffect->SetTemplate(P_BASEEFFECT.Object);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> KEYWIDGET(TEXT("/Game/UI/Recovery_UI.Recovery_UI_C"));
+	if (KEYWIDGET.Succeeded())
+	{
+		KeyWidget->SetWidgetClass(KEYWIDGET.Class);
+		KeyWidget->SetDrawSize(FVector2D(130.0f, 45.0f));
+	}
 
 	FVector NewLocation = GetActorLocation();
 	NewLocation.Z += 200.0f;

@@ -26,6 +26,9 @@ public:
 	void OnPlayerCheckTriggerEndOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* KeyWidget;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh, Meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent* BaseGroundObject;
