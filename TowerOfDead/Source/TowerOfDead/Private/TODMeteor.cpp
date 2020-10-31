@@ -48,7 +48,8 @@ void ATODMeteor::Tick(float DeltaTime)
 
 	FVector DecalLocation = GetActorLocation();
 	DecalLocation.Z = 0.0f;
-	Decal->SetWorldLocation(DecalLocation);
+	if (Decal != nullptr)
+		Decal->SetWorldLocation(DecalLocation);
 }
 
 void ATODMeteor::PostInitializeComponents()
@@ -61,7 +62,8 @@ void ATODMeteor::PostInitializeComponents()
 
 void ATODMeteor::SetMeteor(float damage)
 {
-	MeteorEffect->SetTemplate(BaseEffect);
+	if (MeteorEffect != nullptr && BaseEffect != nullptr)
+		MeteorEffect->SetTemplate(BaseEffect);
 	MeteorDamage = damage;
 
 	float RandTime = FMath::FRandRange(2.0f, 7.0f);
@@ -71,6 +73,10 @@ void ATODMeteor::SetMeteor(float damage)
 
 void ATODMeteor::MeteorDropStart()
 {
+	if (MeteorEffect == nullptr || MeteorTrigger == nullptr || Decal == nullptr ||
+		MeteorTrigger == nullptr || ExplodeTrigger == nullptr)
+		return;
+
 	MeteorEffect->SetVisibility(true);
 	MeteorTrigger->SetSimulatePhysics(true);
 	Decal->SetVisibility(true);
@@ -85,7 +91,7 @@ void ATODMeteor::MeteorExplodeCheckEnd()
 }
 
 void ATODMeteor::OnMeteorTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
-	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, 
+	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
 	ATODCharacter* Player = Cast<ATODCharacter>(OtherActor);
@@ -106,13 +112,20 @@ void ATODMeteor::OnMeteorTriggerOverlap(class UPrimitiveComponent* HitComp, clas
 			0.6f, false);
 	}
 
-	Decal->SetVisibility(false);
+	if (Decal != nullptr)
+		Decal->SetVisibility(false);
 
-	MeteorEffect->SetTemplate(MeteorHitEffect);
-	MeteorEffect->Activate(true);
+	if (MeteorEffect != nullptr)
+	{
+		MeteorEffect->SetTemplate(MeteorHitEffect);
+		MeteorEffect->Activate(true);
+	}
 
-	MeteorTrigger->SetSimulatePhysics(false);
-	MeteorTrigger->SetGenerateOverlapEvents(false);
+	if (MeteorTrigger != nullptr)
+	{
+		MeteorTrigger->SetSimulatePhysics(false);
+		MeteorTrigger->SetGenerateOverlapEvents(false);
+	}
 }
 
 void ATODMeteor::OnExplodeTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
@@ -128,6 +141,7 @@ void ATODMeteor::OnExplodeTriggerOverlap(class UPrimitiveComponent* HitComp, cla
 		FDamageEvent DamageEvent;
 		OtherActor->TakeDamage(MeteorDamage, DamageEvent, nullptr, this);
 
-		ExplodeTrigger->SetGenerateOverlapEvents(false);
+		if (ExplodeTrigger != nullptr)
+			ExplodeTrigger->SetGenerateOverlapEvents(false);
 	}
 }

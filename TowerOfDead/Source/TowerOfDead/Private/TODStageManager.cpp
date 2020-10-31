@@ -77,7 +77,8 @@ void ATODStageManager::Tick(float DeltaTime)
 			IsBattleStart = true;
 			SetPlayerPosition();
 			
-			NextPortal->SetPortalEffectActive(false);
+			if (NextPortal != nullptr)
+				NextPortal->SetPortalEffectActive(false);
 			InitEnemy();
 
 			GetWorldTimerManager().SetTimer(StartTimerHandle, this,

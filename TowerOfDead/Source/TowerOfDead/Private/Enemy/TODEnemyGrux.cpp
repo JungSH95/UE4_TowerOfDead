@@ -236,13 +236,17 @@ void ATODEnemyGrux::RandomPointInit(float distance, int count)
 
 void ATODEnemyGrux::MeteorSkill()
 {
+	// 사망 시 끝
+	if (GetIsDead())
+		return;
+
 	IsCanMeteorSKill = false;
-	RandomPointInit(3000.0f, 15);
+	RandomPointInit(3000.0f, 10);
 
 	// 생성 안했다면 생성
 	if (SpawnMeteors.Num() == 0)
 	{
-		for (int i = 0; i < 15; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			FVector NewLocation = RandomPoint[i];
 			NewLocation.Z = 3000.0f;
@@ -259,7 +263,7 @@ void ATODEnemyGrux::MeteorSkill()
 	// 생성되있는거 재활용
 	else
 	{
-		for (int i = 0; i < 15; i++)
+		for (int i = 0; i < 10; i++)
 		{
 			FVector NewLocation = RandomPoint[i];
 			NewLocation.Z = 3000.0f;
@@ -302,6 +306,9 @@ void ATODEnemyGrux::OnDashSkillOverlap()
 
 void ATODEnemyGrux::DashSkillEndTimer()
 {
+	if (DashTrigger == nullptr)
+		return;
+
 	IsDashSKilling = false;
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 
@@ -339,7 +346,8 @@ void ATODEnemyGrux::EnemySpawnSkill()
 			GetActorRotation());
 		if (SpawnEnemy != nullptr)
 		{
-			SpawnEnemy->EnemyStat->SetNewLevel(EnemyStat->GetLevel());
+			//SpawnEnemy->EnemyStat->SetNewLevel(EnemyStat->GetLevel());
+			SpawnEnemy->EnemyStat->SetNewLevel(1);
 			SpawnEnemy->OnEnemyDeadCheck.AddUObject(this, &ATODEnemyGrux::EnemySpawnDeadCount);
 
 			ATODEnemyAIController* EnemyAI = Cast<ATODEnemyAIController>(SpawnEnemy->GetController());
@@ -415,6 +423,9 @@ void ATODEnemyGrux::OutRangeAttack(float dis)
 
 void ATODEnemyGrux::StartHitEffect(FVector pos)
 {
+	if (HitEffect == nullptr)
+		return;
+
 	// Normal Attack Hit
 	if (GetIsAttacking())
 		HitEffect->SetTemplate(AttackHitEffect);
@@ -440,7 +451,7 @@ void ATODEnemyGrux::OnDashTriggerOverlap(class UPrimitiveComponent* HitComp, cla
 	{
 		// 캐릭터 일 경우 처리
 		if (Player->GetMovementComponent()->IsFalling())
-			Player->GetCharacterMovement()->AddImpulse(this->GetActorForwardVector() * 2000.0f, true);
+			Player->GetCharacterMovement()->AddImpulse(this->GetActorForwardVector() * 1000.0f, true);
 		else
 			Player->GetCharacterMovement()->AddImpulse(this->GetActorForwardVector() * 20000.0f, true);
 

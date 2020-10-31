@@ -22,6 +22,7 @@ ATODSoulRecovery::ATODSoulRecovery()
 	KeyWidget->SetupAttachment(RootComponent);
 	KeyWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	KeyWidget->SetWidgetSpace(EWidgetSpace::Screen);
+	KeyWidget->SetHiddenInGame(false);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SM_BASEGROUND(TEXT("/Game/ParagonProps/Agora/Props/Meshes/Tower_Base.Tower_Base"));
 	if (SM_BASEGROUND.Succeeded())
@@ -65,6 +66,8 @@ void ATODSoulRecovery::OnPlayerCheckTriggerBeginOverlap(class UPrimitiveComponen
 	ATODCharacter* Player = Cast<ATODCharacter>(OtherActor);
 	if (Player != nullptr)
 	{
+		KeyWidget->SetHiddenInGame(false);
+
 		ATODPlayerController* pController = Cast<ATODPlayerController>(Player->GetController());
 		if (pController != nullptr)
 			pController->SetIsCanObjectInteraction(true);
@@ -77,6 +80,8 @@ void ATODSoulRecovery::OnPlayerCheckTriggerEndOverlap(class UPrimitiveComponent*
 	ATODCharacter* Player = Cast<ATODCharacter>(OtherActor);
 	if (Player != nullptr)
 	{
+		KeyWidget->SetHiddenInGame(true);
+
 		ATODPlayerController* pController = Cast<ATODPlayerController>(Player->GetController());
 		if (pController != nullptr)
 			pController->SetIsCanObjectInteraction(false);
