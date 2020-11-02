@@ -302,6 +302,11 @@ void ATODCharacter::SoulRecovery()
 	if (IsSoulRecovery)
 		return;
 
+	PlayerController->GetUserHUDWidget()->SetVisibleLevelUp(true);
+	FInputModeGameAndUI GameAndUIInputMode;
+	PlayerController->SetInputMode(GameAndUIInputMode);
+	PlayerController->bShowMouseCursor = true;
+
 	SetIsSoulRecovery(true);	
 
 	// 무기가 던져져 있다면 캐치 실행 후 회복
@@ -319,6 +324,11 @@ void ATODCharacter::SoulRecoveryEnd()
 	// SoulRecovery 중이 아닐때 들어오면 X
 	if (!IsSoulRecovery || !IsCanStopSoulRecovery)
 		return;
+
+	PlayerController->GetUserHUDWidget()->SetVisibleLevelUp(false);
+	FInputModeGameOnly GameInputMode;
+	PlayerController->SetInputMode(GameInputMode);
+	PlayerController->bShowMouseCursor = false;
 
 	Anim->SetIsSoulRecovery(false);
 }

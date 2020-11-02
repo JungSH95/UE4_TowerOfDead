@@ -25,6 +25,7 @@ public:
 	void UpdateHardAttackCast();
 	void UpdateBossState();
 
+	void SetVisibleLevelUp(bool isVisible);
 	void SetVisibleCast(bool isVisible);
 	void SetBossInfoVisible(bool isVisible);
 
@@ -34,6 +35,9 @@ private:
 	TWeakObjectPtr<class UTODCharacterStatComponent> CurrentCharacterStat;
 	TWeakObjectPtr<class ATODPlayerState> CurrentPlayerState;
 	TWeakObjectPtr<class UTODEnemyStatComponent> BossEnemyStat;
+
+	UPROPERTY()
+	class UUserWidget* LevelUpWidget;
 
 	UPROPERTY()
 	class UTextBlock* CharacterName;

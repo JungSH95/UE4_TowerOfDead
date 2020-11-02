@@ -11,6 +11,12 @@ void UTODUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	LevelUpWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("LevelUp_UI")));
+	if (LevelUpWidget != nullptr)
+	{
+		LevelUpWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+	
 	CastWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("CastBar_UI")));
 	if (CastWidget != nullptr)
 	{
@@ -128,6 +134,17 @@ void UTODUserWidget::UpdateBossState()
 		BossHPBar->SetPercent(BossEnemyStat->GetHPRatio());
 		if (BossEnemyStat->GetHPRatio() <= 0.0f)
 			SetBossInfoVisible(false);
+	}
+}
+
+void UTODUserWidget::SetVisibleLevelUp(bool isVisible)
+{
+	if (LevelUpWidget != nullptr)
+	{
+		if (isVisible)
+			LevelUpWidget->SetVisibility(ESlateVisibility::Visible);
+		else
+			LevelUpWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 
