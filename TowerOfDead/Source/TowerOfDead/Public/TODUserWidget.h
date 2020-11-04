@@ -37,7 +37,7 @@ private:
 	TWeakObjectPtr<class UTODEnemyStatComponent> BossEnemyStat;
 
 	UPROPERTY()
-	class UUserWidget* LevelUpWidget;
+	class UTODLevelUpWidget* LevelUpWidget;
 
 	UPROPERTY()
 	class UTextBlock* CharacterName;

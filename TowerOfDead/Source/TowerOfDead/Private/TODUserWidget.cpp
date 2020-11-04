@@ -1,4 +1,5 @@
 #include "TODUserWidget.h"
+#include "TODLevelUpWidget.h"
 #include "TODCharacter.h"
 #include "TODCharacterStatComponent.h"
 #include "TODPlayerState.h"
@@ -11,11 +12,9 @@ void UTODUserWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	LevelUpWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("LevelUp_UI")));
+	LevelUpWidget = Cast<UTODLevelUpWidget>(GetWidgetFromName(TEXT("LevelUp_UI")));
 	if (LevelUpWidget != nullptr)
-	{
 		LevelUpWidget->SetVisibility(ESlateVisibility::Hidden);
-	}
 	
 	CastWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("CastBar_UI")));
 	if (CastWidget != nullptr)
@@ -59,6 +58,8 @@ void UTODUserWidget::BindCharacterStatClass(class UTODCharacterStatComponent* ch
 	if (characterStat != nullptr)
 	{
 		CurrentCharacterStat = characterStat;
+		LevelUpWidget->BindCharacterStatClass(characterStat);
+
 		characterStat->OnHPChanged.AddUObject(this, &UTODUserWidget::UpdateCharacterStat);
 	}
 }
@@ -68,6 +69,8 @@ void UTODUserWidget::BindPlayerStateClass(class ATODPlayerState* playerState)
 	if (playerState != nullptr)
 	{
 		CurrentPlayerState = playerState;
+		LevelUpWidget->BindPlayerStateClass(playerState);
+
 		playerState->OnPlayerStateChange.AddUObject(this, &UTODUserWidget::UpdatePlayerState);
 	}
 }

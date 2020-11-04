@@ -2,7 +2,7 @@
 
 UTODSaveGame::UTODSaveGame()
 {
-	PlayerState.TotalLevel = 1;
+	PlayerState.TotalLevel = 3;
 	PlayerState.HPLevel = 1;
 	PlayerState.ATKLevel = 1;
 	PlayerState.DEFLevel = 1;

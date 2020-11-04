@@ -3,7 +3,7 @@
 
 ATODPlayerState::ATODPlayerState()
 {
-	TotalLevel = 1;
+	TotalLevel = 3;
 	HPLevel = 1;
 	ATKLevel = 1;
 	DEFLevel = 1;
