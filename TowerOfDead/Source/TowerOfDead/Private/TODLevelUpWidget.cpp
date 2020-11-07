@@ -1,6 +1,7 @@
 #include "TODLevelUpWidget.h"
 #include "TODPlayerState.h"
 #include "TODCharacterStatComponent.h"
+#include "TODGameInstance.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 
@@ -94,9 +95,40 @@ void UTODLevelUpWidget::UpdateNextPlayerState()
 	// Button 클릭 시 변화되는 값들
 	if (NextTotalLevel != nullptr)
 		NextTotalLevel->SetText(FText::FromString(FString::FromInt(
-			CurrentPlayerState->GetTotalLevel() + HPCount + ATKCount + DEFCount)));
+			CurrentPlayerState->GetTotalLevel() + HPCount + ATKCount + DEFCount)));	
+	if (NeedSoul != nullptr)
+	{
+		TODGameInstance = Cast<UTODGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+		if (TODGameInstance != nullptr)
+		{
+			int32 totalneedSoul = 0;
+			
+			// HP 렙업 시 필요한 소울
+			for (int i = 0; i < HPCount; i++)
+				totalneedSoul += TODGameInstance->GetTODCharacterData(CurrentPlayerState->GetHPLevel() + i)->NextSoul;
+
+			// ATK 렙업 시 필요한 소울
+			for (int i = 0; i < ATKCount; i++)
+				totalneedSoul += TODGameInstance->GetTODCharacterData(CurrentPlayerState->GetATKLevel() + i)->NextSoul;
+
+			// DEF 렙업 시 필요한 소울
+			for (int i = 0; i < DEFCount; i++)
+				totalneedSoul += TODGameInstance->GetTODCharacterData(CurrentPlayerState->GetDEFLevel() + i)->NextSoul;
+
+			TotalNeedSoul = totalneedSoul;
+			NeedSoul->SetText(FText::FromString(FString::FromInt(totalneedSoul)));
+
+			if (NowHP != nullptr)
+				NowHP->SetText(FText::FromString(FString::FromInt(TODGameInstance->GetTODCharacterData(CurrentPlayerState->GetHPLevel() + HPCount)->MaxHp)));;
+			if (NowATK != nullptr)
+				NowATK->SetText(FText::FromString(FString::FromInt(TODGameInstance->GetTODCharacterData(CurrentPlayerState->GetATKLevel() + ATKCount)->Attack)));;
+			if (NowDEF != nullptr)
+				NowDEF->SetText(FText::FromString(FString::FromInt(TODGameInstance->GetTODCharacterData(CurrentPlayerState->GetDEFLevel() + DEFCount)->Defense)));;
+		}
+	}
 	if (NextSoul != nullptr)
-		NextSoul->SetText(FText::FromString(FString::FromInt(CurrentPlayerState->GetCurrentSoul())));
+		NextSoul->SetText(FText::FromString(FString::FromInt(CurrentPlayerState->GetCurrentSoul() - TotalNeedSoul)));
+	
 	if (NextHPLevel != nullptr)
 		NextHPLevel->SetText(FText::FromString(FString::FromInt(CurrentPlayerState->GetHPLevel() + HPCount)));
 	if (NextATKLevel != nullptr)

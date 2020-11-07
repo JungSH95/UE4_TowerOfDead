@@ -112,4 +112,10 @@ private:
 
 	UPROPERTY()
 	int32 DEFCount;
+
+	UPROPERTY()
+	int32 TotalNeedSoul;
+
+	UPROPERTY()
+	class UTODGameInstance* TODGameInstance;
 };
