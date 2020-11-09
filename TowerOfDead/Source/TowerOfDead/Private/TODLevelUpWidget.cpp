@@ -214,8 +214,21 @@ void UTODLevelUpWidget::OnActionClicked()
 {
 	print(FString::Printf(TEXT("Action Button Click")));
 
-	// 적용이 됐다면 현재 Player State 갱신 및 클릭된 버튼 값 초기화
 	
-	//UpdateNowPlayerState();
-	//UpdateNextPlayerState();
+	if (CurrentPlayerState != nullptr)
+	{
+		if (CurrentPlayerState->GetCurrentSoul() >= TotalNeedSoul)
+		{
+			CurrentPlayerState->LevelUp(HPCount, ATKCount, DEFCount);
+			CurrentPlayerState->AddSoul(-TotalNeedSoul);
+			CurrentPlayerState->OnPlayerStateChange.Broadcast();
+
+			HPCount = 0;
+			ATKCount = 0;
+			DEFCount = 0;
+		}
+	}
+
+	UpdateNowPlayerState();
+	UpdateNextPlayerState();
 }

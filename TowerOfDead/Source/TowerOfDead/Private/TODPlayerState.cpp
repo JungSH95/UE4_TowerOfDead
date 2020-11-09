@@ -17,7 +17,7 @@ void ATODPlayerState::InitPlayerData()
 	auto LoadData = Cast<UTODSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName, 0));
 	if (LoadData == nullptr)
 		LoadData = GetMutableDefault<UTODSaveGame>();
-	
+
 	SetPlayerName(LoadData->PlayerName);
 	TotalLevel = LoadData->PlayerState.TotalLevel;
 	HPLevel = LoadData->PlayerState.HPLevel;
@@ -44,10 +44,24 @@ void ATODPlayerState::SavePlayerData()
 		TODLOG(Error, TEXT("Save Game Error!!!!!!!"));
 }
 
+void ATODPlayerState::LevelUp(int32 hp, int32 atk, int32 def)
+{
+	HPLevel += hp;
+	ATKLevel += atk;
+	DEFLevel += def;
+
+	TotalLevel = HPLevel + ATKLevel + DEFLevel;
+	SavePlayerData();
+
+	print(FString::Printf(TEXT("Level Up OK")));
+}
+
 void ATODPlayerState::AddSoul(int32 Soul)
 {
 	CurrentSoul += Soul;
 
 	if (CurrentSoul <= 0)
 		CurrentSoul = 0;
+
+	SavePlayerData();
 }
