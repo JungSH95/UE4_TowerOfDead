@@ -114,9 +114,6 @@ float ATODEnemyGrux::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 	class AController* EventInstigator, AActor* DamageCauser)
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-	
-	print(FString::Printf(TEXT("Grux Enemy took Damage : %f"), FinalDamage));
-
 	EnemyStat->SetDamage(FinalDamage);
 
 	if (GetIsDead())

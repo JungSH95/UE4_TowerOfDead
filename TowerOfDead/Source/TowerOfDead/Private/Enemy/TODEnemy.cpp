@@ -42,6 +42,10 @@ ATODEnemy::ATODEnemy()
 	HitEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HITEFFECT"));
 	HitEffect->SetupAttachment(RootComponent);
 
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_DEADEFFECT(TEXT("/Game/ParagonMinions/FX/Particles/SharedGameplay/States/Death/FX/P_Death_Default.P_Death_Default"));
+	if (P_DEADEFFECT.Succeeded())
+		DeadEffect = P_DEADEFFECT.Object;
+
 	State = EnemyState::PEACE;
 	IsDead = false;
 
@@ -89,8 +93,8 @@ void ATODEnemy::PostInitializeComponents()
 		State = EnemyState::DEAD;
 		IsDead = true;
 
-		Dead();
 		OnEnemyDeadCheck.Broadcast();
+		Dead();
 	});
 }
 
@@ -132,6 +136,18 @@ void ATODEnemy::Dead()
 {
 	SetActorEnableCollision(false);
 	HPBarWidget->SetHiddenInGame(true);
+
+	if (DeadEffect != nullptr)
+	{
+		HitEffect->OnSystemFinished.AddDynamic(this, &ATODEnemy::OnDeadEffectFinished);
+		HitEffect->SetTemplate(DeadEffect);
+
+		FVector effectLoc = GetMesh()->GetSocketLocation("Impact");
+		HitEffect->SetWorldLocation(effectLoc);
+		HitEffect->Activate(true);
+
+		GetMesh()->SetVisibility(false);
+	}
 }
 
 void ATODEnemy::OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
@@ -161,4 +177,9 @@ void ATODEnemy::OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class
 		// 플레이어 타격 후 바로 비활성화
 		AttackTrigger->SetGenerateOverlapEvents(false);
 	}
+}
+
+void ATODEnemy::OnDeadEffectFinished(class UParticleSystemComponent* PSystem)
+{
+	Destroy();
 }

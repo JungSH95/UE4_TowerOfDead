@@ -17,14 +17,17 @@ ATODEnemyMelee::ATODEnemyMelee()
 		HitEffect->SetTemplate(P_HITEFFECT.Object);
 		HitEffect->bAutoActivate = false;
 	}
+
+	//static ConstructorHelpers::FObjectFinder<UParticleSystem> P_DEADEFFECT(TEXT("/Game/ParagonMinions/FX/Particles/SharedGameplay/States/Death/FX/P_Death_Default.P_Death_Default"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_DEADEFFECT(TEXT("/Game/ParagonMinions/FX/Particles/Buffs/Buff_White/FX/P_JungleMinion_DeathChunks.P_JungleMinion_DeathChunks"));
+	if (P_DEADEFFECT.Succeeded())
+		DeadEffect = P_DEADEFFECT.Object;
 }
 
 float ATODEnemyMelee::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser)
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
-
-	print(FString::Printf(TEXT("Melee Enemy took Damage : %f"), FinalDamage));
 
 	auto AnimInstance = Cast<UTODAIAnimInstance>(GetMesh()->GetAnimInstance());
 	if (AnimInstance != nullptr)

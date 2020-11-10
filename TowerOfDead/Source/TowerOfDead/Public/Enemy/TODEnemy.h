@@ -62,11 +62,17 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystemComponent* HitEffect;
 
+	UPROPERTY(VisibleAnywhere, Category = Effect)
+	UParticleSystem* DeadEffect;
+
 private:
 	UFUNCTION()
 	void OnAttackTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
 		class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 		bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnDeadEffectFinished(class UParticleSystemComponent* PSystem);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
