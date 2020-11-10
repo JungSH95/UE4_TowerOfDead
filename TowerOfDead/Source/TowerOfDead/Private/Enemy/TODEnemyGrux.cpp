@@ -124,6 +124,14 @@ float ATODEnemyGrux::TakeDamage(float DamageAmount, struct FDamageEvent const& D
 			if (PlayerController != nullptr)
 				PlayerController->EnemyKill(this);
 		}
+
+		// 소환되어 있는 몬스터 사망처리
+		for (int i = 0; i < SpawnEnemys.Num(); i++)
+		{
+			// 살아있는 몬스터 사망 처리
+			if (!SpawnEnemys[i]->GetIsDead())
+				SpawnEnemys[i]->EnemyStat->SetDamage(9999);
+		}
 	}
 
 	return FinalDamage;
