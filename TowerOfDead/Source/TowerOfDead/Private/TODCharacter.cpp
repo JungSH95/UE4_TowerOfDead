@@ -86,11 +86,14 @@ void ATODCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	TODLOG_S(Warning);
+
 	ATODPlayerController* playerController = Cast<ATODPlayerController>(GetController());
 	if (playerController != nullptr)
+	{
 		PlayerController = playerController;
-
-	PlayerController->GetUserHUDWidget()->BindCharacterStatClass(CharacterStat);
+		PlayerController->GetUserHUDWidget()->BindCharacterStatClass(CharacterStat);
+	}
 
 	auto TODPlayerState = Cast<ATODPlayerState>(GetPlayerState());
 	if (TODPlayerState != nullptr)
@@ -182,6 +185,8 @@ void ATODCharacter::Tick(float DeltaTime)
 void ATODCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	TODLOG_S(Warning);
 
 	CharacterStat->OnHPIsZero.AddLambda([this]() -> void {
 		Anim->SetIsDead();
