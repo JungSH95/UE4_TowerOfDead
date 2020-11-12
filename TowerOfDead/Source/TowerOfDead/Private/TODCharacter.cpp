@@ -93,6 +93,8 @@ void ATODCharacter::BeginPlay()
 	{
 		PlayerController = playerController;
 		PlayerController->GetUserHUDWidget()->BindCharacterStatClass(CharacterStat);
+
+		SetPlayerStart(true);
 	}
 
 	auto TODPlayerState = Cast<ATODPlayerState>(GetPlayerState());

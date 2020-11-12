@@ -43,7 +43,6 @@ void ATODPlayerController::BeginPlay()
 
 	TODLOG_S(Warning);
 
-	/*
 	CPlayer = Cast<ATODCharacter>(GetPawn());
 	TODPlayerState = Cast<ATODPlayerState>(PlayerState);
 
@@ -55,7 +54,6 @@ void ATODPlayerController::BeginPlay()
 	if (TODPlayerState != nullptr)
 		HUDWidget->BindPlayerStateClass(TODPlayerState);
 	TODPlayerState->OnPlayerStateChange.Broadcast();
-	*/
 
 	SetInputMode(FInputModeGameOnly());
 	bShowMouseCursor = false;
