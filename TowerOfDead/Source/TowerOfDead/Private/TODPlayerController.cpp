@@ -27,14 +27,15 @@ void ATODPlayerController::SetupInputComponent()
 	InputComponent->BindAxis(TEXT("Turn"), this, &ATODPlayerController::Turn);
 	InputComponent->BindAxis(TEXT("LookUp"), this, &ATODPlayerController::LookUp);
 
-	InputComponent->BindAction(TEXT("Attack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::Attack);
+	InputComponent->BindAction(TEXT("Mouse_Left"), EInputEvent::IE_Pressed, this, &ATODPlayerController::InputActionMouseLeft);
 
-	InputComponent->BindAction(TEXT("HardAttack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::HardAttack);
-	InputComponent->BindAction(TEXT("HardAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::HardAttackEnd);
-	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Pressed, this, &ATODPlayerController::SpecialAttack);
-	InputComponent->BindAction(TEXT("SpecialAttack"), EInputEvent::IE_Released, this, &ATODPlayerController::SpecialAttackEnd);
+	InputComponent->BindAction(TEXT("Mouse_Right"), EInputEvent::IE_Pressed, this, &ATODPlayerController::InputActionMouseRight);
+	InputComponent->BindAction(TEXT("Mouse_Right"), EInputEvent::IE_Released, this, &ATODPlayerController::InputActionMouseRightEnd);
+	
+	InputComponent->BindAction(TEXT("KeyBoard_R"), EInputEvent::IE_Pressed, this, &ATODPlayerController::InputActionKeyboardR);
+	InputComponent->BindAction(TEXT("KeyBoard_R"), EInputEvent::IE_Released, this, &ATODPlayerController::InputActionKeyboardREnd);
 
-	InputComponent->BindAction(TEXT("ObjInteraction"), EInputEvent::IE_Pressed, this, &ATODPlayerController::ObjInteraction);
+	InputComponent->BindAction(TEXT("KeyBoard_F"), EInputEvent::IE_Pressed, this, &ATODPlayerController::ObjInteraction);
 }
 
 void ATODPlayerController::BeginPlay()
@@ -145,7 +146,7 @@ void ATODPlayerController::LookUp(float AxisValue)
 	AddPitchInput(AxisValue * MouseSpeed);
 }
 
-void ATODPlayerController::Attack()
+void ATODPlayerController::InputActionMouseLeft()
 {
 	if (CanInputAction == false)
 		return;
@@ -153,38 +154,38 @@ void ATODPlayerController::Attack()
 	CPlayer->Attack();
 }
 
-void ATODPlayerController::HardAttack()
+void ATODPlayerController::InputActionMouseRight()
 {
 	if (CanInputAction == false)
 		return;
 
-	CPlayer->HardAttack();
+	CPlayer->ActionMouseRight();
 }
 
-void ATODPlayerController::HardAttackEnd()
+void ATODPlayerController::InputActionMouseRightEnd()
 {
 	if (CanInputAction == false)
 		return;
 
 	// 버튼에서 땠을 때 판정을 확인하여 성공일 경우 강공격 실행 후 이동 및 점프 가능
 	//									실패일 경우 Montage 정지 후 이동 및 점프 가능
-	CPlayer->HardAttackCheck();
+	CPlayer->ActionMouseRightEnd();
 }
 
-void ATODPlayerController::SpecialAttack()
+void ATODPlayerController::InputActionKeyboardR()
 {
 	if (CanInputAction == false)
 		return;
 
-	CPlayer->SpecialAttack();
+	CPlayer->ActionKeyboardR();
 }
 
-void ATODPlayerController::SpecialAttackEnd()
+void ATODPlayerController::InputActionKeyboardREnd()
 {
 	if (CanInputAction == false)
 		return;
 
-	CPlayer->SpecialAttackEnd();
+	CPlayer->ActionKeyboardREnd();
 }
 
 void ATODPlayerController::ObjInteraction()

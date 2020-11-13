@@ -9,4 +9,7 @@ class TOWEROFDEAD_API UTODKwangAnimInstance : public UTODAnimInstance
 {
 	GENERATED_BODY()
 	
+public:
+	UTODKwangAnimInstance();
+
 };

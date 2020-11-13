@@ -122,7 +122,7 @@ void UTODUserWidget::UpdateHardAttackCast()
 	if (HardAttackCastBar == nullptr)
 		return;
 
-	HardAttackCastBar->SetPercent(CurrentPlayer->GetHardAttackRatio());
+	HardAttackCastBar->SetPercent(CurrentPlayer->GetCastSkillRatio());
 }
 
 void UTODUserWidget::UpdateBossState()

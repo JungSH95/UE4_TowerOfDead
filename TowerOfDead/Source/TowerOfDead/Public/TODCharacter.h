@@ -42,9 +42,13 @@ public:
 
 	void SetIsCanStopSoulRecovery(bool isCanStopSoulRecovery) { IsCanStopSoulRecovery = isCanStopSoulRecovery; }
 	bool GetIsCanStopSoulRecovery() { return IsCanStopSoulRecovery; }
+	
+	bool GetIsDead() { return IsDead; }
+
+	// 캐스트에 사용하는 것들 모두 사용할 수 있도록
+	virtual float GetCastSkillRatio() PURE_VIRTUAL(ATODCharacter::GetCastSkillRatio, return 0.0f;);
 
 	virtual void Attack() PURE_VIRTUAL(ATODCharacter::Attack, return;);
-
 	UFUNCTION()
 	virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted) PURE_VIRTUAL(ATODCharacter::OnAttackMontageEnded, return;);
 	
@@ -52,19 +56,22 @@ public:
 	
 	void SetCanAttackDamage(bool bCan){ WeaponTrigger->SetGenerateOverlapEvents(bCan); }
 
+	virtual void ActionMouseRight() PURE_VIRTUAL(ATODCharacter::ActionMouseRight, return;);
+	virtual void ActionMouseRightEnd() PURE_VIRTUAL(ATODCharacter::ActionMouseRightEnd, return;);
+	/*
 	void HardAttack();
 	void HardAttackCheck();
 	void HardAttackEnd();
 	void HardAttackCoolDownTimer();
+	*/
 
-	float GetHardAttackRatio() { return CastTime / HardAttackTime; }
-	bool GetIsDead() { return IsDead; }
-
-	void SpecialAttack();
+	virtual void ActionKeyboardR() PURE_VIRTUAL(ATODCharacter::ActionKeyboardR, return;);
+	virtual void ActionKeyboardREnd() PURE_VIRTUAL(ATODCharacter::ActionKeyboardREnd, return;);
+	/*void SpecialAttack();
 	void SpecialAttackCatch();
 	void SpecialAttackEnd();
 	void SpecialAttackCatchTimer();
-	void SpecialAttackCoolDownTimer();
+	void SpecialAttackCoolDownTimer();*/
 
 	void HardAndSpecialAttackHitCheck(int32 AttackType, float Range);
 
@@ -99,44 +106,12 @@ public:
 protected:
 	class UTODAnimInstance* Anim;
 
-private:
 	UPROPERTY()
 	class ATODPlayerController* PlayerController;
 
+private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsDead;
-
-	// 강공격 --------------------------------------------
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsHardAttacking;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsCanHardAttack;
-
-	float CastTime = 0.0f;
-	float HardAttackTime = 2.0f;
-	float HardAttackCoolDownTime = 5.0f;
-	FTimerHandle HardAttackTimerHandle;
-	// -----------------------------------------------------
-
-	// 특수 공격 --------------------------------------------
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsSpecialAttacking;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsCanSpecialAttack;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsCanSpecialCatch;
-
-	float SpecialAttackCoolDownTime = 5.0f;
-
-	FTimerHandle SpecialAttackTimerHandle;
-	FTimerHandle SpecialCatchTimerHandle;
-
-	bool IsWeaponFall = false;
-	float FalldeltaTime = 0.0f;
-	// -------------------------------------------------------
+	bool IsDead;	
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Recovery, Meta = (AllowPrivateAccess = true))
 	bool IsSoulRecovery;

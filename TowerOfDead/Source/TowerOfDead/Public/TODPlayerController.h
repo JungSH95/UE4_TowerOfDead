@@ -39,14 +39,13 @@ private:
 	void Turn(float AxisValue);
 	void LookUp(float AxisValue);
 
-	void Attack();
-	// 게이지 채워서 공격?
-	void HardAttack();
-	void HardAttackEnd();
+	void InputActionMouseLeft();
 
-	// 무기 투척하기 (특정 위치에)
-	void SpecialAttack();
-	void SpecialAttackEnd();
+	void InputActionMouseRight();
+	void InputActionMouseRightEnd();
+
+	void InputActionKeyboardR();
+	void InputActionKeyboardREnd();
 
 	// Object와 상호작용(캐릭터 성장 & 회복)
 	void ObjInteraction();

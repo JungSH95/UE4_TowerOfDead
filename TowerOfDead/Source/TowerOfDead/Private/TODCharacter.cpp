@@ -50,15 +50,6 @@ ATODCharacter::ATODCharacter()
 	
 	IsDead = false;
 
-	// 마우스 우클릭 (강공격)
-	IsHardAttacking = false;
-	IsCanHardAttack = true;
-
-	// R 버튼 (특수 공격)
-	IsSpecialAttacking = false;
-	IsCanSpecialAttack = true;
-	IsCanSpecialCatch = false;
-
 	// 회복 or 성장 Object
 	IsSoulRecovery = false;
 	IsCanStopSoulRecovery = false;
@@ -103,16 +94,7 @@ void ATODCharacter::Tick(float DeltaTime)
 		return;
 	}
 
-	// 강공격 진행중
-	if (CastTime <= HardAttackTime && IsHardAttacking)
-	{
-		CastTime += GetWorld()->DeltaTimeSeconds;
-		OnHardAttackCast.Broadcast();
-
-		if (CastTime > HardAttackTime)
-			HardAttackCheck();
-	}
-
+	/*
 	// 특수 공격 진행중 목표 위치 설정
 	if (IsSpecialAttacking)
 	{
@@ -164,6 +146,7 @@ void ATODCharacter::Tick(float DeltaTime)
 
 		Anim->SetTargetPoint(StartPos);
 	}
+	*/
 }
 
 void ATODCharacter::PostInitializeComponents()
@@ -234,10 +217,11 @@ void ATODCharacter::SetPlayerDead()
 {
 	// 특수 공격 관련 종료(Decal)
 	Decal->SetVisibility(false);
-	IsSpecialAttacking = false;
+
+	//IsSpecialAttacking = false;
 
 	// 강공격 관련 종료
-	IsHardAttacking = false;
+	//IsHardAttacking = false;
 	PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
 
 	// 이동 불가
@@ -280,8 +264,8 @@ void ATODCharacter::SoulRecovery()
 	SetIsSoulRecovery(true);	
 
 	// 무기가 던져져 있다면 캐치 실행 후 회복
-	if (Anim->GetIsSpecialTarget())
-		SpecialAttackCatch();
+	//if (Anim->GetIsSpecialTarget())
+	//	SpecialAttackCatch();
 
 	// 애니메이션 Flag On
 	Anim->SetIsSoulRecovery(true);
@@ -326,6 +310,7 @@ void ATODCharacter::SetIsSoulRecovery(bool isSoulRecovery)
 	IsCanStopSoulRecovery = false;
 }
 
+/*
 void ATODCharacter::HardAttack()
 {
 	// 강공격 가능 여부 확인
@@ -390,11 +375,13 @@ void ATODCharacter::HardAttackCoolDownTimer()
 	IsCanHardAttack = true;
 	CastTime = 0.0f;
 }
+*/
 
+/*
 void ATODCharacter::SpecialAttack()
 {
 	// 공격 중
-	if (/*IsAttacking ||*/ Anim->Montage_IsPlaying(Anim->GetHardAttackMontage()))
+	if (IsAttacking || Anim->Montage_IsPlaying(Anim->GetHardAttackMontage()))
 		return;
 
 	// 특수 공격 가능
@@ -464,6 +451,7 @@ void ATODCharacter::SpecialAttackCoolDownTimer()
 {
 	IsCanSpecialAttack = true;
 }
+*/
 
 void ATODCharacter::HardAndSpecialAttackHitCheck(int32 AttackType, float Range)
 {
