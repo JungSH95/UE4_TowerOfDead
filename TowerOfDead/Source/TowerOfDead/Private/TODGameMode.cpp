@@ -12,7 +12,7 @@ ATODGameMode::ATODGameMode()
 	PlayerControllerClass = ATODPlayerController::StaticClass();
 	PlayerStateClass = ATODPlayerState::StaticClass();
 
-	static ConstructorHelpers::FClassFinder<APawn> BP_PAWN_C(TEXT("/Game/BluePrint/BP_Player.BP_Player_C"));
+	static ConstructorHelpers::FClassFinder<APawn> BP_PAWN_C(TEXT("/Game/BluePrint/BP_KwangPlayer.BP_KwangPlayer_C"));
 	if (BP_PAWN_C.Succeeded())
 		DefaultPawnClass = BP_PAWN_C.Class;
 

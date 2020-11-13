@@ -40,33 +40,15 @@ ATODCharacter::ATODCharacter()
 	
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("TODCharacter"));
 
-	// 기본 캐릭터 메시
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_KWANG(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Meshes/Kwang_GDC.Kwang_GDC"));
-	if (SK_KWANG.Succeeded())
-		GetMesh()->SetSkeletalMesh(SK_KWANG.Object);
 
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	static ConstructorHelpers::FClassFinder<UAnimInstance> KWANG_ANIM(TEXT("/Game/BluePrint/Anim_Player.Anim_Player_C"));
-	if (KWANG_ANIM.Succeeded())
-		GetMesh()->SetAnimInstanceClass(KWANG_ANIM.Class);
 
 	HitEffect->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Primary/FX/P_Kwang_Primary_Impact.P_Kwang_Primary_Impact"));
-	if (P_HITEFFECT.Succeeded())
-	{
-		HitEffect->SetTemplate(P_HITEFFECT.Object);
-		HitEffect->bAutoActivate = false;
-	}
+	HitEffect->bAutoActivate = false;
 
 	SetControl();
 	
 	IsDead = false;
-	
-	// 일반 공격 설정
-	IsAttacking = false;
-	CanAttack = true;
-	MaxCombo = 4;
-	AttackEndComboState();
 
 	// 마우스 우클릭 (강공격)
 	IsHardAttacking = false;
@@ -196,25 +178,6 @@ void ATODCharacter::PostInitializeComponents()
 
 		SetPlayerDead();
 	});
-
-	Anim = Cast<UTODAnimInstance>(GetMesh()->GetAnimInstance());
-	if (Anim != nullptr)
-	{
-		Anim->OnMontageEnded.AddDynamic(this, &ATODCharacter::OnAttackMontageEnded);
-		Anim->OnNextAttackCheck.AddLambda([this]()->void 
-		{
-			CanNextCombo = true;
-
-			if (IsComboInputOn)
-			{
-				AttackStartComboState();
-				Anim->JumpToAttackMontageSection(CurrentCombo);
-			}
-		});
-		
-		Anim->OnHardAttackEnd.AddUObject(this, &ATODCharacter::HardAttackEnd);
-		Anim->OnHardAttackHitCheck.AddUObject(this, &ATODCharacter::HardAndSpecialAttackHitCheck);
-	}
 
 	WeaponTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODCharacter::OnWewaponTriggerOverlap);
 }
@@ -363,84 +326,6 @@ void ATODCharacter::SetIsSoulRecovery(bool isSoulRecovery)
 	IsCanStopSoulRecovery = false;
 }
 
-void ATODCharacter::Attack()
-{
-	if (Anim == nullptr)
-		return;
-
-	// 무기가 던져져 있다면 불가능 (기술 시전중일 때 불가능)
-	if (IsHardAttacking || IsSpecialAttacking || !CanAttack)
-		return;
-
-	if (IsAttacking)
-	{
-		if (CanNextCombo)
-		{
-			AttackStartComboState();
-
-			if (CurrentCombo > MaxCombo)
-				return;
-
-			Anim->JumpToAttackMontageSection(CurrentCombo);
-		}
-	}
-	else
-	{
-		AttackStartComboState();
-		Anim->PlayAttackMontage();
-		Anim->JumpToAttackMontageSection(CurrentCombo);
-		IsAttacking = true;
-	}
-}
-
-void ATODCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	// 일반 공격 몽타주라면
-	if (Montage == Anim->GetAttackMontage())
-	{
-		IsAttacking = false;
-		AttackEndComboState();
-	}
-
-	// 강 공격일 때 
-	if (Montage == Anim->GetHardAttackMontage())
-	{
-		CanAttack = true;
-	}
-}
-
-void ATODCharacter::AttackStartComboState()
-{
-	ArrHitEnemyCheck.Empty();
-
-	CanNextCombo = false;
-	IsComboInputOn = false;
-	CurrentCombo += 1;
-}
-
-void ATODCharacter::AttackEndComboState()
-{
-	ArrHitEnemyCheck.Empty();
-
-	IsComboInputOn = false;
-	CanNextCombo = false;
-	CurrentCombo = 0;
-}
-
-bool ATODCharacter::HitEnemyCheck(class ATODEnemy* enemy)
-{
-	bool isEnemy = ArrHitEnemyCheck.Contains(enemy);
-	
-	// 공격 처리 안한 몬스터라면
-	if (!isEnemy)
-	{
-		ArrHitEnemyCheck.Add(enemy);
-		return true;
-	}
-	else
-		return false;
-}
-
 void ATODCharacter::HardAttack()
 {
 	// 강공격 가능 여부 확인
@@ -454,7 +339,7 @@ void ATODCharacter::HardAttack()
 	Anim->PlayHardAttackMontage();
 	SetCharacterMove(false);
 
-	CanAttack = false;
+	//CanAttack = false;
 	IsHardAttacking = true;
 	IsCanHardAttack = false;
 
@@ -496,7 +381,7 @@ void ATODCharacter::HardAttackCheck()
 void ATODCharacter::HardAttackEnd()
 {
 	SetCharacterMove(true);
-	CanAttack = true;
+	//CanAttack = true;
 }
 
 void ATODCharacter::HardAttackCoolDownTimer()
@@ -509,7 +394,7 @@ void ATODCharacter::HardAttackCoolDownTimer()
 void ATODCharacter::SpecialAttack()
 {
 	// 공격 중
-	if (IsAttacking || Anim->Montage_IsPlaying(Anim->GetHardAttackMontage()))
+	if (/*IsAttacking ||*/ Anim->Montage_IsPlaying(Anim->GetHardAttackMontage()))
 		return;
 
 	// 특수 공격 가능
@@ -519,7 +404,7 @@ void ATODCharacter::SpecialAttack()
 		IsSpecialAttacking = true;
 		IsCanSpecialAttack = false;
 		IsCanSpecialCatch = false;
-		CanAttack = false;
+		//CanAttack = false;
 
 		// 세계 시간 느리게
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4);
@@ -658,7 +543,7 @@ void ATODCharacter::OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, 
 	if (Enemy != nullptr)
 	{
 		// 공격받은 몬스터 확인
-		if (HitEnemyCheck(Enemy))
+		//if (HitEnemyCheck(Enemy))
 		{
 			FDamageEvent DamageEvent;
 			Enemy->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);

@@ -106,9 +106,9 @@ void UTODAnimInstance::AnimNotify_SetCanAttack()
 	auto PlayerPawn = TryGetPawnOwner();
 	if (::IsValid(PlayerPawn))
 	{
-		ATODCharacter* Player = Cast<ATODCharacter>(PlayerPawn);
-		if (Player != nullptr)
-			Player->SetCanAttack();
+		//ATODCharacter* Player = Cast<ATODCharacter>(PlayerPawn);
+		//if (Player != nullptr)
+		//	Player->SetCanAttack();
 	}
 }
 

@@ -43,15 +43,13 @@ public:
 	void SetIsCanStopSoulRecovery(bool isCanStopSoulRecovery) { IsCanStopSoulRecovery = isCanStopSoulRecovery; }
 	bool GetIsCanStopSoulRecovery() { return IsCanStopSoulRecovery; }
 
-	void Attack();
+	virtual void Attack() PURE_VIRTUAL(ATODCharacter::Attack, return;);
+
 	UFUNCTION()
-	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-
-	void SetCanAttack() { CanAttack = true; };
-	void AttackStartComboState();
-	void AttackEndComboState();
-	bool HitEnemyCheck(class ATODEnemy* enemy);
-
+	virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted) PURE_VIRTUAL(ATODCharacter::OnAttackMontageEnded, return;);
+	
+	//void SetCanAttack() { CanAttack = true; };
+	
 	void SetCanAttackDamage(bool bCan){ WeaponTrigger->SetGenerateOverlapEvents(bCan); }
 
 	void HardAttack();
@@ -98,37 +96,15 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystemComponent* HitEffect;
 
-private:
+protected:
 	class UTODAnimInstance* Anim;
 
+private:
 	UPROPERTY()
 	class ATODPlayerController* PlayerController;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsDead;
-
-	UPROPERTY()
-	TArray<ATODEnemy*> ArrHitEnemyCheck;
-
-	// 콤보 공격 ------------------------------------------
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsAttacking;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool CanAttack;
-	
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool CanNextCombo;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsComboInputOn;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	int32 CurrentCombo;
-
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	int32 MaxCombo;
-	//-------------------------------------------------------
 
 	// 강공격 --------------------------------------------
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
