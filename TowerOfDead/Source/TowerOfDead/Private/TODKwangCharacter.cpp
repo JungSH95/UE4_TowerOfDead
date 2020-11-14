@@ -53,7 +53,11 @@ void ATODKwangCharacter::Tick(float DeltaTime)
 
 		// 실패
 		if (CastTime > HardAttackTime)
+		{
+			if (Anim != nullptr)
+				Anim->Montage_Stop(0.2f, Anim->GetCurrentActiveMontage());
 			HardAttackEnd();
+		}
 	}
 }
 
@@ -97,8 +101,8 @@ void ATODKwangCharacter::Attack()
 		return;
 
 	// 무기가 던져져 있다면 불가능 (기술 시전중일 때 불가능)
-	//if (IsHardAttacking || IsSpecialAttacking || !CanAttack)
-	//	return;
+	if (IsHardAttacking || IsSpecialAttacking)
+		return;
 
 	if (IsAttacking)
 	{
@@ -161,12 +165,6 @@ void ATODKwangCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInter
 		IsAttacking = false;
 		AttackEndComboState();
 	}
-
-	// 강 공격일 때 
-	//if (Montage == Anim->GetHardAttackMontage())
-	//{
-	//	CanAttack = true;
-	//}
 }
 
 void ATODKwangCharacter::ActionMouseRight()
@@ -197,28 +195,26 @@ void ATODKwangCharacter::ActionMouseRightEnd()
 	if (IsHardAttacking == false)
 		return;
 
-	IsHardAttacking = false;
-
 	float percent = (CastTime / HardAttackTime);
 
 	// 성공 : 다음 몽타주 재생
 	if (percent >= 0.7f && percent <= 0.9f)
 	{
+		CastTime += 2.0f;	// Tick에서 HardAttack 안돌아가게
+
 		Anim->Montage_SetPlayRate(Anim->GetHardAttackMontage(), 1.0f);
 		Anim->Montage_JumpToSection(FName(*FString::Printf(TEXT("HardAttack2"))),
 			Anim->GetHardAttackMontage());
+
+		if (PlayerController != nullptr)
+			PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
 	}
 	// 실패 : 몽타주 정지 후 이동 및 점프 가능
 	else
 	{
-		SetCharacterMove(true);
 		Anim->Montage_Stop(0.2f, Anim->GetCurrentActiveMontage());
+		HardAttackEnd();
 	}
-
-	PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
-
-	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this,
-		&ATODKwangCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
 }
 
 void ATODKwangCharacter::ActionKeyboardR()
@@ -233,8 +229,16 @@ void ATODKwangCharacter::ActionKeyboardREnd()
 
 void ATODKwangCharacter::HardAttackEnd()
 {
+	print(FString::Printf(TEXT("Kwang HardAttack End")));
+
+	IsHardAttacking = false;
 	SetCharacterMove(true);
-	//CanAttack = true;
+
+	if (PlayerController != nullptr)
+		PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
+
+	GetWorldTimerManager().SetTimer(HardAttackTimerHandle, this,
+		&ATODKwangCharacter::HardAttackCoolDownTimer, HardAttackCoolDownTime, false);
 }
 
 void ATODKwangCharacter::HardAttackCoolDownTimer()

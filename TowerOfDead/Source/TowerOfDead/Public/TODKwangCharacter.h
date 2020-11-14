@@ -31,7 +31,6 @@ public:
 	// Â÷Â¡ ½ºÅ³
 	void ActionMouseRight();
 	void ActionMouseRightEnd();
-
 	void HardAttackEnd();
 	void HardAttackCoolDownTimer();
 
@@ -55,9 +54,6 @@ private:
 	// ÄÞº¸ °ø°Ý ------------------------------------------
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsAttacking;
-
-	//UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	//bool CanAttack;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool CanNextCombo;
