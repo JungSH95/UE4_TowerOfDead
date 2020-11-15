@@ -22,7 +22,7 @@ public:
 	void UpdateGameMode();
 	void UpdateCharacterStat();
 	void UpdatePlayerState();
-	void UpdateHardAttackCast();
+	void UpdateSkillCast();
 	void UpdateBossState();
 
 	void SetVisibleLevelUp(bool isVisible);
@@ -52,7 +52,7 @@ private:
 	class UTextBlock* CurrentSoul;
 
 	UPROPERTY()
-	class UProgressBar* HardAttackCastBar;
+	class UProgressBar* SkillCastBar;
 
 	UPROPERTY()
 	class UUserWidget* CastWidget;

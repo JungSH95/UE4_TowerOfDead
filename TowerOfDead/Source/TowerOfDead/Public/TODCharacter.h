@@ -4,7 +4,7 @@
 #include "GameFramework/Character.h"
 #include "TODCharacter.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnHardAttackCastDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnSkillCastDelegate);
 
 UCLASS()
 class TOWEROFDEAD_API ATODCharacter : public ACharacter
@@ -43,18 +43,16 @@ public:
 	void SetIsCanStopSoulRecovery(bool isCanStopSoulRecovery) { IsCanStopSoulRecovery = isCanStopSoulRecovery; }
 	bool GetIsCanStopSoulRecovery() { return IsCanStopSoulRecovery; }
 	
+	void SetCanAttackDamage(bool bCan) { WeaponTrigger->SetGenerateOverlapEvents(bCan); }
+	
 	bool GetIsDead() { return IsDead; }
 
 	// 캐스트에 사용하는 것들 모두 사용할 수 있도록
-	virtual float GetCastSkillRatio() PURE_VIRTUAL(ATODCharacter::GetCastSkillRatio, return 0.0f;);
+	virtual float GetSkillCastRatio() PURE_VIRTUAL(ATODCharacter::GetCastSkillRatio, return 0.0f;);
 
 	virtual void Attack() PURE_VIRTUAL(ATODCharacter::Attack, return;);
 	UFUNCTION()
 	virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted) PURE_VIRTUAL(ATODCharacter::OnAttackMontageEnded, return;);
-	
-	//void SetCanAttack() { CanAttack = true; };
-	
-	void SetCanAttackDamage(bool bCan){ WeaponTrigger->SetGenerateOverlapEvents(bCan); }
 
 	virtual void ActionMouseRight() PURE_VIRTUAL(ATODCharacter::ActionMouseRight, return;);
 	virtual void ActionMouseRightEnd() PURE_VIRTUAL(ATODCharacter::ActionMouseRightEnd, return;);
@@ -62,7 +60,7 @@ public:
 	virtual void ActionKeyboardR() PURE_VIRTUAL(ATODCharacter::ActionKeyboardR, return;);
 	virtual void ActionKeyboardREnd() PURE_VIRTUAL(ATODCharacter::ActionKeyboardREnd, return;);
 
-	FOnHardAttackCastDelegate OnHardAttackCast;
+	FOnSkillCastDelegate OnSkillCast;
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 	class UTODCharacterStatComponent* CharacterStat;

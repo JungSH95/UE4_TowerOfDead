@@ -20,7 +20,6 @@ public:
 public:
 	UAnimMontage* GetAttackMontage() { return AttackMontage; }
 
-	void SetIsEquip(bool equip) { IsEquip = equip; }
 	bool GetIsEquip() { return IsEquip;	}
 
 	void SetIsSoulRecovery(bool isSoulRecovery) { IsSoulRecovery = isSoulRecovery; }

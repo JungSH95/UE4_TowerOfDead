@@ -51,7 +51,7 @@ void ATODKwangCharacter::Tick(float DeltaTime)
 	if (CastTime <= HardAttackTime && IsHardAttacking)
 	{
 		CastTime += GetWorld()->DeltaTimeSeconds;
-		OnHardAttackCast.Broadcast();
+		OnSkillCast.Broadcast();
 
 		// 실패
 		if (CastTime > HardAttackTime)
@@ -141,7 +141,7 @@ void ATODKwangCharacter::PostInitializeComponents()
 	WeaponTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODKwangCharacter::OnWewaponTriggerOverlap);
 }
 
-float ATODKwangCharacter::GetCastSkillRatio()
+float ATODKwangCharacter::GetSkillCastRatio()
 {
 	// 사용중인 기술을 확인하여 해당 기술의 캐스트 비율을 반환 
 	if (IsHardAttacking)

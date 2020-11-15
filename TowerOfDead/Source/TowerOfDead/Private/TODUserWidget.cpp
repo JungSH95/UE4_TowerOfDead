@@ -19,7 +19,7 @@ void UTODUserWidget::NativeConstruct()
 	CastWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("CastBar_UI")));
 	if (CastWidget != nullptr)
 	{
-		HardAttackCastBar = Cast<UProgressBar>(CastWidget->GetWidgetFromName(TEXT("CastBar")));
+		SkillCastBar = Cast<UProgressBar>(CastWidget->GetWidgetFromName(TEXT("CastBar")));
 		CastWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 
@@ -48,8 +48,8 @@ void UTODUserWidget::BindPlayerClass(class ATODCharacter* player)
 	if (player != nullptr)
 	{
 		CurrentPlayer = player;
-		CurrentPlayer->OnHardAttackCast.AddUObject(this, &UTODUserWidget::UpdateHardAttackCast);
-		UpdateHardAttackCast();			
+		CurrentPlayer->OnSkillCast.AddUObject(this, &UTODUserWidget::UpdateSkillCast);
+		UpdateSkillCast();			
 	}
 }
 
@@ -117,12 +117,12 @@ void UTODUserWidget::UpdatePlayerState()
 		CurrentSoul->SetText(FText::FromString(FString::FromInt(CurrentPlayerState->GetCurrentSoul())));
 }
 
-void UTODUserWidget::UpdateHardAttackCast()
+void UTODUserWidget::UpdateSkillCast()
 {
-	if (HardAttackCastBar == nullptr)
+	if (SkillCastBar == nullptr)
 		return;
 
-	HardAttackCastBar->SetPercent(CurrentPlayer->GetCastSkillRatio());
+	SkillCastBar->SetPercent(CurrentPlayer->GetSkillCastRatio());
 }
 
 void UTODUserWidget::UpdateBossState()

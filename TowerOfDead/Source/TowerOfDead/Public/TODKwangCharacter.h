@@ -19,7 +19,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostInitializeComponents() override;
 
-	float GetCastSkillRatio();
+	float GetSkillCastRatio();
 
 	void Attack();
 	void AttackStartComboState();

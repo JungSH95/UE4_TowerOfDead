@@ -47,7 +47,7 @@ void UTODKwangAnimInstance::PlayThrowMontage()
 	{
 		Montage_Play(SpecialAttackThrowMontage, 1.0f);
 
-		SetIsEquip(false);
+		IsEquip = false;
 		IsSpecialAttacking = false;
 	}
 }
