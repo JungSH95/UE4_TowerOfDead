@@ -37,14 +37,9 @@ public:
 	// 무기 투척
 	void ActionKeyboardR();
 	void ActionKeyboardREnd();
-
-	/*
-	void SpecialAttack();
 	void SpecialAttackCatch();
-	void SpecialAttackEnd();
 	void SpecialAttackCatchTimer();
 	void SpecialAttackCoolDownTimer();
-	*/
 
 private:
 	// 공격 1번에 1번만 Damage 받을 수 있도록

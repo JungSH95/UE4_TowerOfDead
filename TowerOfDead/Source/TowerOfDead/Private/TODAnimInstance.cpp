@@ -84,8 +84,6 @@ void UTODAnimInstance::PlayCatchMontage()
 	if (SpecialAttackCatchMontage != nullptr)
 	{
 		Montage_Play(SpecialAttackCatchMontage, 1.0f);
-
-		IsEquip = true;
 		IsSpecialTarget = false;
 	}
 }
@@ -103,13 +101,7 @@ void UTODAnimInstance::AnimNotify_NextAttackCheck()
 
 void UTODAnimInstance::AnimNotify_SetCanAttack()
 {
-	auto PlayerPawn = TryGetPawnOwner();
-	if (::IsValid(PlayerPawn))
-	{
-		//ATODCharacter* Player = Cast<ATODCharacter>(PlayerPawn);
-		//if (Player != nullptr)
-		//	Player->SetCanAttack();
-	}
+	IsEquip = true;
 }
 
 void UTODAnimInstance::AnimNotify_AttackHitCheckStart()

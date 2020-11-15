@@ -4,6 +4,7 @@
 #include "TODUserWidget.h"
 #include "Enemy/TODEnemy.h"
 #include "Components/DecalComponent.h"
+#include "DrawDebugHelpers.h"
 
 ATODKwangCharacter::ATODKwangCharacter()
 {
@@ -59,6 +60,58 @@ void ATODKwangCharacter::Tick(float DeltaTime)
 			HardAttackEnd();
 		}
 	}
+
+	// 특수 공격 진행중 목표 위치 설정
+	if (IsSpecialAttacking)
+	{
+		FVector StartPos = Camera->GetComponentLocation();
+		FVector EndPos = Camera->GetForwardVector() * 2000.0f + StartPos;
+
+		FHitResult Hit;
+		FCollisionQueryParams TraceParams;
+		bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos,
+			ECollisionChannel::ECC_GameTraceChannel3, TraceParams);
+
+		if (bHit)
+		{
+			// 공격 범위 표시 (데칼)
+			DrawDebugBox(GetWorld(), Hit.ImpactPoint, FVector(5, 5, 5), FColor::Emerald, false, 2.0f);
+			Decal->SetWorldLocation(Hit.Location);
+
+			FVector Point = Hit.Location;
+			Point.Z = 1500.0f;
+			if (Anim != nullptr)
+				Anim->SetTargetPoint(Point);
+		}
+	}
+
+	// 칼 낙하 시작
+	if (IsWeaponFall && Anim != nullptr)
+	{
+		FalldeltaTime += GetWorld()->GetDeltaSeconds();
+
+		// 칼 낙하 위치
+		FVector StartPos = Anim->GetTargetPoint();
+		StartPos.Z = StartPos.Z - (FalldeltaTime * 25.0f);
+		FVector TargetPos = Anim->GetTargetPoint();
+		TargetPos.Z = 100.0f;
+
+		if (StartPos.Z >= 1100.0f && StartPos.Z <= 1200.0f)
+			SwordEffect->Activate(true);
+
+		if (StartPos.Z <= 100.0f)
+		{
+			FalldeltaTime = 0.0f;
+			IsWeaponFall = false;
+
+			HardAndSpecialAttackHitCheck(1, 200.0f);
+
+			GetWorldTimerManager().SetTimer(SpecialCatchTimerHandle, this,
+				&ATODKwangCharacter::SpecialAttackCatchTimer, 1.0f, false);
+		}
+
+		Anim->SetTargetPoint(StartPos);
+	}
 }
 
 void ATODKwangCharacter::PostInitializeComponents()
@@ -101,7 +154,7 @@ void ATODKwangCharacter::Attack()
 		return;
 
 	// 무기가 던져져 있다면 불가능 (기술 시전중일 때 불가능)
-	if (IsHardAttacking || IsSpecialAttacking)
+	if (IsHardAttacking || IsSpecialAttacking || !Anim->GetIsEquip())
 		return;
 
 	if (IsAttacking)
@@ -173,14 +226,13 @@ void ATODKwangCharacter::ActionMouseRight()
 	if (IsCanHardAttack == false)
 		return;
 
-	// 무기가 던져져 있다면 불가능
-	//if (Anim->GetIsSpecialTarget() || IsSpecialAttacking)
-	//	return;
+	// 무기가 X & 불가능 기술 사용 중 불가능
+	if (!Anim->GetIsEquip() || IsSpecialAttacking)
+		return;
 
 	Anim->PlayHardAttackMontage();
 	SetCharacterMove(false);
 
-	//CanAttack = false;
 	IsHardAttacking = true;
 	IsCanHardAttack = false;
 
@@ -217,16 +269,6 @@ void ATODKwangCharacter::ActionMouseRightEnd()
 	}
 }
 
-void ATODKwangCharacter::ActionKeyboardR()
-{
-	print(FString::Printf(TEXT("Kwang ActionKeyboardR")));
-}
-
-void ATODKwangCharacter::ActionKeyboardREnd()
-{
-	print(FString::Printf(TEXT("Kwang ActionKeyboardR End")));
-}
-
 void ATODKwangCharacter::HardAttackEnd()
 {
 	print(FString::Printf(TEXT("Kwang HardAttack End")));
@@ -248,21 +290,23 @@ void ATODKwangCharacter::HardAttackCoolDownTimer()
 	CastTime = 0.0f;
 }
 
-/*
-void ATODKwangCharacter::SpecialAttack()
+void ATODKwangCharacter::ActionKeyboardR()
 {
-	// 공격 중
+	// 공격 중 불가
 	if (IsAttacking || Anim->Montage_IsPlaying(Anim->GetHardAttackMontage()))
 		return;
-
+	
 	// 특수 공격 가능
 	if (IsCanSpecialAttack)
 	{
 		Decal->SetVisibility(true);
+
+		// 위치 지정 시작(Tick)
 		IsSpecialAttacking = true;
+		// 기술 사용 가능 유무 (쿨타임)
 		IsCanSpecialAttack = false;
+		// 캐치 가능한 상태인지 
 		IsCanSpecialCatch = false;
-		//CanAttack = false;
 
 		// 세계 시간 느리게
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(), 0.4);
@@ -271,7 +315,6 @@ void ATODKwangCharacter::SpecialAttack()
 
 		GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
 		Anim->SetSpecialAttacking(true);
-		//this->CustomTimeDilation = 1.0f;
 	}
 	// 특수 공격 불가능 (칼을 던지고 있는 상태, 쿨타임 진행 중)
 	else
@@ -282,8 +325,10 @@ void ATODKwangCharacter::SpecialAttack()
 	}
 }
 
-void ATODKwangCharacter::SpecialAttackEnd()
+void ATODKwangCharacter::ActionKeyboardREnd()
 {
+	print(FString::Printf(TEXT("Kwang ActionKeyboardR End")));
+
 	// 특수 공격중이 아닌 경우
 	if (IsSpecialAttacking == false)
 		return;
@@ -296,8 +341,16 @@ void ATODKwangCharacter::SpecialAttackEnd()
 	Decal->SetVisibility(false);
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = true;
 
+	// 위치 지정 끝(Tick)
 	IsSpecialAttacking = false;
+	// 칼 낙하 시작
 	IsWeaponFall = true;
+
+	// 칼 낙하 이펙트 위치 지정
+	FVector EffectPoint = Anim->GetTargetPoint();
+	EffectPoint.Z = 30.0f;
+	SwordEffect->SetWorldLocation(EffectPoint);
+	//SwordEffect->Activate(true);
 
 	// 목표 지점에 칼 투척
 	Anim->PlayThrowMontage();
@@ -305,6 +358,8 @@ void ATODKwangCharacter::SpecialAttackEnd()
 
 void ATODKwangCharacter::SpecialAttackCatch()
 {
+	IsCanSpecialCatch = false;
+
 	// 무기 받기
 	Anim->PlayCatchMontage();
 
@@ -322,4 +377,3 @@ void ATODKwangCharacter::SpecialAttackCoolDownTimer()
 {
 	IsCanSpecialAttack = true;
 }
-*/

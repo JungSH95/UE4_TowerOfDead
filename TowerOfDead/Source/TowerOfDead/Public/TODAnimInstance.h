@@ -39,6 +39,8 @@ public:
 	void SetTargetPoint(FVector pos) { TargetPoint = pos; }
 	FVector GetTargetPoint() { return TargetPoint; }
 
+	bool GetIsEquip() { return IsEquip;	}
+
 	void SetIsSoulRecovery(bool isSoulRecovery) { IsSoulRecovery = isSoulRecovery; }
 	void SetIsDead() { IsDead = true; }
 
