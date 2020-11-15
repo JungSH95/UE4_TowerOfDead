@@ -12,9 +12,15 @@ ATODGameMode::ATODGameMode()
 	PlayerControllerClass = ATODPlayerController::StaticClass();
 	PlayerStateClass = ATODPlayerState::StaticClass();
 
-	static ConstructorHelpers::FClassFinder<APawn> BP_PAWN_C(TEXT("/Game/BluePrint/BP_KwangPlayer.BP_KwangPlayer_C"));
-	if (BP_PAWN_C.Succeeded())
-		DefaultPawnClass = BP_PAWN_C.Class;
+	static ConstructorHelpers::FClassFinder<APawn> BP_KWANG_C(TEXT("/Game/BluePrint/BP_KwangPlayer.BP_KwangPlayer_C"));
+	if (BP_KWANG_C.Succeeded())
+		DefaultPawnClass = BP_KWANG_C.Class;
+
+	static ConstructorHelpers::FClassFinder<APawn> BP_DRONGO_C(TEXT("/Game/BluePrint/BP_DrongoPlayer.BP_DrongoPlayer_C"));
+	if (BP_DRONGO_C.Succeeded())
+	{
+		DefaultPawnClass = BP_DRONGO_C.Class;
+	}
 
 	IsSequencePlaying = false;
 

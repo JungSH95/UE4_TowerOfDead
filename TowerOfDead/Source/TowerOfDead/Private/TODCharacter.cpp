@@ -196,6 +196,8 @@ void ATODCharacter::SoulRecovery()
 	if (IsSoulRecovery)
 		return;
 
+	print(FString::Printf(TEXT("Recovery Start")));
+
 	PlayerController->GetUserHUDWidget()->SetVisibleLevelUp(true);
 	FInputModeGameAndUI GameAndUIInputMode;
 	PlayerController->SetInputMode(GameAndUIInputMode);
@@ -208,7 +210,8 @@ void ATODCharacter::SoulRecovery()
 	//	SpecialAttackCatch();
 
 	// 애니메이션 Flag On
-	Anim->SetIsSoulRecovery(true);
+	if (Anim != nullptr)
+		Anim->SetIsSoulRecovery(true);
 	// 체력 회복
 	CharacterStat->RecoveryHP();
 }
@@ -219,12 +222,15 @@ void ATODCharacter::SoulRecoveryEnd()
 	if (!IsSoulRecovery || !IsCanStopSoulRecovery)
 		return;
 
+	print(FString::Printf(TEXT("Recovery End")));
+
 	PlayerController->GetUserHUDWidget()->SetVisibleLevelUp(false);
 	FInputModeGameOnly GameInputMode;
 	PlayerController->SetInputMode(GameInputMode);
 	PlayerController->bShowMouseCursor = false;
 
-	Anim->SetIsSoulRecovery(false);
+	if (Anim != nullptr)
+		Anim->SetIsSoulRecovery(false);
 }
 
 void ATODCharacter::SetIsSoulRecovery(bool isSoulRecovery)
