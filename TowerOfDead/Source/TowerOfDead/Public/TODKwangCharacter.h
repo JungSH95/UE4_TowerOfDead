@@ -41,6 +41,13 @@ public:
 	void SpecialAttackCatchTimer();
 	void SpecialAttackCoolDownTimer();
 
+	void HardAndSpecialAttackHitCheck(int32 AttackType, float Range);
+
+	UFUNCTION()
+	void OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
+		class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+		bool bFromSweep, const FHitResult& SweepResult);
+
 private:
 	// 공격 1번에 1번만 Damage 받을 수 있도록
 	UPROPERTY()

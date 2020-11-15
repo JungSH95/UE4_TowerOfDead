@@ -115,5 +115,7 @@ void ATODGameMode::PlayFadeOut()
 {
 	if (FadeOutSequence == nullptr)
 		return;
+
+	IsSequencePlaying = true;
 	FadeOutSequence->SequencePlayer->Play();
 }

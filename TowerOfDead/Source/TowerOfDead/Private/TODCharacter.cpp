@@ -7,10 +7,7 @@
 #include "TODUserWidget.h"
 #include "Enemy/TODEnemy.h"
 #include "Enemy/TODEnemyStatComponent.h"
-#include "DrawDebugHelpers.h"
 #include "Components/DecalComponent.h"
-#include "Kismet/KismetSystemLibrary.h"
-#include "Engine/SkeletalMeshSocket.h"
 
 ATODCharacter::ATODCharacter()
 {
@@ -107,8 +104,6 @@ void ATODCharacter::PostInitializeComponents()
 
 		SetPlayerDead();
 	});
-
-	WeaponTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODCharacter::OnWewaponTriggerOverlap);
 }
 
 void ATODCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -254,117 +249,4 @@ void ATODCharacter::SetIsSoulRecovery(bool isSoulRecovery)
 
 	IsSoulRecovery = isSoulRecovery;
 	IsCanStopSoulRecovery = false;
-}
-
-/*
-
-void ATODCharacter::SpecialAttackCatch()
-{
-	// 무기 받기
-	Anim->PlayCatchMontage();
-	
-	// 쿨타임 진행
-	GetWorldTimerManager().SetTimer(SpecialAttackTimerHandle, this,
-		&ATODCharacter::SpecialAttackCoolDownTimer, SpecialAttackCoolDownTime, false);
-}
-
-void ATODCharacter::SpecialAttackCatchTimer()
-{
-	IsCanSpecialCatch = true;
-}
-
-void ATODCharacter::SpecialAttackCoolDownTimer()
-{
-	IsCanSpecialAttack = true;
-}
-*/
-
-void ATODCharacter::HardAndSpecialAttackHitCheck(int32 AttackType, float Range)
-{
-	// Attack Type Check
-	FVector VTarget;
-	switch (AttackType)
-	{
-	// Hard Attack
-	case 0:
-		VTarget = GetActorLocation();
-		break;
-	// Special Attack
-	case 1:
-		VTarget = Anim->GetTargetPoint();
-		break;
-	default:
-		VTarget = GetActorLocation();
-		break;
-	}
-
-	// 해당 범위 몬스터 얻어오기
-	TArray<FOverlapResult> OverlapActors;
-	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
-	bool bResult = GetWorld()->OverlapMultiByChannel(
-		OverlapActors,
-		VTarget,
-		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel4,
-		FCollisionShape::MakeSphere(Range),
-		CollisionQueryParam
-	);
-
-	DrawDebugSphere(GetWorld(), VTarget, Range, 16, FColor::Red, false, 10.0f);
-
-	// Hard/Special Attack Channels (ECC_GameTraceChannel4)에 걸리는 오브젝트
-	if (bResult)
-	{
-		for (auto OverlapActor : OverlapActors)
-		{
-			ATODEnemy* Enemy = Cast<ATODEnemy>(OverlapActor.GetActor());
-			if (Enemy != nullptr)
-			{
-				bool isCanDamage = false;
-
-				// Hard Attack : 전방 180도의 범위에 있는 적 공격
-				if (AttackType == 0)
-				{
-					float Angle = FVector::DotProduct(GetActorForwardVector(), Enemy->GetActorLocation() - GetActorLocation());
-					
-					// 정면(180도)에 있는 Enemy에게만 공격 처리
-					if (Angle >= 0.0f)
-						isCanDamage = true;
-				}
-				else if (AttackType == 1)
-				{
-					isCanDamage = true;
-				}
-
-				// 공격이 가능한 Enemy
-				if (isCanDamage)
-				{
-					FDamageEvent DamageEvent;
-					Enemy->TakeDamage(15.0f, DamageEvent, GetController(), this);
-
-					DrawDebugLine(GetWorld(), VTarget, Enemy->GetActorLocation(),
-						FColor::Blue, false, 5.0f);
-				}
-			}
-		}
-	}
-}
-
-void ATODCharacter::OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
-	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,	bool bFromSweep, const FHitResult& SweepResult)
-{
-	ATODEnemy* Enemy = Cast<ATODEnemy>(OtherActor);
-	if (Enemy != nullptr)
-	{
-		// 공격받은 몬스터 확인
-		//if (HitEnemyCheck(Enemy))
-		{
-			FDamageEvent DamageEvent;
-			Enemy->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
-
-			FVector effectLoc = Enemy->GetMesh()->GetSocketLocation("Impact");
-			HitEffect->SetWorldLocation(effectLoc);
-			HitEffect->Activate(true);
-		}
-	}
 }

@@ -1,4 +1,5 @@
 #include "TODKwangCharacter.h"
+#include "TODCharacterStatComponent.h"
 #include "TODKwangAnimInstance.h"
 #include "TODPlayerController.h"
 #include "TODUserWidget.h"
@@ -81,7 +82,7 @@ void ATODKwangCharacter::Tick(float DeltaTime)
 			FVector Point = Hit.Location;
 			Point.Z = 1500.0f;
 			if (Anim != nullptr)
-				Anim->SetTargetPoint(Point);
+				Cast<UTODKwangAnimInstance>(Anim)->SetTargetPoint(Point);
 		}
 	}
 
@@ -91,9 +92,9 @@ void ATODKwangCharacter::Tick(float DeltaTime)
 		FalldeltaTime += GetWorld()->GetDeltaSeconds();
 
 		// 칼 낙하 위치
-		FVector StartPos = Anim->GetTargetPoint();
+		FVector StartPos = Cast<UTODKwangAnimInstance>(Anim)->GetTargetPoint();
 		StartPos.Z = StartPos.Z - (FalldeltaTime * 25.0f);
-		FVector TargetPos = Anim->GetTargetPoint();
+		FVector TargetPos = Cast<UTODKwangAnimInstance>(Anim)->GetTargetPoint();
 		TargetPos.Z = 100.0f;
 
 		if (StartPos.Z >= 1100.0f && StartPos.Z <= 1200.0f)
@@ -110,7 +111,7 @@ void ATODKwangCharacter::Tick(float DeltaTime)
 				&ATODKwangCharacter::SpecialAttackCatchTimer, 1.0f, false);
 		}
 
-		Anim->SetTargetPoint(StartPos);
+		Cast<UTODKwangAnimInstance>(Anim)->SetTargetPoint(StartPos);
 	}
 }
 
@@ -118,25 +119,26 @@ void ATODKwangCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	
 	Anim = Cast<UTODKwangAnimInstance>(GetMesh()->GetAnimInstance());
 	if (Anim != nullptr)
 	{
 		Anim->OnMontageEnded.AddDynamic(this, &ATODKwangCharacter::OnAttackMontageEnded);
-		Anim->OnNextAttackCheck.AddLambda([this]()->void
+		Cast<UTODKwangAnimInstance>(Anim)->OnNextAttackCheck.AddLambda([this]()->void
 		{
 			CanNextCombo = true;
 
 			if (IsComboInputOn)
 			{
 				AttackStartComboState();
-				Anim->JumpToAttackMontageSection(CurrentCombo);
+				Cast<UTODKwangAnimInstance>(Anim)->JumpToAttackMontageSection(CurrentCombo);
 			}
 		});
 
-		Anim->OnHardAttackEnd.AddUObject(this, &ATODKwangCharacter::HardAttackEnd);
-		//Anim->OnHardAttackHitCheck.AddUObject(this, &ATODKwangCharacter::HardAndSpecialAttackHitCheck);
+		Cast<UTODKwangAnimInstance>(Anim)->OnHardAttackEnd.AddUObject(this, &ATODKwangCharacter::HardAttackEnd);
+		Cast<UTODKwangAnimInstance>(Anim)->OnHardAttackHitCheck.AddUObject(this, &ATODKwangCharacter::HardAndSpecialAttackHitCheck);
 	}
+
+	WeaponTrigger->OnComponentBeginOverlap.AddDynamic(this, &ATODKwangCharacter::OnWewaponTriggerOverlap);
 }
 
 float ATODKwangCharacter::GetCastSkillRatio()
@@ -166,14 +168,14 @@ void ATODKwangCharacter::Attack()
 			if (CurrentCombo > MaxCombo)
 				return;
 
-			Anim->JumpToAttackMontageSection(CurrentCombo);
+			Cast<UTODKwangAnimInstance>(Anim)->JumpToAttackMontageSection(CurrentCombo);
 		}
 	}
 	else
 	{
 		AttackStartComboState();
 		Anim->PlayAttackMontage();
-		Anim->JumpToAttackMontageSection(CurrentCombo);
+		Cast<UTODKwangAnimInstance>(Anim)->JumpToAttackMontageSection(CurrentCombo);
 		IsAttacking = true;
 	}
 }
@@ -230,7 +232,7 @@ void ATODKwangCharacter::ActionMouseRight()
 	if (!Anim->GetIsEquip() || IsSpecialAttacking)
 		return;
 
-	Anim->PlayHardAttackMontage();
+	Cast<UTODKwangAnimInstance>(Anim)->PlayHardAttackMontage();
 	SetCharacterMove(false);
 
 	IsHardAttacking = true;
@@ -254,9 +256,9 @@ void ATODKwangCharacter::ActionMouseRightEnd()
 	{
 		CastTime += 2.0f;	// Tick에서 HardAttack 안돌아가게
 
-		Anim->Montage_SetPlayRate(Anim->GetHardAttackMontage(), 1.0f);
+		Anim->Montage_SetPlayRate(Cast<UTODKwangAnimInstance>(Anim)->GetHardAttackMontage(), 1.0f);
 		Anim->Montage_JumpToSection(FName(*FString::Printf(TEXT("HardAttack2"))),
-			Anim->GetHardAttackMontage());
+			Cast<UTODKwangAnimInstance>(Anim)->GetHardAttackMontage());
 
 		if (PlayerController != nullptr)
 			PlayerController->GetUserHUDWidget()->SetVisibleCast(false);
@@ -271,8 +273,6 @@ void ATODKwangCharacter::ActionMouseRightEnd()
 
 void ATODKwangCharacter::HardAttackEnd()
 {
-	print(FString::Printf(TEXT("Kwang HardAttack End")));
-
 	IsHardAttacking = false;
 	SetCharacterMove(true);
 
@@ -293,7 +293,7 @@ void ATODKwangCharacter::HardAttackCoolDownTimer()
 void ATODKwangCharacter::ActionKeyboardR()
 {
 	// 공격 중 불가
-	if (IsAttacking || Anim->Montage_IsPlaying(Anim->GetHardAttackMontage()))
+	if (IsAttacking || Anim->Montage_IsPlaying(Cast<UTODKwangAnimInstance>(Anim)->GetHardAttackMontage()))
 		return;
 	
 	// 특수 공격 가능
@@ -314,21 +314,19 @@ void ATODKwangCharacter::ActionKeyboardR()
 			PlayerController->SetMouseSpeed(0.3f);
 
 		GetMovementComponent()->GetNavAgentPropertiesRef().bCanJump = false;
-		Anim->SetSpecialAttacking(true);
+		Cast<UTODKwangAnimInstance>(Anim)->SetSpecialAttacking(true);
 	}
 	// 특수 공격 불가능 (칼을 던지고 있는 상태, 쿨타임 진행 중)
 	else
 	{
 		// 칼을 던지고 있는 상태일 경우 & Catch가 가능할 경우
-		if (Anim->GetIsSpecialTarget() && IsCanSpecialCatch)
+		if (Cast<UTODKwangAnimInstance>(Anim)->GetIsSpecialTarget() && IsCanSpecialCatch)
 			SpecialAttackCatch();
 	}
 }
 
 void ATODKwangCharacter::ActionKeyboardREnd()
 {
-	print(FString::Printf(TEXT("Kwang ActionKeyboardR End")));
-
 	// 특수 공격중이 아닌 경우
 	if (IsSpecialAttacking == false)
 		return;
@@ -347,13 +345,13 @@ void ATODKwangCharacter::ActionKeyboardREnd()
 	IsWeaponFall = true;
 
 	// 칼 낙하 이펙트 위치 지정
-	FVector EffectPoint = Anim->GetTargetPoint();
+	FVector EffectPoint = Cast<UTODKwangAnimInstance>(Anim)->GetTargetPoint();
 	EffectPoint.Z = 30.0f;
 	SwordEffect->SetWorldLocation(EffectPoint);
 	//SwordEffect->Activate(true);
 
 	// 목표 지점에 칼 투척
-	Anim->PlayThrowMontage();
+	Cast<UTODKwangAnimInstance>(Anim)->PlayThrowMontage();
 }
 
 void ATODKwangCharacter::SpecialAttackCatch()
@@ -361,7 +359,7 @@ void ATODKwangCharacter::SpecialAttackCatch()
 	IsCanSpecialCatch = false;
 
 	// 무기 받기
-	Anim->PlayCatchMontage();
+	Cast<UTODKwangAnimInstance>(Anim)->PlayCatchMontage();
 
 	// 쿨타임 진행
 	GetWorldTimerManager().SetTimer(SpecialAttackTimerHandle, this,
@@ -375,5 +373,96 @@ void ATODKwangCharacter::SpecialAttackCatchTimer()
 
 void ATODKwangCharacter::SpecialAttackCoolDownTimer()
 {
+	print(FString::Printf(TEXT("Can Special Attack!!")));
 	IsCanSpecialAttack = true;
+}
+
+void ATODKwangCharacter::HardAndSpecialAttackHitCheck(int32 AttackType, float Range)
+{
+	// Attack Type Check
+	FVector VTarget;
+	switch (AttackType)
+	{
+		// Hard Attack
+	case 0:
+		VTarget = GetActorLocation();
+		break;
+		// Special Attack
+	case 1:
+		VTarget = Cast<UTODKwangAnimInstance>(Anim)->GetTargetPoint();
+		break;
+	default:
+		VTarget = GetActorLocation();
+		break;
+	}
+
+	// 해당 범위 몬스터 얻어오기
+	TArray<FOverlapResult> OverlapActors;
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel(
+		OverlapActors,
+		VTarget,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel4,
+		FCollisionShape::MakeSphere(Range),
+		CollisionQueryParam
+	);
+
+	DrawDebugSphere(GetWorld(), VTarget, Range, 16, FColor::Red, false, 10.0f);
+
+	// Hard/Special Attack Channels (ECC_GameTraceChannel4)에 걸리는 오브젝트
+	if (bResult)
+	{
+		for (auto OverlapActor : OverlapActors)
+		{
+			ATODEnemy* Enemy = Cast<ATODEnemy>(OverlapActor.GetActor());
+			if (Enemy != nullptr)
+			{
+				bool isCanDamage = false;
+
+				// Hard Attack : 전방 180도의 범위에 있는 적 공격
+				if (AttackType == 0)
+				{
+					float Angle = FVector::DotProduct(GetActorForwardVector(), Enemy->GetActorLocation() - GetActorLocation());
+
+					// 정면(180도)에 있는 Enemy에게만 공격 처리
+					if (Angle >= 0.0f)
+						isCanDamage = true;
+				}
+				else if (AttackType == 1)
+				{
+					isCanDamage = true;
+				}
+
+				// 공격이 가능한 Enemy
+				if (isCanDamage)
+				{
+					FDamageEvent DamageEvent;
+					Enemy->TakeDamage(15.0f, DamageEvent, GetController(), this);
+
+					DrawDebugLine(GetWorld(), VTarget, Enemy->GetActorLocation(),
+						FColor::Blue, false, 5.0f);
+				}
+			}
+		}
+	}
+}
+
+void ATODKwangCharacter::OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
+	class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ATODEnemy* Enemy = Cast<ATODEnemy>(OtherActor);
+	if (Enemy != nullptr)
+	{
+		// 공격받은 몬스터 확인
+		if (HitEnemyCheck(Enemy))
+		{
+			FDamageEvent DamageEvent;
+			Enemy->TakeDamage(CharacterStat->GetAttack(), DamageEvent, GetController(), this);
+
+			FVector effectLoc = Enemy->GetMesh()->GetSocketLocation("Impact");
+			HitEffect->SetWorldLocation(effectLoc);
+			HitEffect->Activate(true);
+		}
+	}
 }

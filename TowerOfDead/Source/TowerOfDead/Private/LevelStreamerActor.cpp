@@ -34,6 +34,8 @@ void ALevelStreamerActor::OverlapBegins(UPrimitiveComponent* OverlappedComponent
 	if (MyCharacter != nullptr && LevelToLoad != "")
 	{
 		OverlapVolume->SetGenerateOverlapEvents(false);
+		MyCharacter->SetPlayerStart(false);		// 입력 막기
+		MyCharacter->SetCharacterMove(false);	// 이동 막기
 
 		ATODGameMode* gameMode = Cast<ATODGameMode>(GetWorld()->GetAuthGameMode());
 		if (gameMode != nullptr)

@@ -58,29 +58,11 @@ public:
 
 	virtual void ActionMouseRight() PURE_VIRTUAL(ATODCharacter::ActionMouseRight, return;);
 	virtual void ActionMouseRightEnd() PURE_VIRTUAL(ATODCharacter::ActionMouseRightEnd, return;);
-	/*
-	void HardAttack();
-	void HardAttackCheck();
-	void HardAttackEnd();
-	void HardAttackCoolDownTimer();
-	*/
 
 	virtual void ActionKeyboardR() PURE_VIRTUAL(ATODCharacter::ActionKeyboardR, return;);
 	virtual void ActionKeyboardREnd() PURE_VIRTUAL(ATODCharacter::ActionKeyboardREnd, return;);
-	/*void SpecialAttack();
-	void SpecialAttackCatch();
-	void SpecialAttackEnd();
-	void SpecialAttackCatchTimer();
-	void SpecialAttackCoolDownTimer();*/
-
-	void HardAndSpecialAttackHitCheck(int32 AttackType, float Range);
 
 	FOnHardAttackCastDelegate OnHardAttackCast;
-
-	UFUNCTION()
-	void OnWewaponTriggerOverlap(class UPrimitiveComponent* HitComp, class AActor* OtherActor,
-		class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
-		bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(VisibleAnywhere, Category = Stat)
 	class UTODCharacterStatComponent* CharacterStat;
