@@ -9,6 +9,8 @@
 
 ATODKwangCharacter::ATODKwangCharacter()
 {
+	SwordEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FALLEFFECT"));
+	
 	// 기본 캐릭터 메시
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_KWANG(TEXT("/Game/ParagonKwang/Characters/Heroes/Kwang/Meshes/KwangRosewood.KwangRosewood"));
 	if (SK_KWANG.Succeeded())
@@ -21,6 +23,11 @@ ATODKwangCharacter::ATODKwangCharacter()
 	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_HITEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Primary/FX/P_Kwang_Primary_Impact.P_Kwang_Primary_Impact"));
 	if (P_HITEFFECT.Succeeded())
 		HitEffect->SetTemplate(P_HITEFFECT.Object);
+
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> P_FALLEFFECT(TEXT("/Game/ParagonKwang/FX/Particles/Abilities/Sword/FX/P_Kwang_Sword_Impact.P_Kwang_Sword_Impact"));
+	if (P_FALLEFFECT.Succeeded())
+		SwordEffect->SetTemplate(P_FALLEFFECT.Object);
+	SwordEffect->bAutoActivate = false;
 
 	// 일반 공격 설정
 	IsAttacking = false;
@@ -348,7 +355,6 @@ void ATODKwangCharacter::ActionKeyboardREnd()
 	FVector EffectPoint = Cast<UTODKwangAnimInstance>(Anim)->GetTargetPoint();
 	EffectPoint.Z = 30.0f;
 	SwordEffect->SetWorldLocation(EffectPoint);
-	//SwordEffect->Activate(true);
 
 	// 목표 지점에 칼 투척
 	Cast<UTODKwangAnimInstance>(Anim)->PlayThrowMontage();

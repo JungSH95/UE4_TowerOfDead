@@ -78,9 +78,6 @@ public:
 	class UCapsuleComponent* WeaponTrigger;
 
 	UPROPERTY(VisibleAnywhere, Category = Effect)
-	UParticleSystemComponent* SwordEffect;
-
-	UPROPERTY(VisibleAnywhere, Category = Effect)
 	UParticleSystemComponent* HitEffect;
 
 protected:

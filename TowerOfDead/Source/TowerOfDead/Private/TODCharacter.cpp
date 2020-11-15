@@ -18,7 +18,6 @@ ATODCharacter::ATODCharacter()
 	Camera = CreateDefaultSubobject <UCameraComponent>(TEXT("CAMERA"));
 	Decal = CreateDefaultSubobject <UDecalComponent>(TEXT("DECAL"));
 	WeaponTrigger = CreateDefaultSubobject<UCapsuleComponent>(TEXT("WEAPONTRIGGER"));
-	SwordEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("EFFECT"));
 	HitEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HITEFFECT"));
 
 	SpringArm->SetupAttachment(GetCapsuleComponent());
