@@ -9,4 +9,8 @@ class TOWEROFDEAD_API UTODDrongoAnimInstance : public UTODAnimInstance
 {
 	GENERATED_BODY()
 	
+public:
+	UTODDrongoAnimInstance();
+
+	void PlayAttackMontage();
 };

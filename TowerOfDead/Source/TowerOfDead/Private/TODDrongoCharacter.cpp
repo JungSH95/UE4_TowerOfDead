@@ -28,7 +28,11 @@ float ATODDrongoCharacter::GetSkillCastRatio()
 
 void ATODDrongoCharacter::Attack()
 {
+	if (Anim == nullptr)
+		return;
 
+	print(FString::Printf(TEXT("Drongo Attack")));
+	Anim->PlayAttackMontage();
 }
 
 void ATODDrongoCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

@@ -45,6 +45,7 @@ public:
 	
 	void SetCanAttackDamage(bool bCan) { WeaponTrigger->SetGenerateOverlapEvents(bCan); }
 	
+	bool GetIsBattle() { return IsBattle; }
 	bool GetIsDead() { return IsDead; }
 
 	// 캐스트에 사용하는 것들 모두 사용할 수 있도록
@@ -87,6 +88,9 @@ protected:
 	class ATODPlayerController* PlayerController;
 
 private:
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsBattle;
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsDead;	
 

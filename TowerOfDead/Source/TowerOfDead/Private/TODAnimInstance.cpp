@@ -9,6 +9,8 @@ UTODAnimInstance::UTODAnimInstance()
 	AimPitch = 0.0f;
 	AimYaw = 0.0f;
 
+	IsBattle = false;
+	IsDead = false;
 	IsAir = false;
 	IsEquip = true;
 	IsSoulRecovery = false;
@@ -34,6 +36,9 @@ void UTODAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		FRotator AimRotator = UKismetMathLibrary::NormalizedDeltaRotator(PlayerPawn->GetBaseAimRotation(), PlayerPawn->GetActorRotation());
 		AimPitch = AimRotator.Pitch;
 		AimYaw = AimRotator.Yaw;
+
+		ATODCharacter* Player = Cast<ATODCharacter>(PlayerPawn);
+		IsBattle = Player->GetIsBattle();
 	}
 }
 
