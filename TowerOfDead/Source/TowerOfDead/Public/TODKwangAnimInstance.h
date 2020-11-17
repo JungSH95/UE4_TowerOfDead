@@ -40,6 +40,9 @@ private:
 	FName GetAttackMontageSectionName(int32 Section);
 
 	UFUNCTION()
+	void AnimNotify_SetCanAttack();
+
+	UFUNCTION()
 	void AnimNotify_NextAttackCheck();
 	UFUNCTION()
 	void AnimNotify_AttackHitCheckStart();

@@ -27,9 +27,6 @@ public:
 
 private:
 	UFUNCTION()
-	void AnimNotify_SetCanAttack();
-
-	UFUNCTION()
 	void AnimNotify_SoulRecoveryLoopStart();
 
 	UFUNCTION()

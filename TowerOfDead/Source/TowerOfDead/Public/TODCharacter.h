@@ -45,7 +45,11 @@ public:
 	
 	void SetCanAttackDamage(bool bCan) { WeaponTrigger->SetGenerateOverlapEvents(bCan); }
 	
+	void SetIsBattle(bool battle) { IsBattle = battle; }
 	bool GetIsBattle() { return IsBattle; }
+	void BattleEnd() { IsBattle = false; print(FString::Printf(TEXT("Battle End")));
+	}
+
 	bool GetIsDead() { return IsDead; }
 
 	// 캐스트에 사용하는 것들 모두 사용할 수 있도록
@@ -87,8 +91,11 @@ protected:
 	UPROPERTY()
 	class ATODPlayerController* PlayerController;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Battle)
+	FTimerHandle IsBattleTimerHandle;
+
 private:
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Battle, Meta = (AllowPrivateAccess = true))
 	bool IsBattle;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))

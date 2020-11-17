@@ -18,9 +18,7 @@ ATODGameMode::ATODGameMode()
 
 	static ConstructorHelpers::FClassFinder<APawn> BP_DRONGO_C(TEXT("/Game/BluePrint/BP_DrongoPlayer.BP_DrongoPlayer_C"));
 	if (BP_DRONGO_C.Succeeded())
-	{
 		DefaultPawnClass = BP_DRONGO_C.Class;
-	}
 
 	IsSequencePlaying = false;
 

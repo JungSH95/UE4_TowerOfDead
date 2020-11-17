@@ -42,11 +42,6 @@ void UTODAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
-void UTODAnimInstance::AnimNotify_SetCanAttack()
-{
-	IsEquip = true;
-}
-
 void UTODAnimInstance::AnimNotify_SoulRecoveryLoopStart()
 {
 	auto PlayerPawn = TryGetPawnOwner();

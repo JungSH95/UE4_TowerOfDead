@@ -44,7 +44,7 @@ ATODCharacter::ATODCharacter()
 
 	SetControl();
 	
-	IsBattle = true;
+	IsBattle = false;
 	IsDead = false;
 
 	// 회복 or 성장 Object

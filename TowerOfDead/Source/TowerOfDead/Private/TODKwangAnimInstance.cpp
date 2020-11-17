@@ -69,6 +69,11 @@ FName UTODKwangAnimInstance::GetAttackMontageSectionName(int32 Section)
 		return NAME_None;
 }
 
+void UTODKwangAnimInstance::AnimNotify_SetCanAttack()
+{
+	IsEquip = true;
+}
+
 void UTODKwangAnimInstance::AnimNotify_NextAttackCheck()
 {
 	OnNextAttackCheck.Broadcast();

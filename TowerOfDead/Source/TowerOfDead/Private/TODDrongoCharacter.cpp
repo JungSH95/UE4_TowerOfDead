@@ -7,6 +7,8 @@ ATODDrongoCharacter::ATODDrongoCharacter()
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SK_DRONGO(TEXT("/Game/ParagonDrongo/Characters/Heroes/Drongo/Meshes/Drongo_GDC.Drongo_GDC"));
 	if (SK_DRONGO.Succeeded())
 		GetMesh()->SetSkeletalMesh(SK_DRONGO.Object);
+
+	IsCanAttack = true;
 }
 
 void ATODDrongoCharacter::Tick(float DeltaTime)
@@ -28,11 +30,15 @@ float ATODDrongoCharacter::GetSkillCastRatio()
 
 void ATODDrongoCharacter::Attack()
 {
-	if (Anim == nullptr)
+	if (Anim == nullptr || !IsCanAttack)
 		return;
 
-	print(FString::Printf(TEXT("Drongo Attack")));
+	SetIsBattle(true);
+	IsCanAttack = false;
 	Anim->PlayAttackMontage();
+
+	GetWorldTimerManager().ClearTimer(IsBattleTimerHandle);
+	GetWorldTimerManager().SetTimer(IsBattleTimerHandle, this, &ATODCharacter::BattleEnd, 5.0f, false);
 }
 
 void ATODDrongoCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)

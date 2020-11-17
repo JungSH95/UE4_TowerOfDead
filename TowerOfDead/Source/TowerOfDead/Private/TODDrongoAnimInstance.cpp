@@ -1,4 +1,5 @@
 #include "TODDrongoAnimInstance.h"
+#include "TODDrongoCharacter.h"
 
 UTODDrongoAnimInstance::UTODDrongoAnimInstance()
 {
@@ -10,9 +11,16 @@ UTODDrongoAnimInstance::UTODDrongoAnimInstance()
 void UTODDrongoAnimInstance::PlayAttackMontage()
 {
 	if (AttackMontage != nullptr)
-	{
 		Montage_Play(AttackMontage, 1.0f);
+}
 
-		print(FString::Printf(TEXT("Play Drongo Attack Montage")));
+void UTODDrongoAnimInstance::AnimNotify_SetCanAttack()
+{
+	auto PlayerPawn = TryGetPawnOwner();
+	if (::IsValid(PlayerPawn))
+	{
+		ATODDrongoCharacter* Player = Cast<ATODDrongoCharacter>(PlayerPawn);
+		if (Player != nullptr)
+			Player->SetIsCanAttack(true);
 	}
 }

@@ -13,4 +13,9 @@ public:
 	UTODDrongoAnimInstance();
 
 	void PlayAttackMontage();
+
+private:
+	UFUNCTION()
+	void AnimNotify_SetCanAttack();
+	
 };

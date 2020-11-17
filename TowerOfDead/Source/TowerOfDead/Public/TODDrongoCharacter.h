@@ -18,6 +18,8 @@ public:
 public:
 	float GetSkillCastRatio();
 
+	void SetIsCanAttack(bool attack) { IsCanAttack = attack; }
+
 	void Attack();
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
@@ -26,4 +28,8 @@ public:
 
 	void ActionKeyboardR();
 	void ActionKeyboardREnd();
+
+private:
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsCanAttack;
 };
