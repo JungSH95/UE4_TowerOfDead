@@ -36,6 +36,7 @@ public:
 	void SetBossEnemyStatBind(class UTODEnemyStatComponent* enemyStat);
 
 	void SoulRecovery();
+	void SoulRecoveryEndAction();
 	void SoulRecoveryEnd();
 
 	void SetIsSoulRecovery(bool isSoulRecovery);
@@ -47,8 +48,7 @@ public:
 	
 	void SetIsBattle(bool battle) { IsBattle = battle; }
 	bool GetIsBattle() { return IsBattle; }
-	void BattleEnd() { IsBattle = false; print(FString::Printf(TEXT("Battle End")));
-	}
+	void BattleEnd();
 
 	bool GetIsDead() { return IsDead; }
 

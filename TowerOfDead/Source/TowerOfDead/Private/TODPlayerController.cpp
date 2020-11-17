@@ -92,7 +92,7 @@ void ATODPlayerController::UpDown(float AxisValue)
 {	
 	if (CPlayer != nullptr)
 		if (CPlayer->GetIsCanStopSoulRecovery() && AxisValue != 0.0f)
-			CPlayer->SoulRecoveryEnd();
+			CPlayer->SoulRecoveryEndAction();
 
 	if (IsMove == false)
 		return;
@@ -113,7 +113,7 @@ void ATODPlayerController::LeftRight(float AxisValue)
 {
 	if (CPlayer != nullptr)
 		if (CPlayer->GetIsCanStopSoulRecovery() && AxisValue != 0.0f)
-			CPlayer->SoulRecoveryEnd();
+			CPlayer->SoulRecoveryEndAction();
 
 	if (IsMove == false)
 		return;

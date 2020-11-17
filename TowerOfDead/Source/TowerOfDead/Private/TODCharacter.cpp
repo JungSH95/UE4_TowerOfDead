@@ -197,8 +197,6 @@ void ATODCharacter::SoulRecovery()
 	if (IsSoulRecovery)
 		return;
 
-	print(FString::Printf(TEXT("Recovery Start")));
-
 	PlayerController->GetUserHUDWidget()->SetVisibleLevelUp(true);
 	FInputModeGameAndUI GameAndUIInputMode;
 	PlayerController->SetInputMode(GameAndUIInputMode);
@@ -209,26 +207,26 @@ void ATODCharacter::SoulRecovery()
 	// 무기가 던져져 있다면 캐치 실행 후 회복
 	//if (Anim->GetIsSpecialTarget())
 	//	SpecialAttackCatch();
+	SetIsBattle(false);
 
-	// 애니메이션 Flag On
 	if (Anim != nullptr)
 		Anim->SetIsSoulRecovery(true);
 	// 체력 회복
 	CharacterStat->RecoveryHP();
 }
 
-void ATODCharacter::SoulRecoveryEnd()
+void ATODCharacter::SoulRecoveryEndAction()
 {
 	// SoulRecovery 중이 아닐때 들어오면 X
 	if (!IsSoulRecovery || !IsCanStopSoulRecovery)
 		return;
 
-	print(FString::Printf(TEXT("Recovery End")));
-
 	PlayerController->GetUserHUDWidget()->SetVisibleLevelUp(false);
 	FInputModeGameOnly GameInputMode;
 	PlayerController->SetInputMode(GameInputMode);
 	PlayerController->bShowMouseCursor = false;
+
+	IsCanStopSoulRecovery = false;
 
 	if (Anim != nullptr)
 		Anim->SetIsSoulRecovery(false);
@@ -254,5 +252,10 @@ void ATODCharacter::SetIsSoulRecovery(bool isSoulRecovery)
 	}
 
 	IsSoulRecovery = isSoulRecovery;
-	IsCanStopSoulRecovery = false;
+}
+
+void ATODCharacter::BattleEnd() 
+{
+	if (IsBattle)
+		IsBattle = false;
 }
