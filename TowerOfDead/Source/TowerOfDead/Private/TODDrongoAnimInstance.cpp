@@ -6,6 +6,9 @@ UTODDrongoAnimInstance::UTODDrongoAnimInstance()
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/ParagonDrongo/Characters/Heroes/Drongo/Animations/Primary_Fire_Montage.Primary_Fire_Montage"));
 	if (ATTACK_MONTAGE.Succeeded())
 		AttackMontage = ATTACK_MONTAGE.Object;
+
+	IsBazooka = false;
+	IsGrenade = false;
 }
 
 void UTODDrongoAnimInstance::PlayAttackMontage()

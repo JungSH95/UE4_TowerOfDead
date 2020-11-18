@@ -46,22 +46,24 @@ void ATODDrongoCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInte
 
 }
 
+// 수류탄? 던지기
 void ATODDrongoCharacter::ActionMouseRight()
 {
-
+	Cast<UTODDrongoAnimInstance>(Anim)->SetIsGrenade(true);
 }
 
 void ATODDrongoCharacter::ActionMouseRightEnd()
 {
-
+	Cast<UTODDrongoAnimInstance>(Anim)->SetIsGrenade(false);
 }
 
+// 바주카 포
 void ATODDrongoCharacter::ActionKeyboardR()
 {
-
+	Cast<UTODDrongoAnimInstance>(Anim)->SetIsBazooka(true);
 }
 
 void ATODDrongoCharacter::ActionKeyboardREnd()
 {
-
+	Cast<UTODDrongoAnimInstance>(Anim)->SetIsBazooka(false);
 }
