@@ -21,6 +21,7 @@ public:
 	void SetIsCanAttack(bool attack) { IsCanAttack = attack; }
 
 	void Attack();
+	void AttackDelayTime();
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	void ActionMouseRight();
@@ -32,4 +33,7 @@ public:
 private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsCanAttack;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	FTimerHandle AttackDelayTimerHandle;
 };
