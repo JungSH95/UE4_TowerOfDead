@@ -28,9 +28,10 @@ void UTODDrongoAnimInstance::PlayAttackMontage()
 void UTODDrongoAnimInstance::PlayBazookzEquipMontage()
 {
 	if (BazookaEquipMontage != nullptr)
+	{
 		Montage_Play(BazookaEquipMontage, 1.0f);
-
-	IsBazooka = true;
+		IsBazooka = true;
+	}
 }
 
 void UTODDrongoAnimInstance::PlayGrenadePrepMontage()
@@ -38,7 +39,6 @@ void UTODDrongoAnimInstance::PlayGrenadePrepMontage()
 	if (GrenadePrepMontage != nullptr)
 	{
 		Montage_Play(GrenadePrepMontage, 1.0f);
-		
 		IsGrenade = true;
 	}
 }

@@ -9,6 +9,9 @@ ATODDrongoCharacter::ATODDrongoCharacter()
 		GetMesh()->SetSkeletalMesh(SK_DRONGO.Object);
 
 	IsCanAttack = true;
+
+	IsBazookaAttacking = false;
+	IsGrenadeAttacking = false;
 }
 
 void ATODDrongoCharacter::Tick(float DeltaTime)
@@ -34,7 +37,7 @@ float ATODDrongoCharacter::GetSkillCastRatio()
 
 void ATODDrongoCharacter::Attack()
 {
-	if (Anim == nullptr || !IsCanAttack)
+	if (Anim == nullptr || !IsCanAttack || IsGrenadeAttacking || IsBazookaAttacking)
 		return;
 
 	SetIsBattle(true);
@@ -62,10 +65,17 @@ void ATODDrongoCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInte
 void ATODDrongoCharacter::ActionMouseRight()
 {
 	Cast<UTODDrongoAnimInstance>(Anim)->PlayGrenadePrepMontage();
+
+	IsGrenadeAttacking = true;
 }
 
 void ATODDrongoCharacter::ActionMouseRightEnd()
 {
+	// 수류탄을 들고 있지 않다면
+	if (!IsGrenadeAttacking)
+		return;
+
+	// 마우스 커서 지점으로 수류탄 던지기 (사거리 제한) == Kwang의 칼 던지기
 	Cast<UTODDrongoAnimInstance>(Anim)->SetIsGrenade(false);
 }
 
@@ -73,9 +83,15 @@ void ATODDrongoCharacter::ActionMouseRightEnd()
 void ATODDrongoCharacter::ActionKeyboardR()
 {
 	Cast<UTODDrongoAnimInstance>(Anim)->PlayBazookzEquipMontage();
+
+	IsBazookaAttacking = true;
 }
 
 void ATODDrongoCharacter::ActionKeyboardREnd()
 {
+	if (!IsBazookaAttacking)
+		return;
+
+	// 마우스 커서 방향으로 바주카 발사 (산탄총 느낌?)
 	Cast<UTODDrongoAnimInstance>(Anim)->SetIsBazooka(false);
 }
