@@ -29,6 +29,8 @@ public:
 
 	void ActionKeyboardR();
 	void ActionKeyboardREnd();
+	void BazookaFire();
+	void BazookaDelayTimer();
 
 private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
@@ -37,8 +39,16 @@ private:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	FTimerHandle AttackDelayTimerHandle;
 
+	// Bazooka Action ------------------------------------
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsCanBazookaAttack;
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsBazookaAttacking;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	FTimerHandle BazookaDelayTimerHandle;
+	//----------------------------------------------------
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsGrenadeAttacking;

@@ -11,10 +11,13 @@ class TOWEROFDEAD_API UTODDrongoAnimInstance : public UTODAnimInstance
 	
 public:
 	UTODDrongoAnimInstance();
+	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 	void PlayAttackMontage();
 
 	void PlayBazookzEquipMontage();
+	void PlayBazookFireMontage();
+	void PlayBazookLandMontage();
 
 	void PlayGrenadePrepMontage();
 
@@ -29,15 +32,24 @@ public:
 	bool GetIsGrenade() { return IsGrenade; }
 
 private:
-	//UFUNCTION()
-	//void AnimNotify_SetCanAttack();
+	UFUNCTION()
+	void AnimNotify_SetCanAttack();
 	
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsBazooka;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsBazookaFire;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* BazookaEquipMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* BazookaFireMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* BazookaLandMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsGrenade;

@@ -10,13 +10,20 @@ ATODDrongoCharacter::ATODDrongoCharacter()
 
 	IsCanAttack = true;
 
+	IsCanBazookaAttack = true;
 	IsBazookaAttacking = false;
+
 	IsGrenadeAttacking = false;
 }
 
 void ATODDrongoCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsGrenadeAttacking)
+	{
+
+	}
 }
 
 void ATODDrongoCharacter::PostInitializeComponents()
@@ -37,8 +44,17 @@ float ATODDrongoCharacter::GetSkillCastRatio()
 
 void ATODDrongoCharacter::Attack()
 {
-	if (Anim == nullptr || !IsCanAttack || IsGrenadeAttacking || IsBazookaAttacking)
+	if (Anim == nullptr || !IsCanAttack || IsGrenadeAttacking)
 		return;
+
+	// 바주카 공격
+	if (IsBazookaAttacking)
+	{
+		IsCanAttack = false;
+
+		BazookaFire();
+		return;
+	}
 
 	SetIsBattle(true);
 	IsCanAttack = false;
@@ -82,16 +98,37 @@ void ATODDrongoCharacter::ActionMouseRightEnd()
 // 바주카 포
 void ATODDrongoCharacter::ActionKeyboardR()
 {
-	Cast<UTODDrongoAnimInstance>(Anim)->PlayBazookzEquipMontage();
+	if (IsCanBazookaAttack)
+	{
+		Cast<UTODDrongoAnimInstance>(Anim)->PlayBazookzEquipMontage();
 
-	IsBazookaAttacking = true;
+		IsCanBazookaAttack = false;
+		IsBazookaAttacking = true;
+	}
 }
 
 void ATODDrongoCharacter::ActionKeyboardREnd()
 {
-	if (!IsBazookaAttacking)
-		return;
+	return;
+}
 
+void ATODDrongoCharacter::BazookaFire()
+{
 	// 마우스 커서 방향으로 바주카 발사 (산탄총 느낌?)
-	Cast<UTODDrongoAnimInstance>(Anim)->SetIsBazooka(false);
+	Cast<UTODDrongoAnimInstance>(Anim)->PlayBazookFireMontage();
+
+	IsBazookaAttacking = false;
+
+	// 넉백 and 띄우기
+	FVector AddForce = GetActorForwardVector() * -500.0f + FVector(0, 0, 1) * 500.0f;
+	LaunchCharacter(AddForce, true, false);
+
+	GetWorldTimerManager().SetTimer(BazookaDelayTimerHandle, this,
+		&ATODDrongoCharacter::BazookaDelayTimer, 5.0f, false);
+}
+
+void ATODDrongoCharacter::BazookaDelayTimer()
+{
+	print(FString::Printf(TEXT("Is Can Bazooka Skill")));
+	IsCanBazookaAttack = true;
 }
