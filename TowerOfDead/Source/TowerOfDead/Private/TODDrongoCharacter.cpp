@@ -93,6 +93,7 @@ void ATODDrongoCharacter::ActionMouseRightEnd()
 
 	// 마우스 커서 지점으로 수류탄 던지기 (사거리 제한) == Kwang의 칼 던지기
 	Cast<UTODDrongoAnimInstance>(Anim)->SetIsGrenade(false);
+	IsGrenadeAttacking = false;
 }
 
 // 바주카 포
