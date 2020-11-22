@@ -76,8 +76,6 @@ DerivedDataCache/*
 # Content file
 Content/*
 
-# Don't Content File
-!Content/BluePrint/*
-!Content/Maps/*
-
-
+!Content/BluePrint/
+!Content/EnemyAI/
+!Content/Maps/
