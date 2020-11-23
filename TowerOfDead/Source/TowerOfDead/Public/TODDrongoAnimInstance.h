@@ -20,9 +20,11 @@ public:
 	void PlayBazookLandMontage();
 
 	void PlayGrenadePrepMontage();
+	void PlayGrenadeThrowMontage();
 
 public:
 	UAnimMontage* GetBazookaEquipMontage() { return BazookaEquipMontage; }
+	UAnimMontage* GetBazookaFireMontage() { return BazookaFireMontage; }
 	UAnimMontage* GetGrenadePrepMontage() { return GrenadePrepMontage; }
 
 	void SetIsBazooka(bool bazooka) { IsBazooka = bazooka; }
@@ -56,4 +58,7 @@ private:
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* GrenadePrepMontage;
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* GrenadeThrowMontage;
 };

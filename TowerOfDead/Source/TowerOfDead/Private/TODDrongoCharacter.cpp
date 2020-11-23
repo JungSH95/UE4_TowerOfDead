@@ -10,9 +10,11 @@ ATODDrongoCharacter::ATODDrongoCharacter()
 
 	IsCanAttack = true;
 
-	IsCanBazookaAttack = true;
+	IsCanBazooka = true;
 	IsBazookaAttacking = false;
+	IsCanBazookaFireAttack = false;
 
+	IsCanGrenade = true;
 	IsGrenadeAttacking = false;
 }
 
@@ -42,13 +44,23 @@ float ATODDrongoCharacter::GetSkillCastRatio()
 	return 0.0f;
 }
 
+// 기술 사용 후 호출하여 공격 가능 상태로
+void ATODDrongoCharacter::SetIsCanAttack(bool attack)
+{
+	IsCanAttack = attack;
+
+	// Bazooka Attack을 수행했다면
+	if (IsBazookaAttacking)
+		IsBazookaAttacking = false;
+}
+
 void ATODDrongoCharacter::Attack()
 {
 	if (Anim == nullptr || !IsCanAttack || IsGrenadeAttacking)
 		return;
 
-	// 바주카 공격
-	if (IsBazookaAttacking)
+	// 바주카 공격 가능 상태
+	if (IsCanBazookaFireAttack)
 	{
 		IsCanAttack = false;
 
@@ -74,15 +86,35 @@ void ATODDrongoCharacter::AttackDelayTime()
 
 void ATODDrongoCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-
+	/* 원하는 지점보다 빠르게 호출되므로 사용 X
+	// 바주카 발사가 끝나면
+	if (Cast<UTODDrongoAnimInstance>(Anim)->GetBazookaFireMontage() == Montage)
+	{
+		//IsCanAttack = true;
+		//IsBazookaAttacking = false;
+	}
+	*/
 }
 
 // 수류탄? 던지기
 void ATODDrongoCharacter::ActionMouseRight()
 {
+	// 바주카 기술 사용중이라면 패스
+	if (IsBazookaAttacking)
+		return;
+
+	// 쿨타임 진행 중 이라면
+	if (!IsCanGrenade)
+		return;
+
 	Cast<UTODDrongoAnimInstance>(Anim)->PlayGrenadePrepMontage();
 
+	IsCanAttack = false;
+	IsCanGrenade = false;
 	IsGrenadeAttacking = true;
+
+	GetWorldTimerManager().SetTimer(GrenadeDelayTimerHandle, this,
+		&ATODDrongoCharacter::GrenadeDelayTimer, 5.0f, false);
 }
 
 void ATODDrongoCharacter::ActionMouseRightEnd()
@@ -90,21 +122,30 @@ void ATODDrongoCharacter::ActionMouseRightEnd()
 	// 수류탄을 들고 있지 않다면
 	if (!IsGrenadeAttacking)
 		return;
-
+	
 	// 마우스 커서 지점으로 수류탄 던지기 (사거리 제한) == Kwang의 칼 던지기
-	Cast<UTODDrongoAnimInstance>(Anim)->SetIsGrenade(false);
+	Cast<UTODDrongoAnimInstance>(Anim)->PlayGrenadeThrowMontage();
+
 	IsGrenadeAttacking = false;
+}
+
+void ATODDrongoCharacter::GrenadeDelayTimer()
+{
+	print(FString::Printf(TEXT("Is Can Grenade Skill")));
+	IsCanGrenade = true;
 }
 
 // 바주카 포
 void ATODDrongoCharacter::ActionKeyboardR()
 {
-	if (IsCanBazookaAttack)
+	if (IsCanBazooka)
 	{
 		Cast<UTODDrongoAnimInstance>(Anim)->PlayBazookzEquipMontage();
 
-		IsCanBazookaAttack = false;
+		IsCanBazooka = false;
+
 		IsBazookaAttacking = true;
+		IsCanBazookaFireAttack = true;
 	}
 }
 
@@ -118,7 +159,7 @@ void ATODDrongoCharacter::BazookaFire()
 	// 마우스 커서 방향으로 바주카 발사 (산탄총 느낌?)
 	Cast<UTODDrongoAnimInstance>(Anim)->PlayBazookFireMontage();
 
-	IsBazookaAttacking = false;
+	IsCanBazookaFireAttack = false;
 
 	// 넉백 and 띄우기
 	FVector AddForce = GetActorForwardVector() * -500.0f + FVector(0, 0, 1) * 500.0f;
@@ -131,5 +172,5 @@ void ATODDrongoCharacter::BazookaFire()
 void ATODDrongoCharacter::BazookaDelayTimer()
 {
 	print(FString::Printf(TEXT("Is Can Bazooka Skill")));
-	IsCanBazookaAttack = true;
+	IsCanBazooka = true;
 }

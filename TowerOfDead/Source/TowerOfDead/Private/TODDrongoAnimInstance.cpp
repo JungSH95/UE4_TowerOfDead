@@ -23,6 +23,10 @@ UTODDrongoAnimInstance::UTODDrongoAnimInstance()
 	if (GRENADEPREP_MONTAGE.Succeeded())
 		GrenadePrepMontage = GRENADEPREP_MONTAGE.Object;
 
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> GRENADETHROW_MONTAGE(TEXT("/Game/ParagonDrongo/Characters/Heroes/Drongo/Animations/Drongo_GrenadeThrow_Montage.Drongo_GrenadeThrow_Montage"));
+	if (GRENADETHROW_MONTAGE.Succeeded())
+		GrenadeThrowMontage = GRENADETHROW_MONTAGE.Object;
+
 	IsBazooka = false;
 	IsBazookaFire = false;
 
@@ -83,11 +87,22 @@ void UTODDrongoAnimInstance::PlayGrenadePrepMontage()
 	}
 }
 
+void UTODDrongoAnimInstance::PlayGrenadeThrowMontage()
+{
+	if (GrenadeThrowMontage != nullptr)
+	{
+		Montage_Play(GrenadeThrowMontage, 1.0f);
+		IsGrenade = false;
+	}
+}
+
 void UTODDrongoAnimInstance::AnimNotify_SetCanAttack()
 {
 	auto PlayerPawn = TryGetPawnOwner();
 	if (::IsValid(PlayerPawn))
 	{
+		print(FString::Printf(TEXT("AnimNotify_SetCanAttack")));
+	
 		ATODDrongoCharacter* Player = Cast<ATODDrongoCharacter>(PlayerPawn);
 		if (Player != nullptr)
 			Player->SetIsCanAttack(true);

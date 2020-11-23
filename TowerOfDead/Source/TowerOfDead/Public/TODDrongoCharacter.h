@@ -18,7 +18,7 @@ public:
 public:
 	float GetSkillCastRatio();
 
-	void SetIsCanAttack(bool attack) { IsCanAttack = attack; }
+	void SetIsCanAttack(bool attack);
 
 	void Attack();
 	void AttackDelayTime();
@@ -26,6 +26,7 @@ public:
 
 	void ActionMouseRight();
 	void ActionMouseRightEnd();
+	void GrenadeDelayTimer();
 
 	void ActionKeyboardR();
 	void ActionKeyboardREnd();
@@ -41,15 +42,26 @@ private:
 
 	// Bazooka Action ------------------------------------
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsCanBazookaAttack;
+	bool IsCanBazooka;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-	bool IsBazookaAttacking;
+	bool IsBazookaAttacking;	// 바주카포 기술을 진행 중
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsCanBazookaFireAttack;	// 바주카포 발사 가능
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	FTimerHandle BazookaDelayTimerHandle;
 	//----------------------------------------------------
 
+	// Grenade Action ------------------------------------
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	bool IsCanGrenade;
+
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
 	bool IsGrenadeAttacking;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+	FTimerHandle GrenadeDelayTimerHandle;
+	//----------------------------------------------------
 };
