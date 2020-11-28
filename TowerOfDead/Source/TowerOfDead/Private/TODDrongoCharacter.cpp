@@ -1,5 +1,6 @@
 #include "TODDrongoCharacter.h"
 #include "TODDrongoAnimInstance.h"
+#include "DrawDebugHelpers.h"
 
 ATODDrongoCharacter::ATODDrongoCharacter()
 {
@@ -71,6 +72,28 @@ void ATODDrongoCharacter::Attack()
 	SetIsBattle(true);
 	IsCanAttack = false;
 	Anim->PlayAttackMontage();
+
+	FVector StartPos = Camera->GetComponentLocation();
+	FVector EndPos = Camera->GetForwardVector() * 5000.0f + StartPos;
+
+	FHitResult Hit;
+	FCollisionQueryParams TraceParams;
+	bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos,
+		ECollisionChannel::ECC_GameTraceChannel3, TraceParams);
+
+	
+	if (bHit)
+	{
+		DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Green, false, 0.5f);
+		// 공격 범위 표시 (데칼)
+		DrawDebugBox(GetWorld(), Hit.ImpactPoint, FVector(5, 5, 5), FColor::Emerald, false, 2.0f);
+
+		// 이 위치로 총구에서 발사 시킴
+		DrawDebugLine(GetWorld(), GetMesh()->GetSocketLocation("Muzzle_01"), Hit.ImpactPoint, FColor::Red, false, 0.5f);
+	}
+	else
+		DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Red, false, 0.5f);
+
 
 	GetWorldTimerManager().SetTimer(AttackDelayTimerHandle, this,
 		&ATODDrongoCharacter::AttackDelayTime, 0.5f, false);
